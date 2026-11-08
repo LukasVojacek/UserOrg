@@ -1,0 +1,55 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.6.4">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <HotReloadAutoRestart>true</HotReloadAutoRestart>
+	<NoWarn>ASPIREINTERACTION001;ASPIRECOMPUTE001;ASPIREPUBLISHERS001;ASPIREUSERSECRETS001;</NoWarn>
+	<UserSecretsId>b541b4f6-a23c-4a26-a546-bbe043173c4b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="externalServices\emailSenderVolume\database\**" />
+    <Compile Remove="externalServices\keycloakVolume\**" />
+    <EmbeddedResource Remove="externalServices\emailSenderVolume\database\**" />
+    <EmbeddedResource Remove="externalServices\keycloakVolume\**" />
+    <None Remove="externalServices\emailSenderVolume\database\**" />
+    <None Remove="externalServices\keycloakVolume\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="externalServices\vaultVolume\vault-agent.hcl" LogicalName="vault-agent.hcl" />
+    <EmbeddedResource Include="externalServices\vaultVolume\seed.json" LogicalName="seed.json" />
+    <EmbeddedResource Include="externalServices\immudbInit\create_audit_log_table.sh" LogicalName="create_audit_log_table.sh" />
+    <EmbeddedResource Include="externalServices\otelCollector\otel-collector-config.yaml" LogicalName="otel-collector-config.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="EndpointsTests" />
+    <InternalsVisibleTo Include="E2E.Fixtures" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Browsers" />
+    <PackageReference Include="Aspire.Hosting.Docker" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.k6" />
+    <PackageReference Include="Aspire.Hosting.Keycloak" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" />
+    <PackageReference Include="WireMock.Net.Aspire" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.MailPit" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.SqlServer.Extensions" />
+    <PackageReference Include="Lukdrasil.StepUpLogging" />
+    <PackageReference Include="MessagePack" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\API\API.csproj" />
+    <ProjectReference Include="..\Modules\Services\Gateway\UserOrg.Gateway\UserOrg.Gateway.csproj" />
+    <ProjectReference Include="..\Tools\DatabaseMigrations\DatabaseMigrations.csproj" />
+  </ItemGroup>
+
+</Project>

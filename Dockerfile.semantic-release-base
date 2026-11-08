@@ -1,0 +1,27 @@
+# Base image for semantic-release (Node 24 + semantic-release plugins)
+FROM node:24-bookworm-slim AS semantic-release-base
+
+LABEL org.opencontainers.image.title="userorg/semantic-release-base" \
+      org.opencontainers.image.description="Node 24 with semantic-release and common plugins preinstalled for CI/release jobs."
+
+ENV NPM_CONFIG_LOGLEVEL=error \
+    PATH=/usr/local/bin:$PATH
+
+USER root
+
+# conventional-changelog-conventionalcommits is pinned on purpose: @semantic-release/release-notes-generator
+# v14 works only with 9.x. With 10.x the preset loads but renders NO sections, so GitLab Releases come out
+# with an empty body — that is what happened to every release after 6.9.0.
+# Bump only together with a release-notes-generator that declares 10.x support.
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends git ca-certificates curl; \
+    rm -rf /var/lib/apt/lists/*; \
+    npm set progress=false; \
+    npm config set fund false; \
+    npm install -g --no-progress semantic-release @semantic-release/gitlab @semantic-release/exec @semantic-release/commit-analyzer @semantic-release/git @semantic-release/release-notes-generator @semantic-release/changelog conventional-changelog-conventionalcommits@9.3.1
+
+WORKDIR /workspace
+
+# Default to bash so CI scripts can run commands
+CMD ["bash"]

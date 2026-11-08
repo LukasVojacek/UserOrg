@@ -1,0 +1,78 @@
+{
+  "servers": {
+    "markitdown": {
+      "command": "podman",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-v",
+        "C:/MCP_volumes:/local-directory",
+        "mcp/markitdown"
+      ],
+      "type": "stdio"
+    },
+    "microsoftdocs/mcp": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp",
+      "gallery": "https://api.mcp.github.com/2025-09-15/v0/servers/e0455530-d34a-4795-8dc6-b2888ae76c27",
+      "version": "1.0.0"
+    },
+    "sequentialthinking": {
+      "command": "podman",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/sequentialthinking"
+      ],
+      "type": "stdio"
+    },
+    "gitlab_communication_server": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@zereight/mcp-gitlab"
+      ],
+      "env": {
+        "GITLAB_PERSONAL_ACCESS_TOKEN": "${input:GITLAB_API_KEY}",
+        "GITLAB_API_URL": "https://opencode.it4i.eu/api/v4"
+      }
+    },
+    "io.github.upstash/context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@upstash/context7-mcp@1.0.31"
+      ],
+      "env": {
+        "CONTEXT7_API_KEY": "${input:CONTEXT7_API_KEY}"
+      },
+      "gallery": "https://api.mcp.github.com",
+      "version": "1.0.31"
+    },
+    "nuget": {
+      "type": "stdio",
+      "command": "dnx",
+      "args": [
+        "NuGet.Mcp.Server",
+        "--prerelease",
+        "--yes"
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "id": "CONTEXT7_API_KEY",
+      "type": "promptString",
+      "description": "API key for authentication",
+      "password": true
+    },
+    {
+      "id": "GITLAB_API_KEY",
+      "type": "promptString",
+      "description": "Personal access key for authentication",
+      "password": true
+    }
+  ]
+}

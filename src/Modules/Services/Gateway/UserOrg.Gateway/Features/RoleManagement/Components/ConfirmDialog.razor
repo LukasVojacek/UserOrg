@@ -1,0 +1,40 @@
+@if (IsOpen)
+{
+    <div class="rm-dialog-overlay" @onclick="OnCancel">
+        <div class="rm-dialog" @onclick:stopPropagation="true" role="dialog" aria-labelledby="dialogTitle" aria-describedby="dialogMessage">
+            <h3 id="dialogTitle">@Title</h3>
+            <p id="dialogMessage">@Message</p>
+            <div class="rm-dialog-actions">
+                <button class="rm-button" @onclick="HandleConfirm" autofocus>Confirm</button>
+                <button class="rm-button secondary" @onclick="HandleCancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = "Confirm";
+
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback OnConfirm { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private async Task HandleConfirm()
+    {
+        await OnConfirm.InvokeAsync();
+    }
+
+    private async Task HandleCancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}

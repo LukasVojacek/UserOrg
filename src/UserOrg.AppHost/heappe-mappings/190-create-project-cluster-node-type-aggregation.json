@@ -1,0 +1,23 @@
+{
+  "Guid": "0a0a0000-0000-0000-0000-000000000190",
+  "Priority": 190,
+  "Request": {
+    "Methods": [ "POST" ],
+    "Path": {
+      "Matchers": [
+        { "Name": "WildcardMatcher", "Pattern": "*/heappe/Management/ProjectClusterNodeTypeAggregation", "IgnoreCase": true }
+      ]
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Headers": { "Content-Type": "application/json" },
+    "BodyAsJson": {
+      "ProjectId": 42,
+      "ClusterNodeTypeAggregationId": 7,
+      "AllocationAmount": 1000,
+      "CreatedAt": "2026-01-01T00:00:00Z",
+      "ModifiedAt": null
+    }
+  }
+}

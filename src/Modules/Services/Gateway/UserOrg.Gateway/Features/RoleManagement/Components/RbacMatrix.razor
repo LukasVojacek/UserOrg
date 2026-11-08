@@ -1,0 +1,159 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@inject RoleManagementState State
+@using System.Linq
+@implements IDisposable
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<style>
+.method { font-weight:700; padding:2px 6px; border-radius:4px; color:#fff; font-size:0.8em; display:inline-block; }
+.method-get { background:#2d9a3f; } /* green */
+.method-post { background:#2b7be4; } /* blue */
+.method-put { background:#f0a000; color:#000; } /* amber */
+.method-delete { background:#d9534f; } /* red */
+.perm-row td { border-top:1px dashed #ddd; }
+.perm { font-family:monospace; background:#eef; padding:2px 6px; border-radius:4px; margin-right:6px; display:inline-block; }
+/* spacer between endpoint groups; spans full width and appears above sticky column */
+.spacer-row td { padding:0; height:0; border-top:1px solid #ddd; background:transparent; position:relative; z-index:3; }
+</style>
+
+<div class="rm-card">
+    <div class="rm-card-header" style="display:flex; align-items:center; justify-content:space-between;">
+        <h2>RBAC Matrix</h2>
+        <div>
+            <a class="rm-button" href="/api/role-management/rbac/pdf" target="_blank" rel="noopener" aria-label="Download RBAC as HTML">Download RBAC (HTML)</a>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <p class="rm-info">Loading RBAC data...</p>
+    }
+    else if (endpoints.Count == 0 || roles.Count == 0)
+    {
+        <p class="rm-info">No endpoints or roles available.</p>
+    }
+    else
+    {
+        <div class="rm-rbac-container" style="overflow:auto;">
+            <table class="rm-rbac-table" style="border-collapse:collapse; width:100%;" @ref="rbacTableRef">
+                <thead>
+                    <tr>
+                        <th style="text-align:left; position:sticky; left:0; background:#fff; z-index:2;">Endpoint</th>
+                        @foreach (var r in roles)
+                        {
+                            <th style="min-width:120px; text-align:center;">@r</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var rowIndex = 0; }
+                    @foreach (var ep in endpoints)
+                    {
+                        var rowStyle = (rowIndex % 2 == 0) ? "background:#fafafa;" : string.Empty;
+                        <tr style="@rowStyle">
+                            <td style="position:sticky; left:0; background:inherit; z-index:1; padding:8px; border-bottom:1px solid #eee;">
+                                <div style="font-weight:600">@ep.EndpointName</div>
+                                <div class="rm-help-text">
+                                    <span class="method method-@((ep.HttpMethod ?? "get").ToLower())" style="margin-right:8px;">@((ep.HttpMethod ?? "").ToUpper())</span>
+                                    @ep.PathTemplate
+                                </div>
+                            </td>
+                            @foreach (var r in roles)
+                            {
+                                var allowed = matrix.GetValueOrDefault((ep.EndpointName, r), false);
+                                <td style="text-align:center; padding:8px; border-bottom:1px solid #eee;">@if (allowed) { <span aria-label="allowed">✔️</span> } else { <span aria-label="not-allowed">—</span> }</td>
+                            }
+                        </tr>
+                        rowIndex++;
+
+                        @if ((ep.HttpMethod ?? "").Equals("PUT", StringComparison.OrdinalIgnoreCase) && ep.Permissions != null && ep.Permissions.Any())
+                        {
+                            var permRowStyle = (rowIndex % 2 == 0) ? "background:#fafafa;" : string.Empty;
+                            <tr class="perm-row" style="@permRowStyle">
+                                <td colspan="@((roles?.Count ?? 0) + 1)" style="padding:6px 8px; font-size:0.9em; color:#444;">
+                                    @foreach (var p in ep.Permissions)
+                                    {
+                                        <code class="perm">@p</code>
+                                    }
+                                </td>
+                            </tr>
+                            rowIndex++;
+                        }
+                        <tr class="spacer-row">
+                            <td colspan="@((roles?.Count ?? 0) + 1)"></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isLoading = true;
+    private List<string> roles = new();
+    private List<EndpointMappingInfo> endpoints = new();
+    private Dictionary<(string endpoint, string role), bool> matrix = new();
+
+    private ElementReference rbacTableRef;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        State.OnChange += StateHasChanged;
+        try
+        {
+            isLoading = true;
+            // Ensure reference data is loaded in state (safe to call repeatedly)
+            if (!State.IsLoading && (State.Roles == null || State.Roles.Count == 0 || State.EndpointMappings == null || State.EndpointMappings.Count == 0))
+            {
+                await State.LoadReferenceDataAsync();
+            }
+
+            endpoints = State.EndpointMappings.ToList();
+
+            // Collect role names and fetch role details for permissions
+            roles = State.Roles.Select(r => r.Name).ToList();
+            var roleDetails = new List<RoleDetail>();
+
+            foreach (var roleName in roles)
+            {
+                var res = await State.Service.GetRoleAsync(roleName, CancellationToken.None);
+                if (res.IsSuccess)
+                {
+                    roleDetails.Add(res.Value);
+                }
+                else
+                {
+                    // Fallback: empty permissions if role detail cannot be fetched
+                    roleDetails.Add(new RoleDetail { Name = roleName, Category = "", Level = 0, Permissions = Array.Empty<string>() });
+                }
+            }
+
+            // Build matrix: a role can access an endpoint if any of the endpoint's required permissions are present in the role
+            foreach (var ep in endpoints)
+            {
+                foreach (var rd in roleDetails)
+                {
+                    var allowed = ep.Permissions != null && ep.Permissions.Any(p => rd.Permissions.Contains(p, StringComparer.OrdinalIgnoreCase));
+                    matrix[(ep.EndpointName, rd.Name)] = allowed;
+                }
+            }
+        }
+        catch
+        {
+            // suppress errors; UI will show no data
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        State.OnChange -= StateHasChanged;
+    }
+}

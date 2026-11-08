@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+    <ItemGroup>
+        <PackageReference Include="Lukdrasil.Result" />
+        <PackageReference Include="Lukdrasil.Error" />
+        <PackageReference Include="Lukdrasil.Validation" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\UserOrg.Shared\UserOrg.Shared.csproj" />
+    </ItemGroup>
+</Project>

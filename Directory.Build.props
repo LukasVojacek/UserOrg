@@ -1,0 +1,57 @@
+<Project>
+    <PropertyGroup>
+        <Title>UserOrg v2</Title>
+        <Authors>
+            <Author>Jan Krenek</Author>
+            <Author>Lukas Drabek</Author>
+        </Authors>
+        <Description></Description>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://code.it4i.cz/lexis/v2/userorg-v2/-/tree/main</RepositoryUrl>
+        <UseArtifactsOutput>true</UseArtifactsOutput>
+        <Deterministic>true</Deterministic>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <AnalysisMode>all</AnalysisMode>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+
+    <!-- Add this PropertyGroup to disable TreatWarningsAsErrors when building in Docker -->
+    <PropertyGroup Condition="'$(BuildingInsideDocker)' == 'true'">
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference
+            Include="SonarAnalyzer.CSharp"
+            PrivateAssets="all"
+            Condition="$(MSBuildProjectExtension) == '.csproj'"
+        />
+
+        <PackageReference Include="IDisposableAnalyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <!-- security: pin vulnerable transitive Microsoft.OpenApi (GHSA-v5pm-xwqc-g5wc) to patched 2.12.2 across all projects -->
+        <PackageReference
+            Include="Microsoft.OpenApi"
+            Condition="$(MSBuildProjectExtension) == '.csproj'"
+        />
+
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    </ItemGroup>
+</Project>

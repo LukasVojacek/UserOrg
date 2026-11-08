@@ -1,0 +1,72 @@
+unit_tests:
+  image: ${DOTNET_IMAGE}
+  stage: test
+  script:
+    - echo "Running tests from solution and producing JUnit XML reports..."
+    - |
+      dotnet test --solution UserOrganization.slnx -p:Version=0.0.0-dev -v q --report-xunit-junit --report-xunit-junit-filename "junit-test.xml" --ignore-exit-code '8;10'
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - ./**/*test.xml
+    reports:
+      junit:
+        - ./**/*test.xml
+  # Non-blocking on feature/MR (informational JUnit in the MR), BLOCKING on main and release:
+  # version-preview / release_version / the image jobs `needs` this job, so a red main aborts the
+  # rc / release image instead of publishing broken bits.
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: on_success
+      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+      allow_failure: true
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "web" && $RELEASE == "true"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH =~ /^support\/v[0-9]+\.[0-9]+\.([0-9]+|x)$/ && ($CI_PIPELINE_SOURCE == "push" || ($CI_PIPELINE_SOURCE == "web" && $RELEASE == "true"))'
+      when: on_success
+    - when: never
+
+# E2E / integration tests spin up real containers via Testcontainers, which needs a healthy
+# container runtime. The shared `lexis` runners' docker-in-docker may not be privileged enough for
+# that, so this job is MANUAL and non-blocking: trigger it on a runner that can run privileged dind.
+# The project stays in UserOrganization.slnx (dotnet_dependency_scan rejects a .csproj outside the
+# solution) but sets IsTestProject only under -p:RunContainerTests=true, so unit_tests builds it and
+# skips running it. Run it locally with
+#   dotnet test ./Tests/E2E/IntegrationTests/IntegrationTests.csproj -p:RunContainerTests=true
+integration_test:
+  image: ${DOTNET_IMAGE}
+  stage: test
+  needs:
+    - job: userorg
+      artifacts: true
+  services:
+    - name: ${DOCKER_DIND_SERVICE}
+      alias: docker
+  variables:
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_TLS_CERTDIR: ""
+  allow_failure: true
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: manual
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - when: never
+  script:
+    - |
+      dotnet test ./Tests/E2E/IntegrationTests/IntegrationTests.csproj -p:Version=0.0.0-dev -p:RunContainerTests=true -v q --report-xunit-junit --report-xunit-junit-filename "junit-e2e.xml" --ignore-exit-code '8;10'
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - ./**/*e2e.xml
+    reports:
+      junit:
+        - ./**/*e2e.xml

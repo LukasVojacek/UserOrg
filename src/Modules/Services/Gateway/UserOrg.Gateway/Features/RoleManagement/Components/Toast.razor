@@ -1,0 +1,24 @@
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="rm-toast rm-toast--@Type" role="alert" aria-live="polite">
+        <span>@Message</span>
+        <button class="rm-toast-close" @onclick="Dismiss" aria-label="Dismiss notification">×</button>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public string Type { get; set; } = "info"; // info, success, error
+
+    [Parameter]
+    public EventCallback OnDismiss { get; set; }
+
+    private async Task Dismiss()
+    {
+        Message = null;
+        await OnDismiss.InvokeAsync();
+    }
+}

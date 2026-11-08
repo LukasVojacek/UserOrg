@@ -1,0 +1,66 @@
+@Forge.Api_HostAddress =https://localhost:5800
+@Forge.Api_AccessToken = Example555
+@RoleManagement_AccessToken = ChangeMe_SecureToken_2024
+@Forge.Api_Bearer_AccessToken = eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJpWmV2WHI1QmJNbDNyd2daVi1WdDVNbjhobUozVlNJaUh1Y1lITGFYcHRNIn0.eyJleHAiOjE3NzEzNjA0NjAsImlhdCI6MTc3MTMzODg2MCwianRpIjoib25ydHJvOjFkZGFhNjkzLTFmYTctYzk5Ny04MmM3LTA2NTBjNTAzNGE3MyIsImlzcyI6Imh0dHBzOi8vYWFpLmRldi5sZXhpcy50ZWNoL2F1dGgvcmVhbG1zL0xFWElTX0FBSV92Ml9ERVYiLCJhdWQiOlsiZGRpIiwiaGVhcHBlIiwiYWlyZmxvdyIsImRkaTItcG9ydGFsIiwicG9ydGFsIiwiYWNjb3VudCJdLCJzdWIiOiJlNmFmYjg4Zi0zYTNiLTQyZmEtYjUzMC1mZDhiZjE2ODUyNzMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJwb3J0YWwiLCJzaWQiOiJoeHg3cWh3S3dVYm5sSU80UlVfMEVyeHciLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtbGV4aXNfYWFpX3YyIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBhdWRpZW5jZSBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJwcm9qZWN0X293bmVyIHByb2plY3Rfb3duZXIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0ZXN0X3Byb2plY3Rfb3duZXIiLCJnaXZlbl9uYW1lIjoicHJvamVjdF9vd25lciIsImZhbWlseV9uYW1lIjoicHJvamVjdF9vd25lciIsImVtYWlsIjoic3VwcG9ydF9wcm9qZWN0X293bmVyQGxleGlzLnRlY2gifQ.gKfnV8fLG85XDyUGvZEU_hd0M7VbDU6lLcVAmtU_H6TAsgHJkbTRe8kfw2iSvmj8OxgkRtSC7TrS3zpQ3qO-zoeqETLTqXfkqxZRbg8qxm1tm_Q2py6zRaKTwmajugaeK9zAdItMXHYyVxaCiXXXNer9WYSIqRiDDUUtfsJ107AzZnlOIVsjgdogqWGGV6Gy0XTuKCIxO_6GxswI_Vjgth6P9OPYv5wT_MzTR7D_amIpBBOH8o1l9bWpN_JbgXxZCpwF3qg0SGmmC08FVE6PGM6AZ71fR4JeydmAKazB_4dNUiyK_WHTTCIw5--VRGB4g6POWtHMNODiS7vaRsM0mw
+@CallingService = gateway
+@CallingService_userorg = userorg
+@Role = newRole
+
+### Access Role Management UI
+# NOTE: Replace the token value with your configured RoleManagement:AccessToken from environment or appsettings.json
+GET {{Forge.Api_HostAddress}}/role-management?t={{RoleManagement_AccessToken}}
+
+
+### EmailSender
+GET http://localhost:8300/version
+Accept: application/json
+X-Calling-Service: {{CallingService}}
+
+### Emailsender text
+POST http://localhost:8300/api/email/text
+Content-Type: application/json
+X-Calling-Service: {{CallingService}}
+
+{
+  "sender": "senderAAA@vsb.cz",
+  "subject": "TestEail",
+  "receivers": [
+    "receiverA@vsb.cz"
+  ],
+  "cc": null,
+  "bcc": null,
+  "bodyText": "Jadi jada nada.",
+  "priority": 0
+}
+
+
+### Userorg api/projectResource
+GET {{Forge.Api_HostAddress}}/api/Location
+Accept: application/json
+Authorization: Bearer {{Forge.Api_Bearer_AccessToken}}
+X-Calling-Service: {{CallingService}}
+
+### Userorg api/projectResource
+GET {{Forge.Api_HostAddress}}/api/ProjectResource
+Accept: application/json
+Authorization: Bearer {{Forge.Api_Bearer_AccessToken}}
+X-Calling-Service: {{CallingService}}
+
+### Userorg api/Location
+GET {{Forge.Api_HostAddress}}/api/Location
+Accept: application/json
+Authorization: Bearer {{Forge.Api_Bearer_AccessToken}}
+X-Calling-Service: {{CallingService}}
+
+
+### Userorg userinfo test
+GET {{Forge.Api_HostAddress}}/api/UserInfo
+Accept: application/json
+Authorization: Bearer {{Forge.Api_Bearer_AccessToken}}
+X-Calling-Service: {{CallingService}}
+
+### Userorg userinfo test
+GET {{Forge.Api_HostAddress}}/userorg/api/UserInfo
+Accept: application/json
+Authorization: Service {{Forge.Api_AccessToken}}
+X-Calling-Service: {{CallingService}}

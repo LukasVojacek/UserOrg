@@ -1,0 +1,296 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@using System.ComponentModel.DataAnnotations
+@inject RoleManagementState State
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IDisposable
+
+<div class="rm-card">
+    <h2>@(IsEditMode ? "View Permission" : "Create Permission")</h2>
+
+    @if (IsEditMode && selectedPermission == null)
+    {
+        <p class="rm-info">Loading permission details...</p>
+    }
+    else
+    {
+        <EditForm Model="@formModel" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="rm-alert" />
+
+            <div class="rm-form-group">
+                <label for="permissionKey">Permission Key</label>
+                <InputText id="permissionKey" 
+                          class="rm-input" 
+                          @bind-Value="formModel.PermissionKey" 
+                          disabled="@IsEditMode"
+                          placeholder="perm:resource:action"
+                          aria-required="true" />
+                <ValidationMessage For="@(() => formModel.PermissionKey)" />
+                <small class="rm-help-text">Format: perm:resource:action (lowercase, colon-separated)</small>
+            </div>
+
+            <div class="rm-form-group">
+                <label for="description">Description</label>
+                <InputTextArea id="description" 
+                              class="rm-textarea" 
+                              @bind-Value="formModel.Description" 
+                              disabled="@IsEditMode"
+                              rows="3"
+                              placeholder="Describe what this permission allows"
+                              aria-required="true" />
+                <ValidationMessage For="@(() => formModel.Description)" />
+            </div>
+
+            <div class="rm-form-actions">
+                @if (!IsEditMode)
+                {
+                    <button type="submit" class="rm-button" disabled="@State.IsBusy">
+                        @(State.IsBusy ? "Creating..." : "Create Permission")
+                    </button>
+                }
+                @if (IsEditMode)
+                {
+                    <button type="button" class="rm-button secondary" @onclick="ClearSelection">
+                        Close
+                    </button>
+                    <button type="button" class="rm-button danger" @onclick="CheckAndDeletePermission" disabled="@State.IsBusy">
+                        @(State.IsBusy ? "Deleting..." : "Delete Permission")
+                    </button>
+                }
+            </div>
+
+            @if (isAssignedToRoles)
+            {
+                <div class="rm-alert warning" style="margin-top: 1rem;">
+                    ⚠️ This permission is assigned to one or more roles and cannot be deleted.
+                </div>
+            }
+        </EditForm>
+    }
+</div>
+
+<ConfirmDialog IsOpen="@showDeleteDialog"
+               Title="Delete Permission"
+               Message="@($"Are you sure you want to delete permission '{SelectedPermissionKey}'? This action cannot be undone.")"
+               OnConfirm="HandleDeleteConfirmed"
+               OnCancel="HideDeleteConfirmation" />
+
+@code {
+    [Parameter]
+    public string? SelectedPermissionKey { get; set; }
+
+    [Parameter]
+    public EventCallback OnPermissionUpdated { get; set; }
+
+    private PermissionInfo? selectedPermission;
+    private PermissionFormModel formModel = new();
+    private bool IsEditMode => !string.IsNullOrWhiteSpace(SelectedPermissionKey);
+    private bool showDeleteDialog = false;
+    private bool isAssignedToRoles = false;
+
+    protected override void OnInitialized()
+    {
+        State.OnChange += StateHasChanged;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsEditMode && SelectedPermissionKey != selectedPermission?.Name)
+        {
+            await LoadPermissionAsync();
+        }
+        else if (!IsEditMode)
+        {
+            ResetForm();
+        }
+    }
+
+    private async Task LoadPermissionAsync()
+    {
+        if (string.IsNullOrWhiteSpace(SelectedPermissionKey))
+            return;
+
+        // Find permission in already loaded State.Permissions
+        selectedPermission = State.Permissions.FirstOrDefault(p => 
+            p.Name.Equals(SelectedPermissionKey, StringComparison.OrdinalIgnoreCase));
+
+        if (selectedPermission != null)
+        {
+            formModel = new PermissionFormModel
+            {
+                PermissionKey = selectedPermission.Name,
+                Description = selectedPermission.Description ?? string.Empty
+            };
+
+            // Check if permission is assigned to any roles
+            await CheckIfAssignedToRoles();
+        }
+        else
+        {
+            // Permission not found in cache, try to reload
+            await State.LoadReferenceDataAsync();
+            selectedPermission = State.Permissions.FirstOrDefault(p => 
+                p.Name.Equals(SelectedPermissionKey, StringComparison.OrdinalIgnoreCase));
+            
+            if (selectedPermission != null)
+            {
+                formModel = new PermissionFormModel
+                {
+                    PermissionKey = selectedPermission.Name,
+                    Description = selectedPermission.Description ?? string.Empty
+                };
+
+                // Check if permission is assigned to any roles
+                await CheckIfAssignedToRoles();
+            }
+        }
+    }
+
+    private async Task CheckIfAssignedToRoles()
+    {
+        if (string.IsNullOrWhiteSpace(SelectedPermissionKey))
+        {
+            isAssignedToRoles = false;
+            return;
+        }
+
+        var result = await State.Service.IsPermissionAssignedAsync(SelectedPermissionKey, CancellationToken.None);
+        isAssignedToRoles = result.IsSuccess && result.Value;
+    }
+
+    private async Task CheckAndDeletePermission()
+    {
+        await CheckIfAssignedToRoles();
+        
+        if (isAssignedToRoles)
+        {
+            // Just refresh UI to show the warning
+            StateHasChanged();
+            return;
+        }
+
+        ShowDeleteConfirmation();
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (IsEditMode)
+        {
+            // Edit mode is read-only, no submit action
+            return;
+        }
+
+        // Create new permission
+        var result = await State.CreatePermissionAsync(formModel.PermissionKey, formModel.Description);
+        
+        if (result.IsSuccess)
+        {
+            ResetForm();
+            await OnPermissionUpdated.InvokeAsync();
+        }
+    }
+
+    private void ShowDeleteConfirmation()
+    {
+        showDeleteDialog = true;
+    }
+
+    private void HideDeleteConfirmation()
+    {
+        showDeleteDialog = false;
+    }
+
+    private async Task HandleDeleteConfirmed()
+    {
+        showDeleteDialog = false;
+
+        if (!IsEditMode || string.IsNullOrWhiteSpace(SelectedPermissionKey))
+            return;
+
+        var result = await State.DeletePermissionAsync(SelectedPermissionKey);
+        
+        if (result.IsSuccess)
+        {
+            await ClearSelection();
+        }
+    }
+
+    private void ResetForm()
+    {
+        formModel = new PermissionFormModel();
+        selectedPermission = null;
+    }
+
+    private async Task ClearSelection()
+    {
+        ResetForm();
+        await OnPermissionUpdated.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        State.OnChange -= StateHasChanged;
+    }
+
+    private sealed class PermissionFormModel
+    {
+        [Required(ErrorMessage = "Permission key is required.")]
+        [PermissionKeyFormat(ErrorMessage = "Permission key must be in format 'perm:resource:action' (lowercase, colon-separated).")]
+        public string PermissionKey { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Description is required.")]
+        [StringLength(500, MinimumLength = 3, ErrorMessage = "Description must be between 3 and 500 characters.")]
+        public string Description { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Validates that permission key follows the format: perm:resource:action
+    /// </summary>
+    private sealed class PermissionKeyFormatAttribute : ValidationAttribute
+    {
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            if (value is not string key || string.IsNullOrWhiteSpace(key))
+            {
+                return new ValidationResult("Permission key cannot be empty.");
+            }
+
+            // Format: perm:resource:action
+            var parts = key.Split(':');
+            
+            if (parts.Length != 3)
+            {
+                return new ValidationResult("Permission key must have exactly 3 parts separated by colons (perm:resource:action).");
+            }
+
+            if (parts[0] != "perm")
+            {
+                return new ValidationResult("Permission key must start with 'perm:'.");
+            }
+
+            if (string.IsNullOrWhiteSpace(parts[1]))
+            {
+                return new ValidationResult("Resource part cannot be empty (perm:resource:action).");
+            }
+
+            if (string.IsNullOrWhiteSpace(parts[2]))
+            {
+                return new ValidationResult("Action part cannot be empty (perm:resource:action).");
+            }
+
+            // Check for lowercase (common convention)
+            if (key != key.ToLowerInvariant())
+            {
+                return new ValidationResult("Permission key must be lowercase.");
+            }
+
+            // Check for valid characters (alphanumeric, dash, underscore)
+            if (!System.Text.RegularExpressions.Regex.IsMatch(key, @"^perm:[a-z0-9_-]+:[a-z0-9_-]+$"))
+            {
+                return new ValidationResult("Permission key can only contain lowercase letters, numbers, dashes, and underscores.");
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+}

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <!-- The suite drives a real topology through Testcontainers and pulls the audit-proxy image from
+         opencode.it4i.eu:5050, so it needs a privileged dind runner and a docker login. The shared
+         runners have neither, so the solution-wide `dotnet test` run (job unit_tests) must BUILD
+         it — keeping it from rotting, and keeping every .csproj in the solution as dotnet_dependency_scan
+         requires — but not RUN it. The manual integration_test job opts in with -p:RunContainerTests=true. -->
+    <IsTestProject Condition="'$(RunContainerTests)' != 'true'">false</IsTestProject>
+    <IsTestingPlatformApplication Condition="'$(RunContainerTests)' != 'true'">false</IsTestingPlatformApplication>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <OutputType>Exe</OutputType>
+    <!-- NU1608: Humanizer.Core satellite packages (2.14.1) pinned by EF Core Design resolve against
+         Humanizer.Core 3.0.10 in the aggregated restore graph. Inherited purely from the build-only
+         (ReferenceOutputAssembly=false) references to API/Gateway/DatabaseMigrations; none of it enters
+         this test assembly's runtime closure, so the advisory is benign here. -->
+    <NoWarn>$(NoWarn);NU1608</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="WireMock.Net" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\E2E.Fixtures\E2E.Fixtures.csproj" />
+    <ProjectReference Include="..\..\..\src\UserOrg.ServiceDefaults\UserOrg.ServiceDefaults.csproj" />
+    <!-- Built (not referenced) so the fixture can launch them as child dotnet processes from
+         artifacts/bin. ReferenceOutputAssembly=false keeps their assemblies out of this test's
+         dependency closure while still forcing their build. -->
+    <ProjectReference Include="..\..\..\src\Core\API\API.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\src\Modules\Services\Gateway\UserOrg.Gateway\UserOrg.Gateway.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\src\Tools\DatabaseMigrations\DatabaseMigrations.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Net" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

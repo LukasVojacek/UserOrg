@@ -1,0 +1,371 @@
+model {
+  portalUser    = person 'Portal user'    { description 'Researcher / PI accessing the LEXIS platform' }
+  serviceClient = person 'Service client' { description 'HPC worker or external service using API-key auth' }
+  admin         = person 'Platform admin' { description 'Platform or provider administrator' }
+
+  userorg = system 'LEXIS UserOrg' {
+    description 'Manages users, organisations, projects, resource allocations, and HPC/cloud integrations for the LEXIS platform.'
+
+    // ─── Gateway ────────────────────────────────────────────────────────────
+
+    gateway = container 'UserOrg Gateway' {
+      technology 'ASP.NET Core 9, YARP, Forge.Core RBAC, Blazor SSR'
+      description 'External HTTPS entry point. Authenticates requests, enforces RBAC, issues internal tokens, and forwards to the API via YARP. Also hosts the RBAC admin UI.'
+
+      authTokenTransform = component 'Auth & Token Transformation' {
+        #feature-security
+        description 'Validates inbound credentials (Bearer JWT, Service/Provider API keys, public endpoints) and converts them to Gateway-signed internal tokens before forwarding.'
+
+        jwtBearerAuth = component 'JWT Bearer Auth' {
+          description 'Validate JWT signatures from IdP; optionally introspect token liveness and merge claims'
+          bearerScheme = codeunit 'Bearer authentication scheme' { technology 'authentication_handler' }
+        }
+
+        apiKeyAuth = component 'API Key Auth' {
+          description 'Parse Authorization: Service/Provider <key>; look up service in Vault; build claims identity'
+          apikeyScheme = codeunit 'ApiKey authentication scheme' { technology 'authentication_handler' }
+        }
+
+        publicAuth = component 'Public Endpoint Auth' {
+          description 'Mark public endpoints; issue S2S internal token instead of validating user credentials'
+          publicScheme = codeunit 'PublicWithInternalToken scheme' { technology 'authentication_handler' }
+        }
+      }
+
+      authorizationRbac = component 'Authorization & RBAC' {
+        #feature-security
+        description 'Checks user permissions against Forge.Core endpoint-permission mappings; enforces project membership; caches permission snapshots (30 s TTL).'
+
+        permissionMatching = component 'Permission Matching' {
+          description 'Match endpoint permission templates to user permission keys; expand wildcards (perm:service:*, perm:servicetype:*)'
+          hasRequiredPerm = codeunit 'HasRequiredPermission' { technology 'method' }
+        }
+
+        permissionsCache = component 'User Permissions Cache' {
+          description 'Cache (30 s TTL) user roles, permissions, and project memberships from Forge.Core to reduce DB load; a snapshot is evicted at once when the API names its IdP user id in X-UserOrg-Permissions-Changed (ADR 0113)'
+          getCachedPerms = codeunit 'GetAsync' { technology 'method' }
+        }
+
+        endpointPermissionSvc = component 'Endpoint Permission Service' {
+          description 'Retrieve endpoint-permission mappings from Forge.Core DB; match incoming path + method to required permissions'
+          getEndpointPerms = codeunit 'GetEndpointPermissionsByPathAsync' { technology 'method' }
+        }
+
+        authorizeRequest = codeunit 'AuthorizeRequestAsync' { technology 'middleware_function' }
+      }
+
+      internalTokenIssuance = component 'Internal Token Issuance' {
+        #feature-security
+        description 'Issues ES256-signed JWTs (internal tokens) carrying user identity, roles, project memberships, and auth method. Serves JWKS so downstream services can validate.'
+
+        tokenService = component 'Token Generation Service' {
+          description 'Build JWT with sub, preferred_username, role, auth_method, projectRoles; delegate signing to KeyService'
+          generateToken    = codeunit 'GenerateTokenAsync'               { technology 'method' }
+          generateS2sToken = codeunit 'GenerateServiceToServiceTokenAsync' { technology 'method' }
+        }
+
+        keyService = component 'Key Management Service' {
+          description 'Initialise ECDSA key pair on startup; provide kid; sign tokens; reload keys on rotation'
+          getCurrentKid = codeunit 'GetCurrentKeyId' { technology 'method' }
+        }
+
+        jwksProvider = component 'JWKS Provider' {
+          description 'Serve public key in JWKS format for downstream token validation'
+          jwksEndpoint = codeunit 'GET /.well-known/jwks.json' { technology 'endpoint' }
+        }
+      }
+
+      yarpForwarding = component 'YARP Catch-all Forwarding' {
+        description 'Forward authenticated and authorised requests to UserOrg API. Applies inbound X-Forwarded-For/Proto only from ForwardedHeaders-listed proxies (ADR 0114), appends to X-Forwarded-For, strips client X-Real-IP and X-ClientId, and adds internal token injection and OpenTelemetry tracing tags.'
+
+        forwardTransforms = component 'Request Transform Pipeline' {
+          description 'Sequential transforms: diagnostic path filter, X-Forwarded headers (append X-Forwarded-For), tracing, permission check, internal token injection, permissions-changed capability header on the request and eviction response transform (ADR 0113)'
+          catchAllRoute = codeunit '/{**catch-all} → https+http://userorg' { technology 'route' }
+        }
+      }
+
+      roleManagementUi = component 'Role Management UI' {
+        #feature-security
+        description 'Blazor SSR admin UI for RBAC: manage roles, permissions, and endpoint-permission mappings. Cookie-authenticated (?t= token exchange).'
+
+        roleMgmtApi = component 'Role Management API' {
+          description 'Minimal API endpoints for RBAC CRUD, export/import, PDF report'
+          getRoles    = codeunit 'GET /api/role-management/roles'          { technology 'endpoint' }
+          postRole    = codeunit 'POST /api/role-management/roles'         { technology 'endpoint' }
+          getRbac     = codeunit 'GET /api/role-management/rbac'           { technology 'endpoint' }
+          exportRbac  = codeunit 'POST /api/role-management/rbac/export'   { technology 'endpoint' }
+          importRbac  = codeunit 'POST /api/role-management/rbac/import'   { technology 'endpoint' }
+        }
+
+        blazorUi = component 'Blazor SSR Pages' {
+          description 'Render RBAC admin pages; call Role Management API'
+          roleMgmtPage = codeunit 'GET /role-management' { technology 'endpoint' }
+        }
+      }
+
+      cyclopsForwarding = component 'Cyclops Usage Forwarding' {
+        description 'Three YARP routes proxying to Cyclops and injecting a Vault-retrieved API key. The v1 route (/api/Other/CyclopsUsage/*) resolves project shortname → CustomerId via the Cyclops customer API and returns whole-customer usage; the two v2 routes (/api/Cyclops/Usage/*, /api/Cyclops/TotalUsage/*) send the project shortname untranslated and return single-resource usage.'
+
+        cyclopsTransform = component 'Cyclops Request Transform (v1)' {
+          description 'Look up CustomerId via the Cyclops customer API; build target URI with query params; inject API key; strip key from response. Translates ProjectShortName → CustomerId.'
+          cyclopsRoute = codeunit '/api/Other/CyclopsUsage/{**catch-all} → Cyclops' { technology 'route' }
+        }
+
+        cyclopsUsageTransform = component 'Cyclops Usage Transform (v2)' {
+          description 'Build target URI with idlist/metadata query params; inject API key; strip key from response. Sends ProjectShortName untranslated — no CustomerId lookup.'
+          cyclopsUsageRoute = codeunit '/api/Cyclops/Usage/{ProjectShortName}/{ProviderResourceName} → Cyclops' { technology 'route' }
+        }
+
+        cyclopsTotalUsageTransform = component 'Cyclops Total Usage Transform (v2)' {
+          description 'Build target URI with metadata query param only; inject API key; strip key from response. No ProjectShortName, no CustomerId lookup.'
+          cyclopsTotalUsageRoute = codeunit '/api/Cyclops/TotalUsage/{ProviderResourceName} → Cyclops' { technology 'route' }
+        }
+      }
+    }
+
+    // ─── API ────────────────────────────────────────────────────────────────
+
+    api = container 'UserOrg API' {
+      technology 'ASP.NET Core minimal APIs, EF Core, SQL Server'
+      description 'Business logic service: project/user/resource management, HPC provisioning via HEAppE, multi-cloud sync via Waldur, email notifications, and data-staging credential delivery.'
+
+      projectCore = component 'Project & Entity Management' {
+        #feature-project-mgmt
+        description 'CRUD for projects, users, locations, providers, and project tags; user-role assignments within projects.'
+
+        projectEndpoints = component 'Project Endpoints' {
+          description 'Project CRUD, extended info, user-role assignment'
+          getProjects      = codeunit 'GET /api/Project'                                           { technology 'endpoint' }
+          postProject      = codeunit 'POST /api/Project'                                          { technology 'endpoint' }
+          putProject       = codeunit 'PUT /api/Project'                                           { technology 'endpoint' }
+          deleteProject    = codeunit 'DELETE /api/Project/{ProjectShortName}'                     { technology 'endpoint' }
+          getProjectUsers  = codeunit 'GET /api/Project/{ProjectShortName}/Users'                  { technology 'endpoint' }
+          getExtendedInfo  = codeunit 'GET /api/Project/ExtendedProjectInfo'                       { technology 'endpoint' }
+          getTemplatesInfo = codeunit 'GET /api/Project/TemplatesInfo'                             { technology 'endpoint' }
+        }
+
+        userEndpoints = component 'User Endpoints' {
+          description 'User identity, preferences, and extended info (roles, memberships)'
+          getUserInfo         = codeunit 'GET /api/UserInfo'          { technology 'endpoint' }
+          getUserInfoExtended = codeunit 'GET /api/UserInfo/Extended' { technology 'endpoint' }
+          getUserPrefs        = codeunit 'GET /api/User/Preferences'  { technology 'endpoint' }
+          putUserPrefs        = codeunit 'PUT /api/User/Preferences'  { technology 'endpoint' }
+        }
+
+        locationEndpoints = component 'Location Endpoints' {
+          description 'CRUD for compute/storage locations (HEAppE clusters, Waldur instances, staging areas)'
+          getLocations    = codeunit 'GET /api/Location'              { technology 'endpoint' }
+          postLocation    = codeunit 'POST /api/Location'             { technology 'endpoint' }
+          putLocation     = codeunit 'PUT /api/Location'              { technology 'endpoint' }
+          deleteLocation  = codeunit 'DELETE /api/Location/{Id}'      { technology 'endpoint' }
+        }
+
+        providerEndpoints = component 'Provider Endpoints' {
+          description 'CRUD for HPC/cloud resource providers'
+          getProviders             = codeunit 'GET /api/Provider'                   { technology 'endpoint' }
+          postProvider             = codeunit 'POST /api/Provider'                  { technology 'endpoint' }
+          putProvider              = codeunit 'PUT /api/Provider'                   { technology 'endpoint' }
+          deleteProvider           = codeunit 'DELETE /api/Provider/{Id}'           { technology 'endpoint' }
+          getAdministeredProviders = codeunit 'GET /api/v2/ProviderAdmin/Providers' { technology 'endpoint' }
+        }
+
+        tagEndpoints = component 'Tag Endpoints' {
+          description 'CRUD for project categorisation tags'
+          getTags    = codeunit 'GET /api/ProjectTag'          { technology 'endpoint' }
+          postTag    = codeunit 'POST /api/ProjectTag'         { technology 'endpoint' }
+          putTag     = codeunit 'PUT /api/ProjectTag'          { technology 'endpoint' }
+          deleteTag  = codeunit 'DELETE /api/ProjectTag/{Id}'  { technology 'endpoint' }
+        }
+      }
+
+      resourceMgmt = component 'Resource & Allocation Management' {
+        #feature-resource-mgmt
+        description 'Manage HPC/cloud resource records and their assignment to projects and locations; email notifications on assignment changes.'
+
+        resourceEndpoints = component 'Resource Endpoints' {
+          description 'CRUD for project resources'
+          getResources   = codeunit 'GET /api/ProjectResource'             { technology 'endpoint' }
+          postResource   = codeunit 'POST /api/ProjectResource'            { technology 'endpoint' }
+          putResource    = codeunit 'PUT /api/ProjectResource'             { technology 'endpoint' }
+          deleteResource = codeunit 'DELETE /api/ProjectResource/{Id}'     { technology 'endpoint' }
+        }
+
+        assignmentEndpoints = component 'Assignment Endpoints' {
+          description 'Assign resources to projects/locations'
+          getAssignments    = codeunit 'GET /api/ProjectResourceAssignment'        { technology 'endpoint' }
+          postAssignment    = codeunit 'POST /api/ProjectResourceAssignment'       { technology 'endpoint' }
+          putAssignment     = codeunit 'PUT /api/ProjectResourceAssignment'        { technology 'endpoint' }
+          deleteAssignment  = codeunit 'DELETE /api/ProjectResourceAssignment/{Id}' { technology 'endpoint' }
+        }
+
+        emailNotifications = component 'Email Notification Service' {
+          description 'Send email alerts to owners and requesters when resource assignments change'
+        }
+      }
+
+      requestsOnboarding = component 'Request & Onboarding' {
+        #feature-project-mgmt
+        description 'Self-service onboarding requests for projects and resource assignments; lifecycle: pending → accepted / rejected; email notifications to all parties.'
+
+        requestEndpoints = component 'Request Endpoints' {
+          description 'Request lifecycle management'
+          getRequests    = codeunit 'GET /api/Requests'                       { technology 'endpoint' }
+          postRequest    = codeunit 'POST /api/Requests'                      { technology 'endpoint' }
+          acceptRequest  = codeunit 'PUT /api/Requests/{Id}/Accept'           { technology 'endpoint' }
+          rejectRequest  = codeunit 'PUT /api/Requests/{Id}/Reject'           { technology 'endpoint' }
+        }
+      }
+
+      adminTools = component 'Administration & Reference Data' {
+        #feature-project-mgmt
+        description 'Platform admin views (global statistics, sync monitoring, user promotion, request auditing) and reference data (enums, countries, service data endpoints).'
+
+        adminEndpoints = component 'Admin Endpoints' {
+          description 'Admin-only platform oversight and user role management'
+          adminGetProjects  = codeunit 'GET /api/Administration/Project'                    { technology 'endpoint' }
+          adminGetUsers     = codeunit 'GET /api/Administration/User'                       { technology 'endpoint' }
+          adminPromote      = codeunit 'PUT /api/Administration/PromoteToProviderAdmin'     { technology 'endpoint' }
+          adminReset        = codeunit 'PUT /api/Administration/ResetToPlatformUser'        { technology 'endpoint' }
+          adminGetRequests  = codeunit 'GET /api/Administration/Requests'                   { technology 'endpoint' }
+        }
+
+        referenceEndpoints = component 'Reference Data Endpoints' {
+          description 'Enums, countries, platform statistics'
+          getEnums      = codeunit 'GET /api/Enums'           { technology 'endpoint' }
+          getCountries  = codeunit 'GET /api/Other/Country'   { technology 'endpoint' }
+          getStatistics = codeunit 'GET /api/Other/Statistics' { technology 'endpoint' }
+        }
+
+        serviceEndpoints = component 'Service Data Endpoints' {
+          description 'Provider/worker-oriented data: sync details, projects-info grouped by provider'
+          getSyncDetails  = codeunit 'GET /api/Service/SyncDetails'   { technology 'endpoint' }
+          getProjectsInfo = codeunit 'GET /api/Service/ProjectsInfo'  { technology 'endpoint' }
+        }
+      }
+
+      heappeIntegration = component 'HEAppE Integration' {
+        #feature-hpc
+        description 'Orchestrates communication with HEAppE HPC scheduling middleware: cluster discovery, project provisioning, job template management, background template sync, file download.'
+
+        heappeEndpoints = component 'HEAppE Endpoints' {
+          description 'File download and template query endpoints'
+          listChangedFiles = codeunit 'GET /api/Heappe/ListChangedFilesForJob/{Project}/{Resource}/{JobId}' { technology 'endpoint' }
+        }
+
+        heappeRestClient = component 'HEAppE REST Client' {
+          description 'HTTP client for HEAppE API; builds requests with auth headers; handles serialisation and errors'
+        }
+
+        heappeSyncBackground = component 'HEAppE Background Sync' {
+          description 'Periodic pull of command templates from HEAppE; change tracking and DB persistence; per-location partial sync'
+        }
+      }
+
+      waldurSync = component 'Waldur Platform Sync' {
+        #feature-cloud-sync
+        description 'Background bidirectional sync with Waldur/Puhuri multi-cloud platform; STOMP event subscription for real-time incremental updates.'
+
+        waldurCollector = component 'Waldur API Collector' {
+          description 'Paginated REST fetch of customers, projects, marketplace offerings, and resources from Waldur'
+        }
+
+        waldurPeriodicSync = component 'Periodic Sync Pipeline' {
+          description 'Orchestrate bidirectional sync: pull Waldur state → transform → persist to DB; export local changes back to Waldur'
+        }
+
+        waldurStompListener = component 'STOMP Event Bus Listener' {
+          description 'Subscribe to Waldur STOMP queues for real-time resource/project change events; trigger incremental sync without polling'
+        }
+      }
+
+      dataStagingAccess = component 'Data Staging & Vault Access' {
+        #feature-resource-mgmt
+        description 'Worker node authentication and data-staging credential delivery via HashiCorp Vault.'
+
+        dataStagingEndpoints = component 'Data Staging Endpoints' {
+          description 'Worker authentication and credential delivery'
+          getWorkerData      = codeunit 'GET /api/DataStaging/WorkerData'           { technology 'endpoint' }
+          getStagingLocations = codeunit 'GET /api/DataStaging/DataStagingLocations' { technology 'endpoint' }
+        }
+
+        vaultCredentialSvc = component 'Vault Credential Service' {
+          description 'Fetch and decrypt credentials from HashiCorp Vault for data staging access'
+        }
+      }
+    }
+
+    // ─── Infrastructure ──────────────────────────────────────────────────────
+
+    userorgdb = database 'UserOrgDb' {
+      technology 'SQL Server (MSSQL)'
+      description 'Primary database. Holds domain aggregates (projects, users, resources, locations, requests, allocations) and Forge.Core RBAC data (roles, permissions, endpoint mappings).'
+    }
+
+    emailsender = container 'Email Sender' {
+      technology 'Custom Docker service (lexis-platform/backend image)'
+      description 'Transactional email delivery service. Receives HTML email requests from the API and relays them via SMTP.'
+    }
+
+    vaultproxy = container 'Vault Proxy' {
+      technology 'HashiCorp Vault Agent'
+      description 'Vault Agent proxy: caches and auto-renews secrets; provides a local HTTP endpoint for API and Gateway. Production Vault is an external managed instance.'
+    }
+  }
+
+  // ─── External systems ───────────────────────────────────────────────────────
+
+  keycloak = external 'Keycloak / OIDC IdP' {
+    description 'External identity provider. Issues JWT tokens; supports OIDC discovery, JWKS, token introspection, and token exchange.'
+  }
+
+  waldur = external 'Waldur API' {
+    description 'Multi-cloud HPC marketplace (Puhuri variant). Manages customers, projects, and resource allocations across HPC centres. Also exposes a STOMP event bus.'
+  }
+
+  heappe = external 'HEAppE' {
+    description 'HPC middleware for job scheduling. Manages clusters, node types, project allocations, job command templates.'
+  }
+
+  nexusapi = external 'NexusApi' {
+    description 'Registry of HEAppE instances and their Keycloak clients; proxies every HEAppE call at /api/heappe/{identifier}/ (ADR 0117, ADR 0119).'
+  }
+
+  cyclops = external 'Cyclops' {
+    description 'HPC usage accounting API. Provides compute usage data per customer and project.'
+  }
+
+  // ─── Actor edges ────────────────────────────────────────────────────────────
+
+  portalUser    -[rest]-> gateway 'platform access'   { technology 'HTTPS · Bearer token' }
+  serviceClient -[rest]-> gateway 'service access'    { technology 'HTTPS · Authorization: Service/Provider <key>' }
+  admin         -[rest]-> gateway 'admin access'      { technology 'HTTPS · Bearer token' }
+
+  // ─── Internal container edges ───────────────────────────────────────────────
+
+  gateway -[rest]-> api        'forward authenticated requests'         { technology 'YARP catch-all /{**catch-all} · X-UserOrg-Gateway-Capabilities request header, X-UserOrg-Permissions-Changed response header (ADR 0113)' }
+  gateway -[sql]->  userorgdb  'read/write RBAC data'                   { technology 'EF Core · ConnectionStrings__ForgeDBContext' }
+  gateway -[rest]-> vaultproxy 'look up API keys & Cyclops credentials' { technology 'REST · Services__vault__http' }
+
+  api -[sql]->  userorgdb   'read/write domain + RBAC data' { technology 'EF Core · ConnectionStrings__UserOrgDBContext / ForgeDBContext' }
+  api -[rest]-> emailsender 'send transactional emails'     { technology 'POST /api/Email/Html · MailConfiguration__MailSenderUrl' }
+  api -[rest]-> vaultproxy  'retrieve service credentials'  { technology 'REST · Services__vault__http' }
+  api -[rest]-> keycloak    'token exchange per HEAppE instance' { technology 'POST /protocol/openid-connect/token · key: TokenExchange__Authority, TokenExchange__ClientId/ClientSecret · flag FeatureManagement__TokenExchangeEnabled (ADR 0118)' }
+
+  // ─── External edges — Gateway ───────────────────────────────────────────────
+
+  gateway -[rest]-> keycloak 'OIDC discovery & JWKS'    { technology 'GET /.well-known/openid-configuration · key: Idp__Authority' }
+  gateway -[rest]-> keycloak 'token introspection'      { technology 'POST introspect · key: Idp__Introspection__Endpoint' }
+  gateway -[rest]-> cyclops  'resolve project → CustomerId (v1 only)' { technology 'GET /customerdbAPI/api/v1.0/customer · key: Cyclops__BaseUrl' }
+  gateway -[rest]-> cyclops  'forward usage query (v1, translated CustomerId)' { technology 'GET usage endpoint · key: Cyclops__TimeUsageRelativeUrl, shared with the v2 usage route' }
+  gateway -[rest]-> cyclops  'forward usage query (v2, untranslated ProjectShortName)' { technology 'GET /api/Cyclops/Usage/* → Cyclops · key: Cyclops__TimeUsageRelativeUrl' }
+  gateway -[rest]-> cyclops  'forward total usage query (v2, resource only, no project)' { technology 'GET /api/Cyclops/TotalUsage/* → Cyclops · key: Cyclops__TotalUsageRelativeUrl' }
+
+  // ─── External edges — API ───────────────────────────────────────────────────
+
+  api -[rest]->      nexusapi 'cluster management & project provisioning' { technology 'POST/GET/PUT {BaseUrl}/api/heappe/{identifier}/heappe/Management/* · key: TokenExchange__Nexus__BaseUrl, HEAPPE_IDENTIFIER per location (ADR 0119)' }
+  api -[rest]->      nexusapi 'command template sync'                     { technology 'GET {BaseUrl}/api/heappe/{identifier}/heappe/Management/CommandTemplates · background job · key: TokenExchange__Nexus__BaseUrl' }
+  api -[rest]->      nexusapi 'HEAppE registry and service-account token (flag on only)' { technology 'GET /api/v1/heappe, /api/v1/clients, POST /api/v1/auth/token · key: TokenExchange__Nexus__BaseUrl, TokenExchange__Nexus__ClientId/ClientSecret · flag FeatureManagement__TokenExchangeEnabled' }
+  nexusapi -[rest]-> heappe   'proxied HEAppE calls'                       { technology 'REST · /api/heappe/{identifier}/* forwarded to the registered instance' }
+  api -[rest]->      waldur 'customer/project/resource sync'            { technology 'GET/POST /api/customers/ /api/projects/ /api/resources/ · key: Waldur__ApiBaseAddress' }
+  api -[websocket]-> waldur 'STOMP event subscription'                  { technology 'WebSocket/STOMP · key: Waldur__StompBusAddress' }
+}

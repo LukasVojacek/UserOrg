@@ -1,0 +1,326 @@
+@page "/role-management"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = UserOrg.Gateway.Constants.RoleManagementAccessPolicyName)]
+@using UserOrg.Gateway.Features.RoleManagement.Components
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@using Microsoft.AspNetCore.Components.Server.Circuits
+@using Microsoft.AspNetCore.WebUtilities
+@inject RoleManagementState State
+@inject RoleManagementCircuitGuard CircuitGuard
+@inject ILogger<RoleManagementPage> Logger
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IDisposable
+
+<PageTitle>Role Management</PageTitle>
+
+@if (isCircuitLocked)
+{
+    <div class="rm-container">
+        <div class="rm-card">
+            <h2>Session Locked</h2>
+            <p class="rm-info">
+                Another administrator is currently editing roles and permissions.
+                Please wait until they finish.
+            </p>
+            <p class="rm-help-text">
+                Active session duration: @lockDuration.ToString(@"mm\:ss")
+            </p>
+            <button class="rm-button" @onclick="CheckLockStatus">
+                Refresh Status
+            </button>
+        </div>
+    </div>
+}
+else if (State.IsLoading)
+{
+    <div class="rm-container">
+        <div class="rm-loading">Loading role management data...</div>
+    </div>
+}
+else
+{
+    <div class="rm-container">
+        <div class="rm-page-header">
+            <h1 class="rm-page-title">@GetPageTitle()</h1>
+
+            <div class="rm-page-actions">
+                <!-- Future: Add action buttons here -->
+                <button class="rm-button @(activeTab == "roles" ? "active" : "")"
+                        @onclick='() => activeTab = "roles"'>
+                    Roles
+                </button>
+                <button class="rm-button @(activeTab == "permissions" ? "active" : "")"
+                        @onclick='() => activeTab = "permissions"'>
+                    Permissions
+                </button>
+                <button class="rm-button @(activeTab == "endpoints" ? "active" : "")"
+                        @onclick='() => activeTab = "endpoints"'>
+                    Endpoints
+                </button>
+                <button class="rm-button @(activeTab == "rbac" ? "active" : "")"
+                        @onclick='() => activeTab = "rbac"'>
+                    RBAC Matrix
+                </button>
+                <button class="rm-button @(activeTab == "importexport" ? "active" : "")"
+                        @onclick='() => activeTab = "importexport"'>
+                    Import/Export
+                </button>
+                <form method="post" action="role-management/signout">
+                    <AntiforgeryToken />
+                    <button type="submit" class="rm-button">Sign out</button>
+                </form>
+            </div>
+        </div>
+
+        @if (activeTab == "roles")
+        {
+            <div class="rm-grid">
+                <div class="rm-grid-main">
+                    <RolesList OnRoleSelected="HandleRoleSelected" />
+
+                    <RoleEditor SelectedRoleName="@selectedRoleName" 
+                               OnRoleUpdated="HandleRoleUpdated" />
+                </div>
+
+            </div>
+        }
+        else if (activeTab == "permissions")
+        {
+            <div class="rm-grid">
+                <div class="rm-grid-main">
+                    <PermissionsList OnPermissionSelected="HandlePermissionSelected"
+                                    SelectedPermissionKey="@selectedPermissionKey" />
+
+                    <PermissionEditor SelectedPermissionKey="@selectedPermissionKey" 
+                                     OnPermissionUpdated="HandlePermissionUpdated" />
+                </div>
+
+                <div class="rm-grid-sidebar">
+                    <div class="rm-card">
+                        <h3>Permission Naming Convention</h3>
+                        <p class="rm-help-text">
+                            Permissions should follow the format:<br/>
+                            <code>perm:resource:action</code>
+                        </p>
+                        <p class="rm-help-text">
+                            Examples:<br/>
+                            • <code>perm:users:read</code><br/>
+                            • <code>perm:users:write</code><br/>
+                            • <code>perm:projects:delete</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (activeTab == "endpoints")
+        {
+            <div class="rm-grid">
+                <div class="rm-grid-main">
+                    <EndpointsList OnEndpointSelected="HandleEndpointSelected"
+                                   SelectedEndpointName="@selectedEndpointName" />
+
+                    <EndpointMapper SelectedEndpointName="@selectedEndpointName"
+                                    OnEndpointUpdated="HandleEndpointUpdated" />
+                </div>
+
+                <div class="rm-grid-sidebar">
+                    <div class="rm-card">
+                        <h3>Endpoint Info</h3>
+                        <p class="rm-help-text">
+                            Endpoints define HTTP routes and their required permissions.
+                        </p>
+                        <p class="rm-help-text">
+                            Path templates support placeholders like <code>{`{id}`}</code> for dynamic segments.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (activeTab == "importexport")
+        {
+            <div class="rm-grid">
+                <div class="rm-grid-main">
+                    <ImportExport />
+                </div>
+
+                <div class="rm-grid-sidebar">
+                    <div class="rm-card">
+                        <h3>Import/Export Info</h3>
+                        <p class="rm-help-text">
+                            Export creates a JSON snapshot of all roles and their permissions.
+                        </p>
+                        <p class="rm-help-text">
+                            Import allows you to restore or migrate roles from a JSON file.
+                        </p>
+                        <p class="rm-help-text">
+                            <strong>Note:</strong> Importing does not create missing permissions automatically. Ensure all required permissions exist before importing roles.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (activeTab == "rbac")
+        {
+            <div class="rm-grid">
+                <div class="rm-grid-main">
+                    <RbacMatrix />
+                </div>
+            </div>
+        }
+
+        <Toast Message="@State.ErrorMessage" 
+               Type="error" 
+               OnDismiss="State.ClearMessages" />
+
+        <Toast Message="@State.SuccessMessage" 
+               Type="success" 
+               OnDismiss="State.ClearMessages" />
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "t")]
+    public string? SetupToken { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(SetupToken))
+        {
+            NavigationManager.NavigateTo("/role-management", replace: true);
+            return;
+        }
+    }
+
+    private string activeTab = "roles";
+    private string? selectedRoleName;
+    private string? selectedPermissionKey;
+    private string? selectedEndpointName;
+    private bool isCircuitLocked;
+    private TimeSpan lockDuration;
+    private string? circuitId;
+    private System.Threading.Timer? lockCheckTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Subscribe to state changes
+        State.OnChange += StateHasChanged;
+
+        // Get circuit ID from cascading parameter (Blazor Server provides this)
+        circuitId = Guid.NewGuid().ToString(); // Fallback if circuit ID not available
+
+        // Try to acquire circuit lock
+        var acquired = await CircuitGuard.TryAcquireCircuitAsync(circuitId);
+        
+        if (!acquired)
+        {
+            isCircuitLocked = true;
+            UpdateLockStatus();
+            
+            // Start polling for lock release (every 5 seconds)
+            lockCheckTimer = new System.Threading.Timer(
+                async _ => await InvokeAsync(CheckLockStatus),
+                null,
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(5));
+
+            Logger.LogWarning("Circuit {CircuitId} blocked - another admin session is active.", circuitId);
+            return;
+        }
+
+        Logger.LogInformation("Circuit {CircuitId} acquired lock successfully.", circuitId);
+
+        // Load data
+        await State.LoadReferenceDataAsync();
+    }
+
+    private async Task CheckLockStatus()
+    {
+        var acquired = await CircuitGuard.TryAcquireCircuitAsync(circuitId!);
+        
+        if (acquired)
+        {
+            isCircuitLocked = false;
+            lockCheckTimer?.Dispose();
+            lockCheckTimer = null;
+
+            Logger.LogInformation("Circuit {CircuitId} acquired lock after waiting.", circuitId);
+            
+            // Load data now that we have the lock
+            await State.LoadReferenceDataAsync();
+            StateHasChanged();
+        }
+        else
+        {
+            UpdateLockStatus();
+            StateHasChanged();
+        }
+    }
+
+    private void UpdateLockStatus()
+    {
+        var (isLocked, activeCircuitId, duration) = CircuitGuard.GetLockStatus();
+        isCircuitLocked = isLocked && activeCircuitId != circuitId;
+        lockDuration = duration;
+    }
+
+    private void HandleRoleSelected(string roleName)
+    {
+        selectedRoleName = roleName;
+    }
+
+    private void HandleRoleUpdated()
+    {
+        selectedRoleName = null; // Clear selection after update
+    }
+
+    private void HandlePermissionSelected(string permissionKey)
+    {
+        selectedPermissionKey = permissionKey;
+    }
+
+    private void HandlePermissionUpdated()
+    {
+        selectedPermissionKey = null; // Clear selection after update
+    }
+
+    private void HandleEndpointSelected(string endpointName)
+    {
+        selectedEndpointName = endpointName;
+    }
+
+    private void HandleEndpointUpdated()
+    {
+        selectedEndpointName = null; // Clear selection after update
+    }
+
+    private string GetPageTitle()
+    {
+        return activeTab switch
+        {
+            "roles" => "ROLES",
+            "permissions" => "PERMISSIONS",
+            "endpoints" => "ENDPOINTS",
+            "importexport" => "IMPORT/EXPORT",
+            _ => "ROLE MANAGEMENT"
+        };
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from state changes
+        State.OnChange -= StateHasChanged;
+
+        lockCheckTimer?.Dispose();
+        
+        if (!string.IsNullOrEmpty(circuitId))
+        {
+            // Release circuit lock asynchronously (fire and forget is acceptable during disposal)
+            _ = CircuitGuard.ReleaseCircuitAsync(circuitId);
+            Logger.LogInformation("Circuit {CircuitId} disposed and released lock.", circuitId);
+        }
+    }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.core/schemas/export-1.0.json",
+  "title": "Forge Export Format",
+  "description": "JSON schema for Forge.Core data export/import format version 1.0",
+  "type": "object",
+  "required": ["formatVersion", "exportedAt", "source", "features"],
+  "properties": {
+    "formatVersion": {
+      "type": "string",
+      "description": "Version of the export format",
+      "const": "1.0"
+    },
+    "exportedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the export was created"
+    },
+    "source": {
+      "type": "object",
+      "description": "Information about the source system",
+      "required": ["app"],
+      "properties": {
+        "app": {
+          "type": "string",
+          "description": "Application name"
+        },
+        "instanceId": {
+          "type": "string",
+          "description": "Optional instance identifier"
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "description": "Map of feature name to feature-specific data",
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional additional metadata",
+      "additionalProperties": true
+    }
+  }
+}

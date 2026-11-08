@@ -1,0 +1,1 @@
+based on https://github.com/Netina/Netina.Stomp.Client

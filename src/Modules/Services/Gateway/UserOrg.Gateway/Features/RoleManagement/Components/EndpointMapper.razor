@@ -1,0 +1,199 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@using System.ComponentModel.DataAnnotations
+@inject RoleManagementState State
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IDisposable
+
+<div class="rm-card">
+    @if (string.IsNullOrWhiteSpace(SelectedEndpointName))
+    {
+        <p class="rm-info">Select an endpoint from the list to view and edit permissions.</p>
+    }
+    else if (selectedEndpoint == null)
+    {
+        <p class="rm-info">Loading endpoint details...</p>
+    }
+    else
+    {
+        <h2>Edit Endpoint: @selectedEndpoint.EndpointName</h2>
+        
+        <div class="rm-form-group">
+            <label>Path Template</label>
+            <div class="rm-input" style="background-color: #f5f5f5; cursor: not-allowed;">
+                @selectedEndpoint.PathTemplate
+            </div>
+        </div>
+
+        <div class="rm-form-group">
+            <label>HTTP Method</label>
+            <div class="rm-input" style="background-color: #f5f5f5; cursor: not-allowed;">
+                @selectedEndpoint.HttpMethod
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(selectedEndpoint.Description))
+        {
+            <div class="rm-form-group">
+                <label>Description</label>
+                <div class="rm-textarea" style="background-color: #f5f5f5; cursor: not-allowed;">
+                    @selectedEndpoint.Description
+                </div>
+            </div>
+        }
+
+        <div class="rm-form-group">
+            <label>Permissions</label>
+            <div class="rm-checkbox-list">
+                @foreach (var permission in State.Permissions)
+                {
+                    <label class="rm-checkbox-item">
+                        <input type="checkbox"
+                               value="@permission.Name"
+                               checked="@formModel.Contains(permission.Name)"
+                               @onchange="e => TogglePermission(permission.Name, (bool)(e.Value ?? false))" />
+                        <span>@permission.Name</span>
+                        <small class="rm-help-text">@permission.Description</small>
+                    </label>
+                }
+            </div>
+        </div>
+
+        <div class="rm-form-actions">
+            <button type="button" class="rm-button" @onclick="SaveEndpointPermissions" disabled="@State.IsBusy">
+                @(State.IsBusy ? "Saving..." : "Save Permissions")
+            </button>
+            <button type="button" class="rm-button secondary" @onclick="ClearSelection">
+                Close
+            </button>
+            <button type="button" class="rm-button danger" @onclick="ShowDeleteConfirmation" disabled="@State.IsBusy">
+                @(State.IsBusy ? "Deleting..." : "Delete Endpoint")
+            </button>
+        </div>
+    }
+</div>
+
+<ConfirmDialog IsOpen="@showDeleteDialog"
+               Title="Delete Endpoint"
+               Message="@($"Are you sure you want to delete endpoint '{SelectedEndpointName}'? This action cannot be undone.")"
+               OnConfirm="HandleDeleteConfirmed"
+               OnCancel="HideDeleteConfirmation" />
+
+@code {
+    [Parameter]
+    public string? SelectedEndpointName { get; set; }
+
+    [Parameter]
+    public EventCallback OnEndpointUpdated { get; set; }
+
+    private EndpointMappingInfo? selectedEndpoint;
+    private HashSet<string> formModel = new(StringComparer.OrdinalIgnoreCase);
+    private bool showDeleteDialog = false;
+
+    protected override void OnInitialized()
+    {
+        State.OnChange += StateHasChanged;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(SelectedEndpointName) && SelectedEndpointName != selectedEndpoint?.EndpointName)
+        {
+            await LoadEndpointAsync();
+        }
+        else if (string.IsNullOrWhiteSpace(SelectedEndpointName))
+        {
+            ResetForm();
+        }
+    }
+
+    private async Task LoadEndpointAsync()
+    {
+        if (string.IsNullOrWhiteSpace(SelectedEndpointName))
+            return;
+
+        selectedEndpoint = State.EndpointMappings.FirstOrDefault(e =>
+            e.EndpointName.Equals(SelectedEndpointName, StringComparison.OrdinalIgnoreCase));
+
+        if (selectedEndpoint != null)
+        {
+            formModel = new HashSet<string>(selectedEndpoint.Permissions, StringComparer.OrdinalIgnoreCase);
+        }
+        else
+        {
+            // Not found in cache, reload
+            await State.LoadReferenceDataAsync();
+            selectedEndpoint = State.EndpointMappings.FirstOrDefault(e =>
+                e.EndpointName.Equals(SelectedEndpointName, StringComparison.OrdinalIgnoreCase));
+
+            if (selectedEndpoint != null)
+            {
+                formModel = new HashSet<string>(selectedEndpoint.Permissions, StringComparer.OrdinalIgnoreCase);
+            }
+        }
+    }
+
+    private void TogglePermission(string permissionName, bool isChecked)
+    {
+        if (isChecked)
+        {
+            formModel.Add(permissionName);
+        }
+        else
+        {
+            formModel.Remove(permissionName);
+        }
+    }
+
+    private async Task SaveEndpointPermissions()
+    {
+        if (string.IsNullOrWhiteSpace(SelectedEndpointName))
+            return;
+
+        await State.SetEndpointPermissionsAsync(SelectedEndpointName, formModel.ToList());
+
+        // Reload to reflect changes
+        await LoadEndpointAsync();
+    }
+
+    private void ShowDeleteConfirmation()
+    {
+        showDeleteDialog = true;
+    }
+
+    private void HideDeleteConfirmation()
+    {
+        showDeleteDialog = false;
+    }
+
+    private async Task HandleDeleteConfirmed()
+    {
+        showDeleteDialog = false;
+
+        if (string.IsNullOrWhiteSpace(SelectedEndpointName))
+            return;
+
+        var result = await State.DeleteEndpointAsync(SelectedEndpointName);
+
+        if (result.IsSuccess)
+        {
+            await ClearSelection();
+        }
+    }
+
+    private void ResetForm()
+    {
+        formModel.Clear();
+        selectedEndpoint = null;
+    }
+
+    private async Task ClearSelection()
+    {
+        ResetForm();
+        await OnEndpointUpdated.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        State.OnChange -= StateHasChanged;
+    }
+}

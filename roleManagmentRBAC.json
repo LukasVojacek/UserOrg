@@ -1,0 +1,2738 @@
+﻿{
+  "formatVersion": "1.0",
+  "exportedAt": "2026-06-09T12:10:47.7126701+00:00",
+  "source": {
+    "app": "UserOrg.Gateway",
+    "instanceId": "MANNAZ"
+  },
+  "features": {
+    "permissions": {
+      "count": 69,
+      "items": [
+        {
+          "key": "perm:user:request",
+          "description": "Send request to assign to Project (original: usr_request)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:user:request:manage",
+          "description": "Management of assign Users  to Project (original: usr_request_manage)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:tag:create",
+          "description": "Create Project Tag (original: prjtag_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:tag:list",
+          "description": "List Project Tags (original: prjtag_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:tag:update",
+          "description": "Update Project Tags (original: prjtag_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:tag:remove",
+          "description": "Remove Project Tags (original: prjtag_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:create",
+          "description": "Create Project (original: prj_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:list:users",
+          "description": "List Users in Project (original: prj_list_users)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:update:user:perm",
+          "description": "Change User Permission related to Project (original: prj_update_user_perm)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:update",
+          "description": "Update Project (original: prj_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:list",
+          "description": "List Projects (original: prj_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:remove",
+          "description": "Remove Project (original: prj_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:user:assignment",
+          "description": "Assignment User to Project (add/remove) (original: prj_user_assignment)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:project:tag:assignment",
+          "description": "Assignment Project Tags to Project (add/remove) (original: prj_prjtag_assignment)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:resource:assignment",
+          "description": "Assignment Resource to Project (original: prj_res_assignment)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:data:publish",
+          "description": "(original: data_publish)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:heappe:manager",
+          "description": "HEAppE role mapping (original: heappe_manager)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:role:list",
+          "description": "List valid roles to change to (original: role_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:location:create",
+          "description": "Create Location (original: loc_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:location:list",
+          "description": "List Locations (original: loc_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:location:update",
+          "description": "Update Location (original: loc_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:location:remove",
+          "description": "Remove Location (original: loc_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:create",
+          "description": "Create Provider (original: provider_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:list",
+          "description": "List providers (original: provider_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:update",
+          "description": "Update Provider (original: provider_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:remove",
+          "description": "Remove Provider (original: provider_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:workflow:list",
+          "description": "List Workflows (original: wf_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:workflow:create",
+          "description": "Create Workflow (original: wf_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:workflow:update",
+          "description": "Update Workflow (original: wf_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:workflow:remove",
+          "description": "Remove Workflow (original: wf_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:workflow:execution:list",
+          "description": "List Workflow Executions (original: wfexe_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:workflow:execution:create",
+          "description": "Create Workflow Execution (original: wfexe_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:workflow:execution:detail",
+          "description": "View Workflow Execution (original: wfexe_detail)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:heappe:exec",
+          "description": "Execution and read job details from HEAppE Middleware (original: heappe_exec)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:data:create",
+          "description": "Create Dataset (original: data_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:data:list",
+          "description": "List Datasets (original: data_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:data:update",
+          "description": "Update Dataset (original: data_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:data:download",
+          "description": "Download Dataset data (original: data_download)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:data:upload",
+          "description": "Upload Dataset data (original: data_upload)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:data:stage",
+          "description": "Stage Data (original: data_stage)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:data:remove",
+          "description": "Remove Dataset (original: data_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:resource:list",
+          "description": "List all Resources (original: res_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:resource:create",
+          "description": "Create Resource (original: res_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:resource:update",
+          "description": "Update Resource (original: res_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:resource:remove",
+          "description": "Remove Resource (original: res_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:assigned:resource:list",
+          "description": "List Project Resource Extended allocation information (original: assigned_res_list)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:assigned:resource:create",
+          "description": "Create Project Resource Extended allocation information (original: assigned_res_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:assigned:resource:update",
+          "description": "Update Project Resource Rxtended allocation information (original: assigned_res_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:assigned:resource:remove",
+          "description": "Remove Project Resource Extended allocation information (original: assigned_res_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:role:create",
+          "description": "Create new Role based on base Role (original: role_create)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:role:update",
+          "description": "Update Role (original: role_update)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:role:remove",
+          "description": "Remove Role (original: role_remove)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:access",
+          "description": "permission excluded Bearer users from service access endpoints",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:dataStagingLocations",
+          "description": "Read DataStaging worker data",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:servicetype:ddi",
+          "description": "Read DataStaging locations",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:it4i",
+          "description": "perm:service:it4i",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:dlr",
+          "description": "perm:service:dlr",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:epcc",
+          "description": "perm:service:epcc",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:ibm",
+          "description": "perm:service:ibm",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:lumi",
+          "description": "perm:service:lumi",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:lrz",
+          "description": "perm:service:lrz",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:puhuri",
+          "description": "perm:service:puhuri",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:cyclops",
+          "description": "perm:service:cyclops",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:usage:report",
+          "description": "Usage report for Cyclops Endpoint",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:resource:request",
+          "description": "Send request to assign Resource to Project",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:project:resource:unassignment",
+          "description": "Unassignment Resource from Project (original: prj_res_assignment)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:admin",
+          "description": "perm:provider:admin",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:service:remi",
+          "description": "RemI service",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:platform:admin",
+          "description": "List all Project in platform (original: platformadmin)",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:it4i",
+          "description": "Provider IT4Innovations",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:dlr",
+          "description": "Provider DLR",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:epcc",
+          "description": "Provider EPCC",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:ibm",
+          "description": "Provider IBM",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:lrz",
+          "description": "Provider LRZ",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:lumi",
+          "description": "Provider Lumi",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "key": "perm:provider:puhuri",
+          "description": "Provider PUHURI",
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        }
+      ]
+    },
+    "endpointMappings": {
+      "count": 194,
+      "items": [
+        {
+          "endpointName": "Get DataStaging worker data",
+          "description": "Get DataStaging worker data",
+          "pathTemplate": "/api/DataStaging/WorkerData",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:servicetype:ddi",
+            "perm:service:it4i",
+            "perm:service:dlr",
+            "perm:service:epcc",
+            "perm:service:ibm",
+            "perm:service:lumi",
+            "perm:service:lrz",
+            "perm:service:puhuri"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Send request to assign to Project",
+          "description": "Send request to assign to Project",
+          "pathTemplate": "/api/Requests",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:user:request"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Management of assign Users  to Project",
+          "description": "Management of assign Users  to Project",
+          "pathTemplate": "/api/Requests",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Create Project Tag",
+          "description": "Create Project Tag",
+          "pathTemplate": "/api/ProjectTag",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:project:tag:create"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List Project Tags",
+          "description": "List Project Tags",
+          "pathTemplate": "/api/ProjectTag",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:tag:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Project Tags",
+          "description": "Update Project Tags",
+          "pathTemplate": "/api/ProjectTag",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:tag:update"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Remove Project Tags",
+          "description": "Remove Project Tags",
+          "pathTemplate": "/api/ProjectTag/{Id}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:tag:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Create Project",
+          "description": "Create Project",
+          "pathTemplate": "/api/Project",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:project:create"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List Users in Project",
+          "description": "List Users in Project",
+          "pathTemplate": "/api/Project/{ProjectShortName}/Users",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list:users"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Change User\u00B4s Permission related to Project",
+          "description": "Change User\u00B4s Permission related to Project",
+          "pathTemplate": "/api/Project/{ProjectShortName}/User/{IdpUserId}/Assign/{RoleName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:update:user:perm"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Project",
+          "description": "Update Project",
+          "pathTemplate": "/api/Project",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:update"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List Projects",
+          "description": "List Projects",
+          "pathTemplate": "/api/Project?projectShortName={ProjectShortName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Remove Project",
+          "description": "Remove Project",
+          "pathTemplate": "/api/Project/{ProjectShortName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Assignment User to Project (add/remove)",
+          "description": "Assignment User to Project (add/remove)",
+          "pathTemplate": "/api/Project/{ProjectShortName}/User/{IdpUserId}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:user:assignment"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Assignment Project Tags to Project (add/remove)",
+          "description": "Assignment Project Tags to Project (add/remove)",
+          "pathTemplate": "/api/Project/{ProjectShortName}/ProjectTag/{ProjectTagId}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:project:tag:assignment"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Extended Project Info",
+          "description": "Extended Project Info",
+          "pathTemplate": "/api/Project/ExtendedProjectInfo",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Templates Info (Get from HEAppE instances)",
+          "description": "Templates Info (Get from HEAppE instances)",
+          "pathTemplate": "/api/Project/TemplatesInfo/{projectShortName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Create Location",
+          "description": "Create Location",
+          "pathTemplate": "/api/Location",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:location:create"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List Locations",
+          "description": "List Locations",
+          "pathTemplate": "/api/Location",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:location:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Location",
+          "description": "Update Location",
+          "pathTemplate": "/api/Location",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:location:update"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Remove Location",
+          "description": "Remove Location",
+          "pathTemplate": "/api/Location/{Id}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:location:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Create Provider",
+          "description": "Create Provider",
+          "pathTemplate": "/api/Provider",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:provider:create"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List providers",
+          "description": "List providers",
+          "pathTemplate": "/api/Provider",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Provider",
+          "description": "Update Provider",
+          "pathTemplate": "/api/Provider",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:provider:update"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Remove Provider",
+          "description": "Remove Provider",
+          "pathTemplate": "/api/Provider/{Id}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:provider:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Execution and read job details from HEAppE Middleware",
+          "description": "Execution and read job details from HEAppE Middleware",
+          "pathTemplate": "/-",
+          "httpMethod": "-",
+          "permissionKeys": [
+            "perm:heappe:exec"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Create Dataset",
+          "description": "Create Dataset",
+          "pathTemplate": "/-",
+          "httpMethod": "-",
+          "permissionKeys": [
+            "perm:data:create"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List Datasets",
+          "description": "List Datasets",
+          "pathTemplate": "/-",
+          "httpMethod": "-",
+          "permissionKeys": [
+            "perm:data:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Dataset",
+          "description": "Update Dataset",
+          "pathTemplate": "/-",
+          "httpMethod": "-",
+          "permissionKeys": [
+            "perm:data:update"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Download Dataset data",
+          "description": "Download Dataset data",
+          "pathTemplate": "/-",
+          "httpMethod": "-",
+          "permissionKeys": [
+            "perm:data:download"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Upload Dataset data",
+          "description": "Upload Dataset data",
+          "pathTemplate": "/-",
+          "httpMethod": "-",
+          "permissionKeys": [
+            "perm:data:upload"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Stage Data",
+          "description": "Stage Data",
+          "pathTemplate": "/-",
+          "httpMethod": "-",
+          "permissionKeys": [
+            "perm:data:stage"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Remove Dataset",
+          "description": "Remove Dataset",
+          "pathTemplate": "/-",
+          "httpMethod": "-",
+          "permissionKeys": [
+            "perm:data:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Resources",
+          "description": "List all Resources",
+          "pathTemplate": "/api/ProjectResource",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:resource:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Create Resource",
+          "description": "Create Resource",
+          "pathTemplate": "/api/ProjectResource",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:resource:create"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Resource",
+          "description": "Update Resource",
+          "pathTemplate": "/api/ProjectResource",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:resource:update"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Remove Resource",
+          "description": "Remove Resource",
+          "pathTemplate": "/api/ProjectResource/{Id}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:resource:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List Countries",
+          "description": "List Countries",
+          "pathTemplate": "/api/Other/Country",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get statistics (Users, Projects, etc..)",
+          "description": "Get statistics (Users, Projects, etc..)",
+          "pathTemplate": "/api/Other/Statistics",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List Project Resource Extended allocation information",
+          "description": "List Project Resource Extended allocation information",
+          "pathTemplate": "/api/ProjectResourceAssignment",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:assigned:resource:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Create Project Resource Extended allocation information",
+          "description": "Create Project Resource Extended allocation information",
+          "pathTemplate": "/api/ProjectResourceAssignment",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:assigned:resource:create"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Project Resource Rxtended allocation information",
+          "description": "Update Project Resource Rxtended allocation information",
+          "pathTemplate": "/api/ProjectResourceAssignment",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:assigned:resource:update"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Remove Project Resource Extended allocation information",
+          "description": "Remove Project Resource Extended allocation information",
+          "pathTemplate": "/api/ProjectResourceAssignment/{Id}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:assigned:resource:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "User information",
+          "description": "User information",
+          "pathTemplate": "/api/UserInfo",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Extended user information about Project resources",
+          "description": "Extended user information about Project resources",
+          "pathTemplate": "/api/UserInfo/Extended",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Create new Role based on base Role",
+          "description": "Create new Role based on base Role",
+          "pathTemplate": "/api/Role",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:role:create"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Role",
+          "description": "Update Role",
+          "pathTemplate": "/api/Role",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:role:update"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Remove Role",
+          "description": "Remove Role",
+          "pathTemplate": "/api/Role/{RoleName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:role:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all distinct Roles",
+          "description": "List all distinct Roles",
+          "pathTemplate": "/api/Role",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:role:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Roles in Project",
+          "description": "List all Roles in Project",
+          "pathTemplate": "/api/Role/{ProjectShortName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:role:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Permission types",
+          "description": "List all Permission types",
+          "pathTemplate": "/api/Role/PermissionTypes",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:role:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Permission types for Role",
+          "description": "List all Permission types for Role",
+          "pathTemplate": "/api/Role/PermissionTypes/{RoleName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:role:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Project in platform",
+          "description": "List all Project in platform",
+          "pathTemplate": "/api/Administration/Project",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin",
+            "perm:provider:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Project Tags in platform",
+          "description": "List all Project Tags in platform",
+          "pathTemplate": "/api/Administration/ProjectTag",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Users in platform",
+          "description": "List all Users in platform",
+          "pathTemplate": "/api/Administration/User",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Locations in plaform",
+          "description": "List all Locations in plaform",
+          "pathTemplate": "/api/Administration/Location",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all Providers in platform",
+          "description": "List all Providers in platform",
+          "pathTemplate": "/api/Administration/Provider",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Change default Role to Provider Admin for specific User",
+          "description": "Change default Role to Provider Admin for specific User",
+          "pathTemplate": "/api/Administration/PromoteToProviderAdmin",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Change default Role to Platform Admin for specific User",
+          "description": "Change default Role to Platform Admin for specific User",
+          "pathTemplate": "/api/Administration/ResetToPlatformUser",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List all requests in platform",
+          "description": "List all requests in platform",
+          "pathTemplate": "/api/Administration/Requests",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get user preferences in json format",
+          "description": "Get user preferences in json format",
+          "pathTemplate": "/api/User/Preferences",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:user:request"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update user preferences in json format",
+          "description": "Update user preferences in json format",
+          "pathTemplate": "/api/User/Preferences",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get user related information about all Users in Projects related to Provider",
+          "description": "Get user related information about all Users in Projects related to Provider",
+          "pathTemplate": "/api/Service/SyncDetails",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:servicetype:ddi",
+            "perm:service:it4i",
+            "perm:service:dlr",
+            "perm:service:epcc",
+            "perm:service:ibm",
+            "perm:service:lumi",
+            "perm:service:lrz",
+            "perm:service:puhuri"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get information about all Projects grouped by Provider",
+          "description": "Get information about all Projects grouped by Provider",
+          "pathTemplate": "/api/Service/ProjectsInfo",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:service:cyclops"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Handle request by action link",
+          "description": "Handle request by action link",
+          "pathTemplate": "/api/Public/Handle/{actionLink}",
+          "httpMethod": "POST",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Request information",
+          "description": "Request information",
+          "pathTemplate": "/api/Public/RequestInfo/{requestId}",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "UserInfo",
+          "description": "",
+          "pathTemplate": "/api/UserInfo",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "GetCommandTemplatePermissions",
+          "description": "permissions for heappe",
+          "pathTemplate": "/api/Heappe/CommandTemplatePermissions/{HeappeIdentifier}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:heappe:exec"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "GetCommandTemplate",
+          "description": "GetCommandTemplate",
+          "pathTemplate": "/api/Heappe/CommandTemplate/{ProjectShortName}/{ProjectResourceName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:heappe:exec"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "CommandTemplateActivate",
+          "description": "CommandTemplateActivate",
+          "pathTemplate": "/api/Heappe/CommandTemplate/Activate",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:heappe:manager"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "CommandTemplateDeactivate",
+          "description": "CommandTemplateDeactivate",
+          "pathTemplate": "/api/Heappe/CommandTemplate/Deactivate",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:heappe:manager"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "GetProject",
+          "description": "List projects associated with access token",
+          "pathTemplate": "/api/Project",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "AcceptRequest",
+          "description": "",
+          "pathTemplate": "/api/Requests/{RequestId}/Accept",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "RejectRequest",
+          "description": "",
+          "pathTemplate": "/api/Requests/{RequestId}/Reject",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "SentRequests",
+          "description": "",
+          "pathTemplate": "/api/Requests/SentRequests",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "RemoveUserFromProject",
+          "description": "",
+          "pathTemplate": "/api/Project/{ProjectShortName}/User/{IdpUserId}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:user:assignment"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Change User Permission related to Project",
+          "description": "Change User Permission related to Project",
+          "pathTemplate": "/api/Project/{ProjectShortName}/User/{IdpUserId}/Assign/{RoleName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:update:user:perm"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Assignment Resource to Project (add)",
+          "description": "Assignment Resource to Project (add)",
+          "pathTemplate": "/api/Project/{ProjectShortName}/ProjectResource/{ProjectResourceName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:resource:assignment"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Assignment Resource to Project (remove)",
+          "description": "Assignment Resource to Project (remove)",
+          "pathTemplate": "/api/Project/{ProjectShortName}/ProjectResource/{ProjectResourceName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:resource:unassignment"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Valid Roles For Project",
+          "description": "List valid roles to change to",
+          "pathTemplate": "/api/Project/{ProjectShortName}/ValidRoles",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:role:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Command Template Synchronization",
+          "description": "",
+          "pathTemplate": "/api/Heappe/CommandTemplate/Synchronization",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:heappe:manager"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Run Heappe Resource Audit",
+          "description": "Run the HEAppE resource validity audit on demand (platform admin only).",
+          "pathTemplate": "/api/Heappe/ResourceAudit/run",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "ListChangedFilesForJob",
+          "description": "",
+          "pathTemplate": "/api/Heappe/ListChangedFilesForJob/{ProjectShortName}/{ResourceName}/{SubmittedJobInfoId}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:heappe:exec"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update DataStaging Locations",
+          "description": "",
+          "pathTemplate": "/api/DataStaging/DataStagingLocations",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:service:dataStagingLocations"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List DataStaging Locations",
+          "description": "",
+          "pathTemplate": "/api/DataStaging/DataStagingLocations",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:service:dataStagingLocations"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Provider by Id",
+          "description": "",
+          "pathTemplate": "/api/Provider/{Id}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Resource by Id",
+          "description": "",
+          "pathTemplate": "/api/ProjectResource/{Id}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:resource:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Change Users Permission related to Project",
+          "description": "Change User Permission related to Project",
+          "pathTemplate": "/api/Project/{ProjectShortName}/User/{IdpUserId}/Assign/{RoleName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:update:user:perm"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Location",
+          "description": "Get Specific Location",
+          "pathTemplate": "/api/Location/{Id}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:location:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Location in platform",
+          "description": "List specific location in platform",
+          "pathTemplate": "/api/Administration/Location/{Id}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Provider in platform",
+          "description": "List specific provider in platform",
+          "pathTemplate": "/api/Administration/Provider/{Id}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Project Resource Extended allocation information",
+          "description": "",
+          "pathTemplate": "/api/ProjectResourceAssignment/{Id}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:assigned:resource:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "CyclopsUsageV1",
+          "description": "",
+          "pathTemplate": "/api/Other/CyclopsUsage/{ProjectShortName}/{ResourceName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:usage:report"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "CyclopsProjectUsage",
+          "description": "",
+          "pathTemplate": "/api/Cyclops/Usage/{ProjectShortName}/{ProviderResourceName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:usage:report"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "CyclopsTotalUsage",
+          "description": "Aggregated usage of a resource across all projects",
+          "pathTemplate": "/api/Cyclops/TotalUsage/{ProviderResourceName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:usage:report"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List location types enums",
+          "description": "Enumerates supported location types where resources or services can be provisioned. Use these values to identify the kind of location (HPC, cloud, storage, etc.) when making allocation, scheduling or integration decisions.",
+          "pathTemplate": "/api/Enums/LocationTypes",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List request states enums",
+          "description": "Retun list request states enums values",
+          "pathTemplate": "/api/Enums/RequestStates",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List request types enums",
+          "description": "Return list request types enums values",
+          "pathTemplate": "/api/Enums/RequestTypes",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List operation mode responses enums",
+          "description": " Specifies the available operation modes for a component or process.",
+          "pathTemplate": "/api/Enums/OperationModeResponses",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "/api/Heappe/Partitions/{projectShortName}/{resourceName}",
+          "description": "",
+          "pathTemplate": "/api/Heappe/Partitions/{projectShortName}/{resourceName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "/api/Heappe/CommandTemplates",
+          "description": "",
+          "pathTemplate": "/api/Heappe/CommandTemplates",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "List Kill Switch Locations",
+          "description": "List the locations the caller may manage and their kill-switch state",
+          "pathTemplate": "/api/Heappe/KillSwitch",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Location Kill Switch",
+          "description": "Inspect one location's kill-switch and the effective state of its command templates",
+          "pathTemplate": "/api/Heappe/KillSwitch/{ProviderName}/{LocationName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Location Kill Switch",
+          "description": "Freeze or unfreeze all HEAppE command templates on one location",
+          "pathTemplate": "/api/Heappe/KillSwitch/{ProviderName}/{LocationName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Update Provider Kill Switch",
+          "description": "Freeze or unfreeze every current location of a provider in one action",
+          "pathTemplate": "/api/Heappe/KillSwitch/{ProviderName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Set Location Kill Switch Whitelist",
+          "description": "Replace the standing whitelist of command templates exempt from one location's kill-switch",
+          "pathTemplate": "/api/Heappe/KillSwitch/{ProviderName}/{LocationName}/Whitelist",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "/api/Administration/Cache",
+          "description": "",
+          "pathTemplate": "/api/Administration/Cache",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "GetUsers",
+          "description": "Return users list",
+          "pathTemplate": "/api/remi/users",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:service:remi"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "GetProjects",
+          "description": "Return projects list",
+          "pathTemplate": "/api/remi/projects",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:service:remi"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Get Project Tags by Id",
+          "description": "Get Project Tags by Id",
+          "pathTemplate": "/api/ProjectTag/{Id}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:tag:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "Unassignment Project Tags to Project (add/remove)",
+          "description": "Unassignment Project Tags to Project (add/remove)",
+          "pathTemplate": "/api/Project/{ProjectShortName}/ProjectTag/{ProjectTagId}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:project:tag:assignment"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Projects",
+          "description": "List Projects (v2, mirrors GET /api/Project)",
+          "pathTemplate": "/api/v2/Projects",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Provider-Admin Projects",
+          "description": "List projects for provider-admins, read-scoped by caller (ADR-0058): admin sees all, a provider identity sees only the projects consuming its own provider's resources, anyone else sees their own project scope.",
+          "pathTemplate": "/api/v2/ProviderAdmin/Projects",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "2026-08-13T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get Project",
+          "description": "Get single Project by short name (v2, mirrors implicit GET /api/Project/{ProjectShortName})",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Users in Project",
+          "description": "List Users in Project (v2, mirrors GET /api/Project/{ProjectShortName}/Users)",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Users",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list:users"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Extended Project Info",
+          "description": "Extended Project Info (v2, mirrors GET /api/Project/ExtendedProjectInfo)",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Extended",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Templates Info",
+          "description": "Templates Info from HEAppE (v2, mirrors GET /api/Project/TemplatesInfo/{projectShortName})",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Templates",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Update Project",
+          "description": "Update Project (v2, mirrors PUT /api/Project)",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:update"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Create Tag and assign to Project",
+          "description": "Create Tag in the shared catalogue and assign it to Project (v2, mirrors POST /api/ProjectTag)",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Tags",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:project:tag:create"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Assign Tag to Project",
+          "description": "Assign Tag to Project (v2, mirrors PUT /api/Project/{ProjectShortName}/ProjectTag/{ProjectTagId})",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Tags/{tagName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:project:tag:assignment"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Unassign Tag from Project",
+          "description": "Unassign Tag from Project (v2, mirrors DELETE /api/Project/{ProjectShortName}/ProjectTag/{ProjectTagId})",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Tags/{tagName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:project:tag:assignment"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Create Project",
+          "description": "Create Project and grant the creator Owner (v2, mirrors POST /api/Project)",
+          "pathTemplate": "/api/v2/Projects",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:project:create"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Remove Project",
+          "description": "Soft-delete Project and cascade project roles (v2, mirrors DELETE /api/Project/{ProjectShortName})",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:remove"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Assign User to Project",
+          "description": "Assign User to Project as member (v2, mirrors PUT /api/Project/{ProjectShortName}/User/{IdpUserId})",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Users/{idpUserId}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:user:assignment"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Unassign User from Project",
+          "description": "Remove User from Project (v2, mirrors DELETE /api/Project/{ProjectShortName}/User/{IdpUserId})",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Users/{idpUserId}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:user:assignment"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Change Project User Role",
+          "description": "Change a member's project role (v2, mirrors PUT /api/Project/{ProjectShortName}/User/{IdpUserId}/Assign/{RoleId})",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Users/{idpUserId}/Role",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:update:user:perm"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Valid Roles",
+          "description": "List assignable project roles for the caller (v2, mirrors GET /api/Project/{ProjectShortName}/ValidRoles)",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/ValidRoles",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:role:list"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List providers",
+          "description": "List providers (v2, mirrors GET /api/Provider)",
+          "pathTemplate": "/api/v2/Providers",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get Provider",
+          "description": "Get Provider by name (v2, mirrors GET /api/Provider/{Id})",
+          "pathTemplate": "/api/v2/Providers/{providerName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Requests",
+          "description": "List Requests on projects the caller has a role on, optionally filtered by project, user and state (v2, mirrors GET /api/Requests)",
+          "pathTemplate": "/api/v2/Requests",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 SentRequests",
+          "description": "List sent Requests (v2, mirrors GET /api/Requests/SentRequests)",
+          "pathTemplate": "/api/v2/Requests/Sent",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Request information",
+          "description": "Public Request information addressed by its single-use action-link token (v2, mirrors GET /api/Public/RequestInfo/{requestId}; ADR-0024 — GUID-free, token keeps the anonymous endpoint unguessable)",
+          "pathTemplate": "/api/v2/Public/Requests/ByLink/{actionLink}",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Create self-onboarding request",
+          "description": "Create self-onboarding Request (v2, mirrors POST /api/Requests)",
+          "pathTemplate": "/api/v2/Requests",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:user:request"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Accept self-onboarding request",
+          "description": "Accept self-onboarding Request (v2, mirrors PUT /api/Requests/{RequestId}/Accept)",
+          "pathTemplate": "/api/v2/Requests/{slug}/Accept",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Reject self-onboarding request",
+          "description": "Reject self-onboarding Request (v2, mirrors PUT /api/Requests/{requestId}/Reject)",
+          "pathTemplate": "/api/v2/Requests/{slug}/Reject",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Accept project onboarding request",
+          "description": "Accept an onboarding request (v2, PR #228). Project Owner/Manager only.",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/OnboardingRequests/{slug}/Accept",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Reject project onboarding request",
+          "description": "Reject an onboarding request (v2, PR #228). Project Owner/Manager only.",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/OnboardingRequests/{slug}/Reject",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Create project onboarding request",
+          "description": "Create a self-onboarding request (v2, PR #228). Any authenticated user.",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/OnboardingRequests",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:user:request"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List my onboarding requests",
+          "description": "List the onboarding requests the caller sent and those received on projects where the caller is Owner or Manager (v2, PR #228, ADR-0107). Any authenticated user; the received half is scoped in the handler.",
+          "pathTemplate": "/api/v2/Users/Me/OnboardingRequests",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:user:request"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Create resource-assignment request",
+          "description": "Owner/Manager requests attaching a provider's resource to their project (v2, #251, ADR-0063). Per plan-ready.md D10 the operation is restricted to Owner/Manager, so it uses the management perm (not baseline perm:user:request); the per-project scope is additionally enforced in-handler (RequireProjectScope).",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/ResourceRequests",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-07-14T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List resource-assignment requests",
+          "description": "List a project's resource-assignment requests, filtered by state and paged (v2, #251, ADR-0063). Project Owner/Manager only; mirrors legacy GET /api/Requests.",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/ResourceRequests",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-07-14T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Cancel resource-assignment request",
+          "description": "Cancel an in-flight resource-assignment request, resuming whichever gate is active (v2, #251, ADR-0064). Project Owner/Manager only; mirrors legacy PUT /api/Requests/{RequestId}/Reject management perm.",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/ResourceRequests/{slug}/Cancel",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-07-14T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Resend resource-assignment approval email",
+          "description": "Regenerate the PI approval token, invalidate the old one and re-email the PI (v2, #251, ADR-0064). Project Owner/Manager only; mirrors legacy /api/Requests management perm.",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/ResourceRequests/{slug}/ResendApproval",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:user:request:manage"
+          ],
+          "createdAt": "2026-07-14T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Resource-request action information",
+          "description": "Anonymous PI approval page payload addressed by its single-use action-link token (v2, #251, ADR-0064). Public — no permission; token keeps the endpoint unguessable, invalid/used/expired all return an identical 404.",
+          "pathTemplate": "/api/v2/Public/ResourceRequestActions/{token}",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-07-14T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Handle resource-request action",
+          "description": "Anonymous PI approve/reject decision via the single-use action-link token (v2, #251, ADR-0064). Public — no permission; resumes the PiApproval gate.",
+          "pathTemplate": "/api/v2/Public/ResourceRequestActions/{token}",
+          "httpMethod": "POST",
+          "permissionKeys": [],
+          "createdAt": "2026-07-14T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Handle request action link",
+          "description": "Handle Request via action link (v2, mirrors POST /api/Public/Handle/{actionLink})",
+          "pathTemplate": "/api/v2/Public/ActionLinks/{actionLink}",
+          "httpMethod": "POST",
+          "permissionKeys": [],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 UserInfo",
+          "description": "User information (v2, mirrors GET /api/UserInfo)",
+          "pathTemplate": "/api/v2/UserInfo",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Extended user information about Project resources",
+          "description": "Extended user information (v2, mirrors GET /api/UserInfo/Extended)",
+          "pathTemplate": "/api/v2/UserInfo/Extended",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get user preferences in json format",
+          "description": "Get user preferences (v2, mirrors GET /api/User/Preferences)",
+          "pathTemplate": "/api/v2/Users/Me/Preferences",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:user:request"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Update user preferences",
+          "description": "Update user preferences (v2, mirrors PUT /api/User/Preferences)",
+          "pathTemplate": "/api/v2/Users/Me/Preferences",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:user:request"
+          ],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List all Users in platform",
+          "description": "List Users filtered (v2, mirrors GET /api/Administration/User)",
+          "pathTemplate": "/api/v2/Users",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Promote User to ProviderAdmin",
+          "description": "Promote a user to the ProviderAdmin system role bound to a provider (v2, mirrors PUT /api/Administration/PromoteToProviderAdmin). Admin only (F3).",
+          "pathTemplate": "/api/v2/Users/{idpUserId}/ProviderAdmin/{providerName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "2026-06-28T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Reset User to Platform User",
+          "description": "Reset a user from ProviderAdmin back to the platform User role (v2, mirrors PUT /api/Administration/ResetToPlatformUser). Admin only (F3).",
+          "pathTemplate": "/api/v2/Users/{idpUserId}/ProviderAdmin",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "2026-06-28T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Locations",
+          "description": "List Locations (v2, mirrors GET /api/Location)",
+          "pathTemplate": "/api/v2/Locations",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:location:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Provider-Admin Locations",
+          "description": "List locations for provider-admins, read-scoped by caller (ADR-0058): admin sees all, a provider identity sees only its own provider's locations.",
+          "pathTemplate": "/api/v2/ProviderAdmin/Locations",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "2026-07-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Administered Providers",
+          "description": "List administered providers with their locations, read-scoped by caller (ADR-0058): admin sees all, a provider identity sees only its own provider.",
+          "pathTemplate": "/api/v2/ProviderAdmin/Providers",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "2026-09-29T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Provider-Admin Resources",
+          "description": "List a provider's resources: admin sees all, a provider identity its own provider's resources plus those reachable through its project scope, everyone else only their project scope.",
+          "pathTemplate": "/api/v2/ProviderAdmin/Providers/{providerName}/Resources",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:provider:admin",
+            "perm:platform:admin"
+          ],
+          "createdAt": "2026-10-12T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Check Access Account",
+          "description": "Check if a user has access to a specific cluster.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Resources/{resourceName}/CheckAccountAccess",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:resource:update"
+          ],
+          "createdAt": "2026-10-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Provision Accounts",
+          "description": "Provision accounts for a specific cluster.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Resources/{resourceName}/ProvisionAccounts",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:resource:update"
+          ],
+          "createdAt": "2026-10-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List Project Tags",
+          "description": "List Project Tags (v2, mirrors GET /api/ProjectTag)",
+          "pathTemplate": "/api/v2/ProjectTags",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:tag:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get Project Tag",
+          "description": "Get specific Project Tag (v2, mirrors GET /api/ProjectTag/{Id})",
+          "pathTemplate": "/api/v2/ProjectTags/{id}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:project:tag:list"
+          ],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Delete Project Tag",
+          "description": "Delete a shared catalogue Project Tag (v2, mirrors DELETE /api/ProjectTag/{Id}). Admin only (F1).",
+          "pathTemplate": "/api/v2/ProjectTags/{tagName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:tag:remove"
+          ],
+          "createdAt": "2026-06-28T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Reset All Caches",
+          "description": "Flush the entire v2 output cache (v2, mirrors DELETE /api/Administration/Cache). Admin only (F2 C2).",
+          "pathTemplate": "/api/v2/Caches",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:platform:admin"
+          ],
+          "createdAt": "2026-06-28T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List location types enums",
+          "description": "List location types enums (v2, mirrors GET /api/Enums/LocationTypes)",
+          "pathTemplate": "/api/v2/LocationTypes",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List request states enums",
+          "description": "List request states enums (v2, mirrors GET /api/Enums/RequestStates)",
+          "pathTemplate": "/api/v2/RequestStates",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List request types enums",
+          "description": "List request types enums (v2, mirrors GET /api/Enums/RequestTypes)",
+          "pathTemplate": "/api/v2/RequestTypes",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List operation mode responses enums",
+          "description": "List operation modes enums (v2, mirrors GET /api/Enums/OperationModeResponses)",
+          "pathTemplate": "/api/v2/OperationModes",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List allocation unit types",
+          "description": "List allocation unit type names (v2, moved off enums/ with T-196). Authenticated-only, consistent with the other reference lists.",
+          "pathTemplate": "/api/v2/AllocationUnitTypes",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-09-23T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List authentication types",
+          "description": "List the configured cluster authentication type names (v2, added with T-196). Authenticated-only, consistent with the other reference lists.",
+          "pathTemplate": "/api/v2/AuthenticationTypes",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-09-23T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List project domain types enums",
+          "description": "List project domain type names (v2)",
+          "pathTemplate": "/api/v2/ProjectDomainTypes",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-03T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Version",
+          "description": "API version (v2, mirrors GET /api/version)",
+          "pathTemplate": "/api/v2/Version",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-02T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List countries",
+          "description": "List countries (v2, mirrors GET /api/Other/Country)",
+          "pathTemplate": "/api/v2/Countries",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-04T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get weekly statistics",
+          "description": "Platform-wide weekly statistics (v2, mirrors GET /api/Other/Statistics)",
+          "pathTemplate": "/api/v2/Statistics",
+          "httpMethod": "GET",
+          "permissionKeys": [],
+          "createdAt": "2026-06-04T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List a provider's resources",
+          "description": "List a provider's caller-scoped resources (v2, mirrors GET /api/ProjectResource). A resource's natural key is (providerName, resourceName), so the read is nested under the provider (ADR-0022).",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Resources",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:resource:list"
+          ],
+          "createdAt": "2026-06-04T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get a provider's resource by name",
+          "description": "Get a caller-scoped resource by its (providerName, resourceName) natural key (v2, mirrors GET /api/ProjectResource/{Id}; name is unique only per provider, ADR-0022).",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Resources/{resourceName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:resource:list"
+          ],
+          "createdAt": "2026-06-04T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Create Provider",
+          "description": "Create a Provider (v2, mirrors POST /api/Provider). Admin only; Core scopes by claim (ADR-0011).",
+          "pathTemplate": "/api/v2/Providers",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:provider:create"
+          ],
+          "createdAt": "2026-06-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Update Provider",
+          "description": "Update a Provider (v2, mirrors PUT /api/Provider). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:provider:update"
+          ],
+          "createdAt": "2026-06-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Deactivate Provider",
+          "description": "Deactivate (soft-delete) a Provider (v2, mirrors DELETE /api/Provider/{Id}). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:provider:update"
+          ],
+          "createdAt": "2026-06-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Reactivate Provider",
+          "description": "Reactivate a deactivated Provider (v2). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Reactivate",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:provider:update"
+          ],
+          "createdAt": "2026-06-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Add Location",
+          "description": "Add a Location under a Provider (v2, mirrors POST /api/Location). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Locations",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:location:create"
+          ],
+          "createdAt": "2026-06-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get Provider Location",
+          "description": "Get a specific Location nested under a Provider (v2, ADR-0022 nesting replaces the flat GET /api/v2/locations/{id}).",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Locations/{locationName}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:location:list"
+          ],
+          "createdAt": "2026-07-12T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Update Location",
+          "description": "Update a Provider's Location (v2, mirrors PUT /api/Location). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Locations/{locationName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:location:update"
+          ],
+          "createdAt": "2026-06-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Remove Location",
+          "description": "Remove a Provider's Location (v2, mirrors DELETE /api/Location/{Id}). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Locations/{locationName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:location:remove"
+          ],
+          "createdAt": "2026-06-09T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Assign Resource",
+          "description": "Assign a project resource to a Location (v2, mirrors POST /api/ProjectResourceAssignment). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Locations/{locationName}/Assignments",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:assigned:resource:create"
+          ],
+          "createdAt": "2026-06-10T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Update Assignment",
+          "description": "Update a resource assignment on a Location (v2, mirrors PUT /api/ProjectResourceAssignment). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Locations/{locationName}/Assignments/{slug}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:assigned:resource:update"
+          ],
+          "createdAt": "2026-06-10T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Remove Assignment",
+          "description": "Remove a resource assignment on a Location (v2, mirrors DELETE /api/ProjectResourceAssignment/{id}). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Locations/{locationName}/Assignments/{slug}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:assigned:resource:remove"
+          ],
+          "createdAt": "2026-06-10T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Create Resource on Location",
+          "description": "Create a resource under a provider and allocate it to one or more locations atomically, gated on every location's HEAppE instance being reachable (v2, ADR-0043/ADR-0050; supersedes the retired create-only endpoint at this same route). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Resources",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:resource:create",
+            "perm:assigned:resource:create"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Update Resource",
+          "description": "Update a resource's metadata under a provider (v2, mirrors PUT /api/ProjectResource). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Resources/{resourceName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:resource:update"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Publish Resource",
+          "description": "Publish a provider's resource (v2, no v1 counterpart). Admin or the owning provider identity, same write scope as PUT on the resource.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Resources/{resourceName}/Publish",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:resource:update"
+          ],
+          "createdAt": "2026-08-18T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Delete Resource",
+          "description": "Soft-delete a resource under a provider (v2, mirrors DELETE /api/ProjectResource/{Id}). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Providers/{providerName}/Resources/{resourceName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:resource:remove"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get Resource Request Status",
+          "description": "Poll the status of an async resource-creation request (v2, ADR-0057/#215). Any-of the initiating provider/admin (perm:resource:create) or project management observing progress (perm:project:resource:request).",
+          "pathTemplate": "/api/v2/ResourceRequests/{requestId}",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:resource:create",
+            "perm:project:resource:request"
+          ],
+          "createdAt": "2026-07-12T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Assign Resource to Project",
+          "description": "Assign a resource to a project (v2, mirrors PUT /api/Project/{ProjectShortName}/ProjectResource/{ProjectResourceName}). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Providers/{providerName}/Resources/{resourceName}",
+          "httpMethod": "PUT",
+          "permissionKeys": [
+            "perm:project:resource:assignment"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Unassign Resource from Project",
+          "description": "Remove a resource's assignment from a project (v2, mirrors DELETE /api/Project/{ProjectShortName}/ProjectResource/{ProjectResourceName}). Admin or the owning provider identity.",
+          "pathTemplate": "/api/v2/Projects/{projectShortName}/Providers/{providerName}/Resources/{resourceName}",
+          "httpMethod": "DELETE",
+          "permissionKeys": [
+            "perm:project:resource:unassignment"
+          ],
+          "createdAt": "2026-06-30T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get DataStaging worker data",
+          "description": "Get DataStaging worker data (v2, mirrors GET /api/DataStaging/WorkerData)",
+          "pathTemplate": "/api/v2/DataStaging/WorkerData",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:servicetype:ddi",
+            "perm:service:it4i",
+            "perm:service:dlr",
+            "perm:service:epcc",
+            "perm:service:ibm",
+            "perm:service:lumi",
+            "perm:service:lrz",
+            "perm:service:puhuri"
+          ],
+          "createdAt": "2026-07-13T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 List DataStaging Locations",
+          "description": "List DataStaging locations (v2, mirrors GET /api/DataStaging/DataStagingLocations)",
+          "pathTemplate": "/api/v2/DataStaging/DataStagingLocations",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:service:dataStagingLocations"
+          ],
+          "createdAt": "2026-07-13T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Update DataStaging Locations",
+          "description": "Update DataStaging locations (v2, mirrors POST /api/DataStaging/DataStagingLocations)",
+          "pathTemplate": "/api/v2/DataStaging/DataStagingLocations",
+          "httpMethod": "POST",
+          "permissionKeys": [
+            "perm:service:dataStagingLocations"
+          ],
+          "createdAt": "2026-08-18T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get sync details",
+          "description": "Get user related information about all Users in Projects related to Provider (v2, mirrors GET /api/Service/SyncDetails)",
+          "pathTemplate": "/api/v2/Service/SyncDetails",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:servicetype:ddi",
+            "perm:service:it4i",
+            "perm:service:dlr",
+            "perm:service:epcc",
+            "perm:service:ibm",
+            "perm:service:lumi",
+            "perm:service:lrz",
+            "perm:service:puhuri",
+            "perm:provider:it4i",
+            "perm:provider:dlr",
+            "perm:provider:epcc",
+            "perm:provider:ibm",
+            "perm:provider:lrz",
+            "perm:provider:lumi",
+            "perm:provider:puhuri"
+          ],
+          "createdAt": "2026-07-13T00:00:00+00:00"
+        },
+        {
+          "endpointName": "v2 Get projects grouped by provider",
+          "description": "Get information about all Projects grouped by Provider (v2, mirrors GET /api/Service/ProjectsInfo)",
+          "pathTemplate": "/api/v2/Service/ProjectsInfo",
+          "httpMethod": "GET",
+          "permissionKeys": [
+            "perm:service:cyclops"
+          ],
+          "createdAt": "2026-07-13T00:00:00+00:00"
+        }
+      ]
+    },
+    "roles": {
+      "count": 10,
+      "items": [
+        {
+          "name": "User",
+          "description": "User role",
+          "category": "System",
+          "isActive": true,
+          "level": 1,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:project:create",
+            "perm:project:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "Admin",
+          "description": "PlatformAdmin role",
+          "category": "System",
+          "isActive": true,
+          "level": 100,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:user:request:manage",
+            "perm:project:tag:create",
+            "perm:project:tag:list",
+            "perm:project:tag:update",
+            "perm:project:tag:remove",
+            "perm:project:create",
+            "perm:project:list:users",
+            "perm:project:update:user:perm",
+            "perm:project:update",
+            "perm:project:list",
+            "perm:project:remove",
+            "perm:project:user:assignment",
+            "perm:project:project:tag:assignment",
+            "perm:project:resource:assignment",
+            "perm:data:publish",
+            "perm:heappe:manager",
+            "perm:role:list",
+            "perm:location:create",
+            "perm:location:list",
+            "perm:location:update",
+            "perm:location:remove",
+            "perm:provider:create",
+            "perm:provider:list",
+            "perm:provider:update",
+            "perm:provider:remove",
+            "perm:workflow:list",
+            "perm:workflow:create",
+            "perm:workflow:update",
+            "perm:workflow:remove",
+            "perm:workflow:execution:list",
+            "perm:workflow:execution:create",
+            "perm:workflow:execution:detail",
+            "perm:heappe:exec",
+            "perm:data:create",
+            "perm:data:list",
+            "perm:data:update",
+            "perm:data:download",
+            "perm:data:upload",
+            "perm:data:stage",
+            "perm:data:remove",
+            "perm:resource:list",
+            "perm:resource:create",
+            "perm:resource:update",
+            "perm:resource:remove",
+            "perm:assigned:resource:list",
+            "perm:assigned:resource:create",
+            "perm:assigned:resource:update",
+            "perm:assigned:resource:remove",
+            "perm:role:create",
+            "perm:role:update",
+            "perm:role:remove",
+            "perm:project:resource:unassignment",
+            "perm:platform:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "Owner",
+          "description": "Owner role",
+          "category": "Project",
+          "isActive": true,
+          "level": 20,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:user:request:manage",
+            "perm:project:tag:create",
+            "perm:project:tag:list",
+            "perm:project:tag:update",
+            "perm:project:tag:remove",
+            "perm:project:create",
+            "perm:project:list:users",
+            "perm:project:update:user:perm",
+            "perm:project:update",
+            "perm:project:list",
+            "perm:project:remove",
+            "perm:project:user:assignment",
+            "perm:project:project:tag:assignment",
+            "perm:data:publish",
+            "perm:heappe:manager",
+            "perm:role:list",
+            "perm:location:list",
+            "perm:provider:list",
+            "perm:workflow:list",
+            "perm:workflow:create",
+            "perm:workflow:update",
+            "perm:workflow:remove",
+            "perm:workflow:execution:list",
+            "perm:workflow:execution:create",
+            "perm:workflow:execution:detail",
+            "perm:heappe:exec",
+            "perm:data:create",
+            "perm:data:list",
+            "perm:data:update",
+            "perm:data:download",
+            "perm:data:upload",
+            "perm:data:stage",
+            "perm:data:remove",
+            "perm:resource:list",
+            "perm:usage:report",
+            "perm:project:resource:request"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "Manager",
+          "description": "Manager role",
+          "category": "Project",
+          "isActive": true,
+          "level": 15,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:user:request:manage",
+            "perm:project:tag:create",
+            "perm:project:tag:list",
+            "perm:project:tag:update",
+            "perm:project:tag:remove",
+            "perm:project:create",
+            "perm:project:list:users",
+            "perm:project:update:user:perm",
+            "perm:project:update",
+            "perm:project:list",
+            "perm:project:remove",
+            "perm:project:user:assignment",
+            "perm:project:project:tag:assignment",
+            "perm:data:publish",
+            "perm:heappe:manager",
+            "perm:role:list",
+            "perm:location:list",
+            "perm:provider:list",
+            "perm:workflow:list",
+            "perm:workflow:create",
+            "perm:workflow:update",
+            "perm:workflow:remove",
+            "perm:workflow:execution:list",
+            "perm:workflow:execution:create",
+            "perm:workflow:execution:detail",
+            "perm:heappe:exec",
+            "perm:data:create",
+            "perm:data:list",
+            "perm:data:update",
+            "perm:data:download",
+            "perm:data:upload",
+            "perm:data:stage",
+            "perm:data:remove",
+            "perm:resource:list",
+            "perm:usage:report",
+            "perm:project:resource:request"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "DataPublisher",
+          "description": "DataPublisher role",
+          "category": "Project",
+          "isActive": true,
+          "level": 10,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:project:create",
+            "perm:project:list",
+            "perm:data:publish",
+            "perm:location:list",
+            "perm:provider:list",
+            "perm:workflow:list",
+            "perm:workflow:create",
+            "perm:workflow:update",
+            "perm:workflow:remove",
+            "perm:workflow:execution:list",
+            "perm:workflow:execution:create",
+            "perm:workflow:execution:detail",
+            "perm:heappe:exec",
+            "perm:data:create",
+            "perm:data:list",
+            "perm:data:update",
+            "perm:data:download",
+            "perm:data:upload",
+            "perm:data:stage",
+            "perm:data:remove"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "Member",
+          "description": "Member role",
+          "category": "Project",
+          "isActive": true,
+          "level": 10,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:project:create",
+            "perm:project:list",
+            "perm:location:list",
+            "perm:provider:list",
+            "perm:workflow:list",
+            "perm:workflow:create",
+            "perm:workflow:update",
+            "perm:workflow:remove",
+            "perm:workflow:execution:list",
+            "perm:workflow:execution:create",
+            "perm:workflow:execution:detail",
+            "perm:heappe:exec",
+            "perm:data:create",
+            "perm:data:list",
+            "perm:data:update",
+            "perm:data:download",
+            "perm:data:upload",
+            "perm:data:stage",
+            "perm:data:remove",
+            "perm:resource:list",
+            "perm:usage:report"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "ProviderAdmin",
+          "description": "ProviderAdmin role",
+          "category": "System",
+          "isActive": true,
+          "level": 90,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:project:create",
+            "perm:project:list",
+            "perm:project:resource:assignment",
+            "perm:location:create",
+            "perm:location:list",
+            "perm:location:update",
+            "perm:location:remove",
+            "perm:provider:list",
+            "perm:provider:update",
+            "perm:resource:list",
+            "perm:resource:create",
+            "perm:resource:update",
+            "perm:resource:remove",
+            "perm:assigned:resource:list",
+            "perm:assigned:resource:create",
+            "perm:assigned:resource:update",
+            "perm:assigned:resource:remove",
+            "perm:project:resource:unassignment",
+            "perm:provider:admin"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "JobscriptOperator",
+          "description": "JobscriptOperator",
+          "category": "Project",
+          "isActive": true,
+          "level": 10,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:project:create",
+            "perm:project:list",
+            "perm:location:list",
+            "perm:provider:list",
+            "perm:workflow:list",
+            "perm:workflow:create",
+            "perm:workflow:update",
+            "perm:workflow:remove",
+            "perm:workflow:execution:list",
+            "perm:workflow:execution:create",
+            "perm:workflow:execution:detail",
+            "perm:heappe:exec",
+            "perm:data:create",
+            "perm:data:list",
+            "perm:data:update",
+            "perm:data:download",
+            "perm:data:upload",
+            "perm:data:stage",
+            "perm:data:remove",
+            "perm:resource:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "JobscriptWriter",
+          "description": "Jobscript Writer",
+          "category": "Project",
+          "isActive": true,
+          "level": 10,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:project:create",
+            "perm:project:list",
+            "perm:location:list",
+            "perm:provider:list",
+            "perm:workflow:list",
+            "perm:workflow:create",
+            "perm:workflow:update",
+            "perm:workflow:remove",
+            "perm:workflow:execution:list",
+            "perm:workflow:execution:create",
+            "perm:workflow:execution:detail",
+            "perm:heappe:exec",
+            "perm:data:create",
+            "perm:data:list",
+            "perm:data:update",
+            "perm:data:download",
+            "perm:data:upload",
+            "perm:data:stage",
+            "perm:data:remove",
+            "perm:resource:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        },
+        {
+          "name": "JobscriptAccessMember",
+          "description": "Jobscript Access Member",
+          "category": "Project",
+          "isActive": true,
+          "level": 10,
+          "permissionKeys": [
+            "perm:user:request",
+            "perm:project:create",
+            "perm:project:list",
+            "perm:location:list",
+            "perm:provider:list",
+            "perm:workflow:list",
+            "perm:workflow:create",
+            "perm:workflow:update",
+            "perm:workflow:remove",
+            "perm:workflow:execution:list",
+            "perm:workflow:execution:create",
+            "perm:workflow:execution:detail",
+            "perm:heappe:exec",
+            "perm:data:create",
+            "perm:data:list",
+            "perm:data:update",
+            "perm:data:download",
+            "perm:data:upload",
+            "perm:data:stage",
+            "perm:data:remove",
+            "perm:resource:list"
+          ],
+          "createdAt": "0001-01-01T00:00:00+00:00"
+        }
+      ]
+    }
+  },
+  "metadata": {}
+}

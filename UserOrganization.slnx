@@ -1,0 +1,119 @@
+﻿<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitlab-ci.yml" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="roleManagmentRBAC.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/UserOrg.AppHost/UserOrg.AppHost.csproj" />
+    <Project Path="src/UserOrg.ServiceDefaults/UserOrg.ServiceDefaults.csproj" />
+    <Project Path="src/UserOrg.Shared.Hashing/UserOrg.Shared.Hashing.csproj" />
+    <Project Path="src/UserOrg.Shared/UserOrg.Shared.csproj" />
+    <Project Path="src/WorkflowEngine.Sample/WorkflowEngine.Sample.csproj" Id="522f67da-eb92-4b3e-b4b4-2acf13d4ddbc" />
+  </Folder>
+  <Folder Name="/src/Core/">
+    <Project Path="src/Core/API/API.csproj" />
+    <Project Path="src/Core/Application/Application.csproj" />
+    <Project Path="src/Core/Domain/Domain.csproj" />
+    <Project Path="src/Core/Infrastructure.DataAccess/Infrastructure.DataAccess.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/">
+    <Project Path="src/Userorg.Adapter/Userorg.Adapter.csproj" Id="0a370fd2-884b-4615-be68-56d3bc5a592b" />
+  </Folder>
+  <Folder Name="/src/Modules/Core/">
+    <Project Path="src/Modules/Core.DataAccess/Core.DataAccess.csproj" />
+    <Project Path="src/Modules/Core.Domain/Core.Domain.csproj" />
+    <Project Path="src/Modules/Core/Core.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Integrations/" />
+  <Folder Name="/src/Modules/Integrations/HashiCorpVault/">
+    <Project Path="src/Modules/Integrations/HashiCorpVault.Contracts/HashiCorpVault.Contracts.csproj" />
+    <Project Path="src/Modules/Integrations/HashiCorpVault/HashiCorpVault.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Integrations/Heappe/">
+    <Project Path="src/Modules/Integrations/Heappe.Contracts/Heappe.Contracts.csproj" />
+    <Project Path="src/Modules/Integrations/Heappe/Heappe.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Integrations/RemI/">
+    <Project Path="src/Modules/Integrations/RemI/RemI.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Integrations/Waldur/">
+    <Project Path="src/Modules/Integrations/Waldur.Contracts/Waldur.Contracts.csproj" />
+    <Project Path="src/Modules/Integrations/Waldur.Sync/Waldur.Sync.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Libraries/">
+    <Project Path="src/Modules/Libraries/Forge.Core/Forge.Core.csproj" />
+    <Project Path="src/Modules/Libraries/WebsocketStompClient/WebsocketStompClient.csproj" />
+    <Project Path="src/Modules/Libraries/WorkflowEngine.Contracts/WorkflowEngine.Contracts.csproj" Id="863f438c-a48c-40af-adcf-5b85b3147f93" />
+    <Project Path="src/Modules/Libraries/WorkflowEngine.Core/WorkflowEngine.Core.csproj" Id="4462186e-3a0c-4c3c-a29f-e8462c0af2ce" />
+    <Project Path="src/Modules/Libraries/WorkflowEngine.Strategies/WorkflowEngine.Strategies.csproj" Id="e8b46bb1-150b-463d-a5f3-042f96d3a92d" />
+  </Folder>
+  <Folder Name="/src/Modules/Services/" />
+  <Folder Name="/src/Modules/Services/Gateway/">
+    <Project Path="src/Modules/Services/Gateway/UserOrg.Gateway/UserOrg.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Services/Ddi/">
+    <Project Path="src/Modules/Services/Ddi/UserOrg.Ddi/UserOrg.Ddi.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Tools/">
+    <Project Path="src/Tools/DatabaseMigrations/DatabaseMigrations.csproj" />
+    <Project Path="Tools/waldur-acceptance/WaldurAcceptance/WaldurAcceptance.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <File Path="Tests/.editorconfig" />
+    <Project Path="Tests/UserOrg.Shared.Hashing.Tests/UserOrg.Shared.Hashing.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/AppHost/">
+    <Project Path="Tests/AppHost/UserOrg.AppHost.Tests/UserOrg.AppHost.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Architecture/">
+    <Project Path="Tests/Architecture/Architecture.Tests/Architecture.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Core/">
+    <Project Path="Tests/Core/Application.Tests/Application.Tests.csproj" />
+    <Project Path="Tests/Core/Infrastructure.DataAccess.Tests/Infrastructure.DataAccess.Tests.csproj" />
+    <Project Path="Tests/Core/ServiceDefaults.Tests/ServiceDefaults.Tests.csproj">
+    </Project>
+  </Folder>
+  <Folder Name="/tests/E2E/">
+    <Project Path="Tests/E2E/IntegrationTests/IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Modules/" />
+  <Folder Name="/tests/Modules/Core/">
+    <Project Path="Tests/Modules/Core/Core.ArchitectureTests/Core.ArchitectureTests.csproj" />
+    <Project Path="Tests/Modules/Core/Core.UnitTests/Core.UnitTests.csproj" Id="b126b9fe-4228-4f1c-80ff-992e399fc629" />
+  </Folder>
+  <Folder Name="/tests/Modules/End2End/">
+    <Project Path="Tests/E2E/E2E.Fixtures/E2E.Fixtures.csproj" />
+  </Folder>
+  <Folder Name="/tests/Modules/Integrations/">
+    <Project Path="Tests/Modules/Integrations/Email.Adapter.Tests/Email.Adapter.Tests.csproj" />
+    <Project Path="Tests/Modules/Integrations/HashiCorpVault.Tests/HashiCorpVault.Tests.csproj" />
+    <Project Path="Tests/Modules/Integrations/Heappe.Adapter.Tests/Heappe.Adapter.Tests.csproj" />
+    <Project Path="Tests/Modules/Integrations/Heappe.UnitTests/Heappe.UnitTests.csproj" />
+    <Project Path="Tests/Modules/Integrations/RemI.Adapter.Tests/RemI.Adapter.Tests.csproj" />
+    <Project Path="Tests/Modules/Integrations/Waldur.Adapter.Tests/Waldur.Adapter.Tests.csproj" />
+    <Project Path="Tests/Modules/Integrations/Waldur.Contracts.Tests/Waldur.Contracts.Tests.csproj" />
+    <Project Path="Tests/Modules/Integrations/Waldur.Sync.Tests/Waldur.Sync.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Tools/">
+    <Project Path="Tests/Tools/DatabaseMigrations.Tests/DatabaseMigrations.Tests.csproj" />
+    <Project Path="Tests/Tools/WaldurAcceptance.Tests/WaldurAcceptance.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Modules/Libraries/">
+    <Project Path="Tests/Modules/Libraries/Forge.Core.Tests/Forge.Core.Tests.csproj" />
+    <Project Path="Tests/Modules/Libraries/StompClient.Tests/StompClient.Tests.csproj" />
+    <Project Path="Tests/Modules/WorkflowEngine.Strategies.UnitTests/WorkflowEngine.Strategies.UnitTests.csproj" />
+    <Project Path="Tests/Modules/WorkflowEngine.UnitTests/WorkflowEngine.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Modules/Services/" />
+  <Folder Name="/tests/Modules/Services/Gateway/">
+    <Project Path="Tests/Modules/Services/Gateway/UserOrg.Gateway.Tests/UserOrg.Gateway.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Modules/Services/Ddi/">
+    <Project Path="Tests/Modules/Services/Ddi/UserOrg.Ddi.Tests/UserOrg.Ddi.Tests.csproj" />
+  </Folder>
+</Solution>

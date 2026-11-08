@@ -1,0 +1,103 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@inject RoleManagementState State
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IDisposable
+
+<div class="rm-card">
+    <h3>Permissions</h3>
+
+    @if (State.IsBusy && State.Permissions.Count == 0)
+    {
+        <p class="rm-info">Loading permissions...</p>
+    }
+    else if (State.Permissions.Count == 0)
+    {
+        <p class="rm-empty-state">No permissions found. Create your first permission!</p>
+    }
+    else
+    {
+        <div class="rm-search-box">
+            <input type="text" 
+                   class="rm-input" 
+                   placeholder="Search permissions..." 
+                   @bind="searchQuery" 
+                   @bind:event="oninput" />
+        </div>
+
+        <div class="rm-table-container">
+            <table class="rm-table">
+                <thead>
+                    <tr>
+                        <th>Permission Key</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var permission in FilteredPermissions)
+                    {
+                        <tr class="@(permission.Name == SelectedPermissionKey ? "selected" : "")"
+                            @onclick="() => HandlePermissionSelected(permission.Name)">
+                            <td>
+                                <code class="rm-permission-key">@permission.Name</code>
+                            </td>
+                            <td>@permission.Description</td>
+                            <td>
+                                <button type="button" 
+                                        class="rm-button" 
+                                        @onclick="() => HandlePermissionSelected(permission.Name)"
+                                        @onclick:stopPropagation="true">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="rm-list-footer">
+            <small>Total: @FilteredPermissions.Count permissions</small>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnPermissionSelected { get; set; }
+
+    [Parameter]
+    public string? SelectedPermissionKey { get; set; }
+
+    private string searchQuery = string.Empty;
+
+    private IReadOnlyCollection<PermissionInfo> FilteredPermissions
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery))
+                return State.Permissions;
+
+            var query = searchQuery.ToLowerInvariant();
+            return State.Permissions
+                .Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                           (p.Description?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false))
+                .ToList();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        State.OnChange += StateHasChanged;
+    }
+
+    private async Task HandlePermissionSelected(string permissionKey)
+    {
+        await OnPermissionSelected.InvokeAsync(permissionKey);
+    }
+
+    public void Dispose()
+    {
+        State.OnChange -= StateHasChanged;
+    }
+}

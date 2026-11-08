@@ -1,0 +1,52 @@
+# The collector every producer in this app host exports to. It receives OTLP and forwards it to the
+# Aspire dashboard, so putting it in the path costs the dashboard nothing while giving the deployed
+# topology the same hop it has locally.
+#
+# Every endpoint below is a port inside the container. Aspire maps them to host ports it allocates per
+# run, so nothing here is a fixed host port.
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # A collector that forwards one span per request is a collector that turns every span into a network
+  # round trip. The defaults batch on both size and a timeout, so a quiet run still flushes.
+  batch: {}
+
+exporters:
+  # otlp_grpc, not the bare `otlp` alias: 0.160.0 still accepts the alias but warns on every signal.
+  otlp_grpc:
+    # Written by Aspire onto this container through WithOtlpExporter: the dashboard's OTLP endpoint, as
+    # reachable from inside a container rather than from the host.
+    endpoint: ${env:OTEL_EXPORTER_OTLP_ENDPOINT}
+    tls:
+      # The dashboard serves OTLP over the ASP.NET Core developer certificate, which is trusted on the
+      # host and by nothing inside this image. Verification is skipped for that one hop, on a connection
+      # that never leaves the machine.
+      insecure_skip_verify: true
+    headers:
+      # Empty whenever the dashboard runs without OTLP authentication, which is the default for a local
+      # run. AddOtelCollector derives it from the OTEL_EXPORTER_OTLP_HEADERS Aspire injects.
+      x-otlp-api-key: "${env:ASPIRE_OTLP_API_KEY:-}"
+
+service:
+  telemetry:
+    logs:
+      level: info
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp_grpc]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp_grpc]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp_grpc]

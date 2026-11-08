@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TemplatesInfo: 60s limit, 10 resources, 7 HEAppE instancí</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f8; color: #1a1a2e; }
+    .page { max-width: 1080px; margin: 0 auto; padding: 36px 28px; }
+    h1  { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+    h2  { font-size: 1.05rem; font-weight: 700; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    h3  { font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; }
+    p   { font-size: 0.86rem; color: #444; line-height: 1.55; }
+    code { font-family: 'Menlo','Consolas',monospace; font-size: 0.82em; background: #f3f4f6; padding: 1px 5px; border-radius: 4px; }
+    .subtitle { color: #666; font-size: 0.82rem; margin-bottom: 30px; }
+    section { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 1px 6px rgba(0,0,0,.08); margin-bottom: 22px; }
+    .stag { display: inline-block; border-radius: 4px; padding: 2px 9px; font-size: 0.7rem; font-weight: 700; letter-spacing: .05em; margin-bottom: 12px; }
+    .stag-blue   { background: #dbeafe; color: #1e40af; }
+    .stag-red    { background: #fee2e2; color: #b91c1c; }
+    .stag-green  { background: #dcfce7; color: #15803d; }
+    .stag-amber  { background: #fef9c3; color: #92400e; }
+    .stag-purple { background: #f3e8ff; color: #6d28d9; }
+    .note { border-left: 4px solid; padding: 11px 15px; border-radius: 0 8px 8px 0; font-size: 0.84rem; margin-top: 14px; line-height: 1.5; }
+    .note-amber { background: #fffbeb; border-color: #f59e0b; color: #78350f; }
+    .note-red   { background: #fef2f2; border-color: #dc2626; color: #7f1d1d; }
+    .note-green { background: #f0fdf4; border-color: #16a34a; color: #14532d; }
+    .note-blue  { background: #eff6ff; border-color: #3b82f6; color: #1e3a8a; }
+    .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 99px; font-size: 0.73rem; font-weight: 700; }
+    .b-green  { background: #dcfce7; color: #15803d; }
+    .b-red    { background: #fee2e2; color: #b91c1c; }
+    .b-amber  { background: #fef9c3; color: #92400e; }
+    .b-purple { background: #f3e8ff; color: #7c3aed; }
+    .b-cyan   { background: #e0f2fe; color: #0369a1; }
+    .b-gray   { background: #f3f4f6; color: #374151; }
+
+    /* ─── TOPOLOGY ─── */
+    .topo-grid { display: grid; grid-template-columns: 110px auto; gap: 0; align-items: start; margin-top: 14px; }
+    .topo-project {
+      background: linear-gradient(135deg,#1e40af,#3b82f6);
+      color: white; border-radius: 10px; padding: 12px 14px;
+      font-weight: 700; text-align: center; font-size: 0.82rem;
+      align-self: center; margin-right: 18px;
+      box-shadow: 0 2px 8px rgba(59,130,246,.3);
+    }
+    .topo-project .lbl { font-size: 0.62rem; opacity: .75; letter-spacing:.05em; margin-bottom: 2px; }
+    .topo-instances { display: flex; flex-direction: column; gap: 8px; }
+    .inst-row { display: flex; align-items: center; gap: 10px; border-radius: 8px; padding: 9px 13px; border: 1px solid #e5e7eb; }
+    .inst-url  { font-size: 0.75rem; font-weight: 700; min-width: 170px; color: #374151; }
+    .inst-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .pill { display: inline-block; border-radius: 99px; padding: 2px 9px; font-size: 0.72rem; font-weight: 600; }
+    .p-ok   { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .p-dead { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .resource-count { font-size: 0.72rem; color: #9ca3af; margin-left: auto; white-space: nowrap; }
+
+    /* ─── 60s WALL ─── */
+    .wall-container { margin: 20px 0; }
+    .wall-ruler {
+      display: flex; align-items: center; position: relative;
+      height: 36px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;
+      overflow: visible;
+    }
+    .wall-seg {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700; white-space: nowrap;
+    }
+    .ws-probe { width: 25%; background: #dbeafe; color: #1e40af; border-radius: 8px 0 0 8px; }
+    .ws-data  { width: 75%; background: #dcfce7; color: #14532d; border-radius: 0 8px 8px 0; }
+    .wall-line {
+      position: absolute; right: 0; top: -8px; bottom: -8px;
+      width: 3px; background: #dc2626;
+    }
+    .wall-label {
+      position: absolute; right: -1px; top: -24px;
+      font-size: 0.7rem; font-weight: 800; color: #dc2626;
+      transform: translateX(50%);
+    }
+    .wall-ticks { display: flex; justify-content: space-between; margin-top: 4px; }
+    .wall-ticks span { font-size: 0.68rem; color: #9ca3af; }
+
+    /* ─── SWIM LANES ─── */
+    .swim-container { margin-top: 16px; }
+    .swim-header {
+      display: grid; align-items: center; margin-bottom: 4px;
+      font-size: 0.7rem; font-weight: 700; color: #9ca3af; letter-spacing: .04em;
+    }
+    .swim-row {
+      display: grid; align-items: center; gap: 8px; margin-bottom: 5px; min-height: 34px;
+    }
+    .swim-label {
+      font-size: 0.76rem; font-weight: 600; color: #374151; line-height: 1.3;
+      text-align: right; padding-right: 8px;
+    }
+    .swim-label small { display: block; font-weight: 400; color: #9ca3af; font-size: 0.67rem; }
+    .swim-bar-area { position: relative; background: #f9fafb; border-radius: 4px; height: 28px; }
+    .bar-probe { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px 0 0 4px; display: flex; align-items: center; justify-content: center; font-size: 0.67rem; font-weight: 700; white-space: nowrap; overflow: hidden; }
+    .bar-data  { position: absolute; top: 0; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.67rem; font-weight: 700; white-space: nowrap; overflow: hidden; }
+    .bar-end   { position: absolute; top: 0; right: 0; height: 100%; display: flex; align-items: center; padding-right: 4px; font-size: 0.67rem; color: #9ca3af; }
+    .probe-ok   { background: #bfdbfe; color: #1e40af; }
+    .probe-dead { background: #fca5a5; color: #7f1d1d; border-radius: 4px; }
+    .data-ok    { background: #86efac; color: #14532d; }
+    .data-cached { background: #d1fae5; color: #065f46; border: 1px dashed #34d399; }
+    .wall-vline { position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: #dc2626; opacity: .4; }
+
+    /* ─── CACHE LAYERS ─── */
+    .cache-pyramid { position: relative; margin: 16px 0; }
+    .cache-layer {
+      border-radius: 12px; padding: 16px 20px; margin-bottom: 0;
+      border: 2px solid; position: relative;
+    }
+    .cl-l1 { border-color: #6366f1; background: #eef2ff; }
+    .cl-l2 { border-color: #0891b2; background: #e0f7fb; margin: 12px 20px; }
+    .cl-he { border-color: #16a34a; background: #f0fdf4; margin: 12px 20px; }
+    .cache-layer-title { font-size: 0.82rem; font-weight: 800; margin-bottom: 6px; }
+    .cl-l1 .cache-layer-title { color: #4338ca; }
+    .cl-l2 .cache-layer-title { color: #0369a1; }
+    .cl-he .cache-layer-title { color: #15803d; }
+    .cache-hit-badge { display: inline-block; background: #fef9c3; color: #92400e; border-radius: 4px; padding: 1px 7px; font-size: 0.7rem; font-weight: 700; margin-left: 8px; }
+    .cache-items { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .cache-item { background: white; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 10px; font-size: 0.73rem; color: #374151; }
+    .arrow-down { text-align: center; color: #9ca3af; font-size: 1.1rem; line-height: 1; margin: 2px 0; }
+
+    /* ─── REQUEST SCENARIOS ─── */
+    .req-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 16px; }
+    @media (max-width: 680px) { .req-grid { grid-template-columns: 1fr; } }
+    .req-card { border-radius: 10px; border: 2px solid; padding: 16px; }
+    .req-cold { border-color: #f97316; background: #fff7ed; }
+    .req-warm { border-color: #16a34a; background: #f0fdf4; }
+    .req-title { font-weight: 800; font-size: 0.88rem; margin-bottom: 12px; }
+    .req-cold .req-title { color: #c2410c; }
+    .req-warm .req-title { color: #15803d; }
+    .req-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; font-size: 0.8rem; line-height: 1.45; }
+    .req-icon { flex-shrink: 0; font-size: 1rem; }
+    .req-time { font-size: 0.78rem; font-weight: 700; padding: 1px 7px; border-radius: 4px; flex-shrink: 0; }
+    .rt-slow { background: #fee2e2; color: #b91c1c; }
+    .rt-fast { background: #dcfce7; color: #15803d; }
+    .rt-mid  { background: #fef9c3; color: #92400e; }
+
+    /* ─── SUMMARY TABLE ─── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 14px; }
+    th { text-align: left; padding: 8px 11px; background: #f9fafb; color: #555; font-weight: 600; border-bottom: 2px solid #e5e7eb; }
+    td { padding: 8px 11px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ─── COUNT BOXES ─── */
+    .counts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .cnt { flex: 1; min-width: 90px; border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #e5e7eb; background: #f9fafb; }
+    .cnt .num { font-size: 1.55rem; font-weight: 800; line-height: 1; }
+    .cnt .lbl { font-size: 0.67rem; color: #666; margin-top: 3px; line-height: 1.3; }
+    .cn-purple .num { color: #7c3aed; }
+    .cn-cyan   .num { color: #0891b2; }
+    .cn-green  .num { color: #16a34a; }
+    .cn-red    .num { color: #dc2626; }
+    .cn-gray   .num { color: #6b7280; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>TemplatesInfo: 60s proxy limit, 10 resources, 7 HEAppE instancí</h1>
+  <p class="subtitle">Co se děje uvnitř jednoho requestu · Co se cachuje pro znovupoužití · v1 vs v2 srovnání · 2026-06-28</p>
+
+  <!-- ═══ 1. TOPOLOGIE ═══ -->
+  <section>
+    <div class="stag stag-blue">TOPOLOGIE SCÉNÁŘE</div>
+    <h2>Testovací projekt — 10 resources, 7 různých HEAppE instancí</h2>
+    <p style="margin-bottom:16px">
+      Tři instance hostují více resources zároveň (Deucalion, Barbora, EuroHPC-main).
+      Čtyři instance hostují právě jeden resource. Celkem 7 vzdálených cílů, 10 resources.
+    </p>
+
+    <div class="topo-grid">
+      <div class="topo-project">
+        <div class="lbl">PROJEKT</div>
+        test-project
+      </div>
+      <div class="topo-instances">
+        <div class="inst-row" style="border-color:#6366f1;background:#f5f3ff">
+          <div class="inst-url">🟣 Deucalion (IT4I)</div>
+          <div class="inst-pills">
+            <span class="pill p-ok">R1 CPU</span>
+            <span class="pill p-ok">R2 GPU</span>
+            <span class="pill p-ok">R3 Fat</span>
+          </div>
+          <div class="resource-count">3 resources / 1 URL</div>
+        </div>
+        <div class="inst-row" style="border-color:#0891b2;background:#f0f9ff">
+          <div class="inst-url">🔵 Barbora (IT4I)</div>
+          <div class="inst-pills">
+            <span class="pill p-ok">R4 CPU</span>
+            <span class="pill p-ok">R5 GPU</span>
+          </div>
+          <div class="resource-count">2 resources / 1 URL</div>
+        </div>
+        <div class="inst-row" style="border-color:#16a34a;background:#f0fdf4">
+          <div class="inst-url">🟢 EuroHPC-main</div>
+          <div class="inst-pills">
+            <span class="pill p-ok">R6 Std</span>
+            <span class="pill p-ok">R7 GPU</span>
+          </div>
+          <div class="resource-count">2 resources / 1 URL</div>
+        </div>
+        <div class="inst-row">
+          <div class="inst-url">⚪ LUMI</div>
+          <div class="inst-pills"><span class="pill p-ok">R8</span></div>
+          <div class="resource-count">1 resource / 1 URL</div>
+        </div>
+        <div class="inst-row">
+          <div class="inst-url">⚪ LRZ SuperMUC</div>
+          <div class="inst-pills"><span class="pill p-ok">R9</span></div>
+          <div class="resource-count">1 resource / 1 URL</div>
+        </div>
+        <div class="inst-row">
+          <div class="inst-url">⚪ Karolina</div>
+          <div class="inst-pills"><span class="pill p-ok">R10</span></div>
+          <div class="resource-count">1 resource / 1 URL</div>
+        </div>
+        <div class="inst-row" style="border-color:#d1d5db;background:#fafafa">
+          <div class="inst-url">— (volitelně další)</div>
+          <div class="inst-pills"><span class="pill" style="background:#f3f4f6;color:#9ca3af;border:1px solid #d1d5db">R?</span></div>
+          <div class="resource-count">škáluje lineárně</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 2. 60s WALL ═══ -->
+  <section>
+    <div class="stag stag-red">60s HARD LIMIT</div>
+    <h2>Proxy vyhodí spojení po 60 sekundách — co se do toho musí vejít</h2>
+
+    <p style="margin-bottom:16px">
+      Každý request na TemplatesInfo musí odpovědět do 60 s. Uvnitř každé skupiny (per instance) se operace provádějí
+      <strong>postupně</strong>: nejdřív liveness probe, pak teprve data call. Ale <strong>všechny skupiny běží paralelně</strong>
+      — celkový čas requestu je čas <em>nejpomalejší</em> skupiny, ne součet všech.
+    </p>
+
+    <!-- 60s ruler -->
+    <div class="wall-container">
+      <div style="font-size:0.75rem;font-weight:700;color:#555;margin-bottom:6px">Časový budget na jednu skupinu (jednu HEAppE instanci):</div>
+      <div style="position:relative">
+        <div class="wall-ruler">
+          <div class="wall-seg ws-probe">⏱ Liveness probe (max 15 s)</div>
+          <div class="wall-seg ws-data">📡 Data call — katalog clusterů (max 45 s)</div>
+          <div class="wall-line"></div>
+          <div class="wall-label">60 s WALL</div>
+        </div>
+      </div>
+      <div class="wall-ticks">
+        <span>0 s</span><span>10 s</span><span>20 s</span><span>30 s</span><span>40 s</span><span>50 s</span><span>60 s ←proksi limit</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px">
+      <div style="border-radius:8px;padding:12px;background:#f0fdf4;border:1px solid #86efac">
+        <div style="font-weight:700;font-size:0.82rem;color:#15803d;margin-bottom:4px">✅ Typická živá instance</div>
+        <div style="font-size:1.3rem;font-weight:800;color:#15803d">~1–5 s</div>
+        <div style="font-size:0.75rem;color:#166534;margin-top:3px">Probe &lt;1 s + data &lt;4 s</div>
+      </div>
+      <div style="border-radius:8px;padding:12px;background:#fef2f2;border:1px solid #fca5a5">
+        <div style="font-weight:700;font-size:0.82rem;color:#b91c1c;margin-bottom:4px">🔴 Mrtvá instance</div>
+        <div style="font-size:1.3rem;font-weight:800;color:#b91c1c">~15 s</div>
+        <div style="font-size:0.75rem;color:#7f1d1d;margin-top:3px">Probe vyprší po 15 s, data call přeskočen</div>
+      </div>
+      <div style="border-radius:8px;padding:12px;background:#fffbeb;border:1px solid #fde68a">
+        <div style="font-weight:700;font-size:0.82rem;color:#92400e;margin-bottom:4px">⚠️ Pomalá živá instance</div>
+        <div style="font-size:1.3rem;font-weight:800;color:#d97706">až 60 s</div>
+        <div style="font-size:0.75rem;color:#78350f;margin-top:3px">Probe 15 s + data 45 s = přesně na stropě</div>
+      </div>
+    </div>
+
+    <div class="note note-amber" style="margin-top:16px">
+      <strong>Klíčová věc:</strong> 7 instancí běží <em>paralelně</em> — pokud 6 z nich odpovídá za 3 s a 1 je mrtvá,
+      celý request trvá ~15 s (čeká se jen na tu nejpomalejší). Čas není 6×3 + 15 = 33 s, ale max(3, 3, 3, 3, 3, 3, 15) = <strong>15 s</strong>.
+    </div>
+  </section>
+
+  <!-- ═══ 3. SWIM LANES ═══ -->
+  <section>
+    <div class="stag stag-purple">PARALELNÍ BĚH</div>
+    <h2>Co se děje uvnitř jednoho requestu — v1 vs v2</h2>
+    <p style="margin-bottom:4px">Každý pruh = jedna paralelní úloha. Šířka pruhu ∝ čas. Všechny pruhy startují najednou.</p>
+
+    <!-- v1 swim lanes -->
+    <div style="margin-top:18px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span class="badge b-purple">v1 legacy</span>
+        <span style="font-size:0.8rem;color:#555">10 skupin po (URL, resource) — Deucalion dostane 3 proby, Barbora 2</span>
+      </div>
+
+      <!-- header -->
+      <div class="swim-row" style="grid-template-columns: 155px 1fr; margin-bottom:0">
+        <div style="font-size:0.67rem;color:#9ca3af;text-align:right;padding-right:8px">Skupina</div>
+        <div style="display:flex;justify-content:space-between;font-size:0.67rem;color:#9ca3af;padding:0 4px">
+          <span>0 s</span><span>15 s</span><span>30 s</span><span>45 s</span><span>60 s ⛔</span>
+        </div>
+      </div>
+
+      <!-- rows v1 -->
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R1/Deucalion<small>URL_A · skupina 1/3</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:2%">P</div>
+          <div class="bar-data  data-ok"   style="left:2%;width:8%">data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R2/Deucalion<small>URL_A · skupina 2/3 ♻ zbytečná probe</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:2%;opacity:.6">P</div>
+          <div class="bar-data  data-cached" style="left:2%;width:8%">cache hit</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R3/Deucalion<small>URL_A · skupina 3/3 ♻ zbytečná probe</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:2%;opacity:.6">P</div>
+          <div class="bar-data  data-cached" style="left:2%;width:8%">cache hit</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R4/Barbora<small>URL_B · skupina 4/5</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:2%">P</div>
+          <div class="bar-data  data-ok"   style="left:2%;width:14%">data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R5/Barbora<small>URL_B · skupina 5/5 ♻ zbytečná probe</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:2%;opacity:.6">P</div>
+          <div class="bar-data  data-cached" style="left:2%;width:14%">cache hit</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R6/EuroHPC-main</div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:2%">P</div>
+          <div class="bar-data  data-ok"   style="left:2%;width:10%">data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R7/EuroHPC-main<small>♻ zbytečná probe</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:2%;opacity:.6">P</div>
+          <div class="bar-data  data-cached" style="left:2%;width:10%">cache hit</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R8/LUMI<small>pomalá instance</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:25%">⏱ probe 15 s</div>
+          <div class="bar-data  data-ok"   style="left:25%;width:40%">data call 24 s</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R9/LRZ SuperMUC</div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok" style="width:2%">P</div>
+          <div class="bar-data data-ok"   style="left:2%;width:12%">data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R10/Karolina<small>mrtvá instance</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-dead" style="width:25%">🔴 probe timeout 15 s</div>
+          <div class="bar-end">→ skip data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:0.75rem;color:#555">
+        <strong>Wall clock:</strong>
+        <span style="background:#fef9c3;color:#92400e;padding:2px 8px;border-radius:4px;font-weight:700">max(všech pruhů) ≈ 39 s</span>
+        <span>(nejpomalejší je LUMI: probe 15 s + data 24 s)</span>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;font-size:0.72rem">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:10px;background:#bfdbfe;border-radius:2px;display:inline-block"></span>Liveness probe (vždy)</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:10px;background:#86efac;border-radius:2px;display:inline-block"></span>Data call (HTTP)</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:10px;background:#d1fae5;border:1px dashed #34d399;border-radius:2px;display:inline-block"></span>Cache hit (žádný HTTP)</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:10px;background:#fca5a5;border-radius:2px;display:inline-block"></span>Probe timeout — dead</span>
+      </div>
+    </div>
+
+    <!-- v2 swim lanes -->
+    <div style="margin-top:24px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span class="badge b-cyan">v2 nová</span>
+        <span style="font-size:0.8rem;color:#555">7 skupin po URL — Deucalion 1 proba, Barbora 1 proba</span>
+      </div>
+
+      <div class="swim-row" style="grid-template-columns: 155px 1fr; margin-bottom:0">
+        <div style="font-size:0.67rem;color:#9ca3af;text-align:right;padding-right:8px">Skupina</div>
+        <div style="display:flex;justify-content:space-between;font-size:0.67rem;color:#9ca3af;padding:0 4px">
+          <span>0 s</span><span>15 s</span><span>30 s</span><span>45 s</span><span>60 s ⛔</span>
+        </div>
+      </div>
+
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R1+R2+R3 / Deucalion<small>URL_A — 1 probe, 1 fetch, 3× projekce</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok" style="width:2%">P</div>
+          <div class="bar-data  data-ok"  style="left:2%;width:8%">data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R4+R5 / Barbora<small>URL_B — 1 probe, 1 fetch</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok" style="width:2%">P</div>
+          <div class="bar-data  data-ok"  style="left:2%;width:14%">data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R6+R7 / EuroHPC-main<small>URL_C — 1 probe, 1 fetch</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok" style="width:2%">P</div>
+          <div class="bar-data  data-ok"  style="left:2%;width:10%">data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R8 / LUMI<small>pomalá instance</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok"  style="width:25%">⏱ probe 15 s</div>
+          <div class="bar-data  data-ok"   style="left:25%;width:40%">data call 24 s</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R9 / LRZ SuperMUC</div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-ok" style="width:2%">P</div>
+          <div class="bar-data data-ok"   style="left:2%;width:12%">data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+      <div class="swim-row" style="grid-template-columns: 155px 1fr">
+        <div class="swim-label">R10 / Karolina<small>mrtvá instance</small></div>
+        <div class="swim-bar-area">
+          <div class="bar-probe probe-dead" style="width:25%">🔴 probe timeout 15 s</div>
+          <div class="bar-end">→ skip data</div>
+          <div class="wall-vline"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:0.75rem;color:#555">
+        <strong>Wall clock:</strong>
+        <span style="background:#fef9c3;color:#92400e;padding:2px 8px;border-radius:4px;font-weight:700">max(všech pruhů) ≈ 39 s</span>
+        <span>(stejný výsledek — bottleneck je LUMI, ne počet skupin)</span>
+      </div>
+    </div>
+
+    <div class="note note-blue" style="margin-top:16px">
+      <strong>Závěr swim lanes:</strong> Wall clock určuje nejpomalejší instance, ne počet skupin. v2 eliminuje zbytečné proby
+      na Deucalion/Barbora/EuroHPC-main (ušetří 5 probů ze 10), ale pokud bottleneck je pomalá instance
+      (LUMI v příkladu), celkový čas je stejný. Přidávání dalších resources na sdílené instance
+      <strong>nepřidává čas</strong> do requestu v v2 — přidává jen CPU projekce.
+    </div>
+  </section>
+
+  <!-- ═══ 4. CACHE VRSTVY ═══ -->
+  <section>
+    <div class="stag stag-green">CO SE CACHUJE</div>
+    <h2>Cache vrstvy — co chrání opakované volání</h2>
+    <p style="margin-bottom:18px">
+      Každý request prochází dvěma vrstvami cache. <strong>L1 hit = žádné HEAppE volání vůbec</strong>.
+      <strong>L2 hit = žádný HTTP catalog fetch, ale liveness proby stále běží</strong>.
+    </p>
+
+    <!-- L1 -->
+    <div class="cache-layer cl-l1">
+      <div class="cache-layer-title">
+        L1 — Projekt cache <span class="cache-hit-badge">HIT → 0 ms, 0 HEAppE volání</span>
+      </div>
+      <p style="font-size:0.8rem;color:#3730a3;margin-bottom:8px">
+        Uloží celou složenou odpověď projektu (všechny resources, všechny clustery). TTL: <strong>5 minut</strong>.
+        Pokud je v cache → request vrátí data okamžitě bez jakéhokoliv kontaktu s HEAppE.
+      </p>
+      <div class="cache-items">
+        <div class="cache-item">v1: <code>TemplatesInfo_{shortName}</code> (HybridCache)</div>
+        <div class="cache-item">v2: OutputCache per response URL + query</div>
+        <div class="cache-item">Uloží se jen při 100% úspěchu — při jakékoliv degradaci se neuloží</div>
+      </div>
+      <p style="font-size:0.75rem;color:#6366f1;margin-top:8px">
+        ❌ Nevzniká při: změně projektu · invalidaci adminem · jakékoliv degradaci (mrtvá instance)
+      </p>
+
+      <!-- L2 nested -->
+      <div class="arrow-down" style="margin-top:10px">↓ při L1 miss</div>
+
+      <div class="cache-layer cl-l2" style="margin:10px 0 0 0">
+        <div class="cache-layer-title">
+          L2 — Instance cluster cache <span class="cache-hit-badge">HIT → žádný HTTP, proby stále běží</span>
+        </div>
+        <p style="font-size:0.8rem;color:#0369a1;margin-bottom:8px">
+          Uloží data z HEAppE per instance. Liveness proby se <strong>vždy</strong> provádějí — L2 cache je jen pro katalog dat.
+          Pokud probe projde a L2 hit → žádný HTTP catalog fetch. TTL: <strong>5 minut</strong>.
+        </p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:white;border-radius:8px;padding:10px;border:1px solid #bae6fd">
+            <div style="font-size:0.73rem;font-weight:700;color:#0369a1;margin-bottom:6px">v1 legacy — per cluster</div>
+            <div class="cache-items" style="flex-direction:column;gap:4px">
+              <div class="cache-item" style="font-size:0.7rem"><code>Heappe_Cluster_URL_A_deucalion-cpu</code></div>
+              <div class="cache-item" style="font-size:0.7rem"><code>Heappe_Cluster_URL_A_deucalion-gpu</code></div>
+              <div class="cache-item" style="font-size:0.7rem"><code>Heappe_Cluster_URL_A_deucalion-fat</code></div>
+              <div class="cache-item" style="font-size:0.7rem"><code>Heappe_Cluster_URL_B_barbora-cpu</code></div>
+              <div class="cache-item" style="font-size:0.7rem">… 1 záznam per cluster</div>
+            </div>
+            <p style="font-size:0.72rem;color:#555;margin-top:6px">
+              Granulární — 1 entry per cluster. Umožňuje přesnou invalidaci po cluster-level změně.
+            </p>
+          </div>
+          <div style="background:white;border-radius:8px;padding:10px;border:1px solid #bae6fd">
+            <div style="font-size:0.73rem;font-weight:700;color:#0369a1;margin-bottom:6px">v2 nová — per URL (celý katalog)</div>
+            <div class="cache-items" style="flex-direction:column;gap:4px">
+              <div class="cache-item" style="font-size:0.7rem"><code>Heappe_Clusters_URL_A</code> (celý katalog)</div>
+              <div class="cache-item" style="font-size:0.7rem"><code>Heappe_Clusters_URL_B</code></div>
+              <div class="cache-item" style="font-size:0.7rem"><code>Heappe_Clusters_URL_C</code></div>
+              <div class="cache-item" style="font-size:0.7rem">… 1 záznam per instance URL</div>
+            </div>
+            <p style="font-size:0.72rem;color:#555;margin-top:6px">
+              Jednodušší — 1 entry per URL. Jeden fetch stačí pro všechny resources na té instanci.
+            </p>
+          </div>
+        </div>
+
+        <p style="font-size:0.75rem;color:#0891b2;margin-top:10px">
+          <strong>L2 invalidátor:</strong> Změna command templates na instanci → <code>Heappe_Clusters_{url}</code> tag evicted →
+          příští request re-fetchne katalog z dané instance.
+        </p>
+
+        <!-- HEAppE nested -->
+        <div class="arrow-down" style="margin-top:10px">↓ při L2 miss (nebo na probe)</div>
+
+        <div class="cache-layer cl-he" style="margin:10px 0 0 0">
+          <div class="cache-layer-title">Živé volání do HEAppE (vždy při L1 miss)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+            <div style="background:white;border-radius:6px;padding:8px;border:1px solid #86efac;font-size:0.76rem">
+              <strong>Liveness probe</strong> — VŽDY<br>
+              <span style="color:#555">GET heappe/Health — max 15 s, není cachovaný</span><br>
+              <span style="color:#15803d">✓ Mrtvá instance selže rychle (~15 s)</span>
+            </div>
+            <div style="background:white;border-radius:6px;padding:8px;border:1px solid #86efac;font-size:0.76rem">
+              <strong>Katalog HTTP</strong> — jen při L2 miss<br>
+              <span style="color:#555">GET /heappe/ClusterInformation/ListAvailableClusters — max 45 s</span><br>
+              <span style="color:#15803d">✓ Výsledek uložen do L2 cache</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="note note-amber">
+      <strong>Liveness probe není nikdy cachovaná</strong> — cíleně. Jde o levný GET (~100 ms pro živou instanci)
+      který ověří, zda má smysl čekat 45 s na katalog. Bez probe by mrtvá instance mohla zdržet celý request
+      o plných 45 s místo 15 s.
+    </div>
+  </section>
+
+  <!-- ═══ 5. PRVNÍ vs DRUHÝ REQUEST ═══ -->
+  <section>
+    <div class="stag stag-amber">1. vs 2. REQUEST</div>
+    <h2>Co se děje při prvním a při opakovaném requestu</h2>
+
+    <div class="req-grid">
+
+      <!-- Cold -->
+      <div class="req-card req-cold">
+        <div class="req-title">🥶 1. request — cache studená</div>
+
+        <div class="req-row">
+          <div class="req-icon">1️⃣</div>
+          <div>
+            <strong>L1 miss.</strong> Projekt cache je prázdná → musí se build.
+            <div class="req-time rt-slow" style="margin-top:3px;display:inline-block">začíná sestavování</div>
+          </div>
+        </div>
+        <div class="req-row">
+          <div class="req-icon">2️⃣</div>
+          <div>
+            <strong>7 paralelních skupin</strong> (v2) nebo 10 skupin (v1) startují najednou.
+            Každá začne liveness probem.
+          </div>
+        </div>
+        <div class="req-row">
+          <div class="req-icon">3️⃣</div>
+          <div>
+            <strong>L2 miss pro každou instanci.</strong> Probe projde → HTTP catalog fetch z HEAppE.
+            Výsledek uložen do L2.
+            <div class="req-time rt-slow" style="margin-top:3px;display:inline-block">7× HTTP call do HEAppE</div>
+          </div>
+        </div>
+        <div class="req-row">
+          <div class="req-icon">4️⃣</div>
+          <div>
+            Vše OK → výsledek uložen do <strong>L1 cache</strong> na 5 min.
+            <div class="req-time rt-mid" style="margin-top:3px;display:inline-block">wall clock: ~5–40 s (dle instancí)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warm -->
+      <div class="req-card req-warm">
+        <div class="req-title">🔥 2.–N. request do 5 minut — L1 warm</div>
+
+        <div class="req-row">
+          <div class="req-icon">1️⃣</div>
+          <div>
+            <strong>L1 HIT.</strong> Projekt cache obsahuje hotovou odpověď.
+            <div class="req-time rt-fast" style="margin-top:3px;display:inline-block">&lt; 5 ms</div>
+          </div>
+        </div>
+        <div class="req-row">
+          <div class="req-icon">✅</div>
+          <div>
+            <strong>Žádné HEAppE volání.</strong> Ani probe, ani data call.
+            Odpověď z paměti (nebo Redis).
+          </div>
+        </div>
+        <div style="background:#dcfce7;border-radius:8px;padding:12px;margin-top:10px;font-size:0.82rem;color:#15803d">
+          <strong>Wall clock: &lt; 5 ms</strong><br>
+          Proxy limit 60 s není relevantní — request odpovídá okamžitě.
+        </div>
+
+        <div style="margin-top:14px;border-top:1px solid #86efac;padding-top:12px">
+          <div style="font-size:0.75rem;font-weight:700;color:#15803d;margin-bottom:6px">Po L1 expiraci (po 5 min), ale L2 stále warm:</div>
+          <div class="req-row">
+            <div class="req-icon">1️⃣</div>
+            <div><strong>L1 miss</strong> → rebuild</div>
+          </div>
+          <div class="req-row">
+            <div class="req-icon">2️⃣</div>
+            <div><strong>7 liveness probů</strong> (vždy, není cachovaný)</div>
+          </div>
+          <div class="req-row">
+            <div class="req-icon">3️⃣</div>
+            <div><strong>L2 HIT</strong> pro každou instanci → žádný HTTP catalog fetch</div>
+          </div>
+          <div class="req-row">
+            <div class="req-icon">4️⃣</div>
+            <div>
+              Výsledek z L2, uložen zpět do L1.
+              <div class="req-time rt-fast" style="margin-top:3px;display:inline-block">wall clock: ~1–15 s (jen proby)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ 6. SROVNÁNÍ v1 vs v2 ═══ -->
+  <section>
+    <div class="stag stag-blue">SROVNÁNÍ</div>
+    <h2>v1 vs v2 — konkrétní čísla pro 10 resources / 7 instancí</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Metrika</th>
+          <th>v1 legacy</th>
+          <th>v2 nová</th>
+          <th>Úspora v2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Paralelní skupiny per request</td>
+          <td>10 (per resource)</td>
+          <td><strong>7</strong> (per URL)</td>
+          <td>−3 skupiny</td>
+        </tr>
+        <tr>
+          <td>Liveness proby (L1 cold)</td>
+          <td>10 (3× Deucalion, 2× Barbora, 2× EuroHPC, 1×LUMI, 1×LRZ, 1×Karolina)</td>
+          <td><strong>7</strong> (1× per URL)</td>
+          <td>−3 probů</td>
+        </tr>
+        <tr>
+          <td>Liveness proby (L1 warm)</td>
+          <td colspan="2" style="text-align:center;color:#15803d;font-weight:600">0 — L1 hit, žádné volání</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>HTTP catalog fetche (L2 cold)</td>
+          <td>Až 10 (každá skupina má vlastní Lazy; HybridCache dedup pomáhá ale jen na warm L2)</td>
+          <td><strong>7</strong> (1× per URL, strukturálně)</td>
+          <td>−3 fetche</td>
+        </tr>
+        <tr>
+          <td>HTTP catalog fetche (L2 warm)</td>
+          <td colspan="2" style="text-align:center;color:#15803d;font-weight:600">0 — cache hit pro každou instanci</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>JSON klony katalogu</td>
+          <td>10 (1× per resource skupina)</td>
+          <td><strong>0</strong> (read-only projekce)</td>
+          <td>−10 klonů</td>
+        </tr>
+        <tr>
+          <td>DB read (allowed templates)</td>
+          <td colspan="2" style="text-align:center">1× per request (obě verze)</td>
+          <td>—</td>
+        </tr>
+        <tr style="background:#f0fdf4">
+          <td><strong>Wall clock (typický provoz)</strong></td>
+          <td colspan="2" style="text-align:center;font-weight:700;color:#15803d">Stejný — bottleneck je nejpomalejší instance, ne počet skupin</td>
+          <td>—</td>
+        </tr>
+        <tr style="background:#fef2f2">
+          <td><strong>?noCache=true s 3 resources na Deucalion</strong></td>
+          <td><span class="badge b-red">⚠️ 3 HTTP fetche na Deucalion</span> (každá skupina má vlastní Lazy, bypass mode)</td>
+          <td><span class="badge b-green">N/A</span> — v2 nemá noCache parametr</td>
+          <td>Bug v v1</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note note-amber" style="margin-top:16px">
+      <strong>Škálování:</strong> Přibývají další resources na <em>existující</em> instance (ne nové URL)?
+      v2 je imunní — počet skupin/probů/fetchů zůstane 7.
+      v1 přidá 1 skupinu, 1 probu (a potenciálně 1 katalog fetch) per každý nový resource.
+    </div>
+  </section>
+
+  <p style="font-size:0.75rem;color:#aaa;text-align:right;margin-top:4px">
+    feat/refactor-core · 2026-06-28 · ADR-0073 (60s wall, liveness gate), ADR-0038 (catalog-once-per-URL)
+  </p>
+
+</div>
+</body>
+</html>

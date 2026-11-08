@@ -1,0 +1,6289 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "UserOrg API v0.0.0.1",
+    "description": "UserOrg Management API",
+    "contact": {
+      "name": "IT4Innovations",
+      "url": "https://opencode.it4i.eu/lexis-platform/backend/userorg",
+      "email": "support@lexis.tech"
+    },
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "0.0.0.1"
+  },
+  "paths": {
+    "/api/v2/DataStaging/WorkerData": {
+      "get": {
+        "tags": [
+          "DataStaging"
+        ],
+        "summary": "Get details for a worker.",
+        "operationId": "WorkerDataV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkerDataResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/DataStaging/DataStagingLocations": {
+      "get": {
+        "tags": [
+          "DataStaging"
+        ],
+        "summary": "List DDI DataStaging locations from Vault.",
+        "operationId": "GetDataStagingLocationsV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataStagingLocationKey"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "DataStaging"
+        ],
+        "summary": "Bulk update DataStagingLocationKeys for DDI.",
+        "operationId": "UpdateDataStagingLocationKeysV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DataStagingLocationKey"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUpdateResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Service/ProjectsInfo": {
+      "get": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Projects and resources grouped by provider, for the DDI service.",
+        "operationId": "GetProjectsInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProjectsInfoResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Service/SyncDetails": {
+      "get": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Synchronisation details for a LEXIS Provider: users and their project roles.",
+        "operationId": "GetSyncDetails",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetSyncDetailsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Get project by short name",
+        "description": "Returns the project details for the specified short name.",
+        "operationId": "GetProjectByShortNameV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Update a project",
+        "description": "Updates a project's name, description, contact email, validity period and domain type. The short name is immutable.",
+        "operationId": "UpdateProjectV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Delete a project",
+        "description": "Soft-deletes the project and cascade soft-deletes all project role rows. Returns 204; 404 out of scope / not found; 409 when the project is read-only.",
+        "operationId": "DeleteProjectV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "List projects",
+        "description": "Returns projects the authenticated user has a role on, optionally filtered by short name, contact email, domain type, and validity dates. startDate and endDate are ISO-8601 timestamps and bound the project's own validity period inclusively: startDate keeps projects whose StartDate is on or after it, endDate keeps projects whose EndDate is on or before it.",
+        "operationId": "GetProjectsV2",
+        "parameters": [
+          {
+            "name": "ShortName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ContactEmail",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DomainTypeName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProjectsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Create a project",
+        "description": "Creates a project and grants the creator the project owner role. Body {ShortName, Name, Description?, ContactEmail?, StartDate, EndDate, DomainTypeName}. Returns 201; 400 on validation / unknown domain type; 409 (code project.short_name_already_exists) when the short name already exists. Errors carry a machine-readable code in the problem extensions — branch on that, not the message.",
+        "operationId": "CreateProjectV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/Users": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "List users assigned to a project",
+        "description": "Returns active users assigned to the specified project, with their project role, as a paged list (?page=&limit=). Errors carry a machine-readable code in the problem extensions — branch on that, not the message.",
+        "operationId": "GetProjectUsersV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProjectUsersResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/Extended": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Get extended project info",
+        "description": "Returns a project with its full resource assignment and location allocation details. Each assigned resource carries its location's LocationType as a name.",
+        "operationId": "GetExtendedProjectV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetExtendedProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/Templates": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Get project HEAppE templates",
+        "description": "Returns available HEAppE cluster and command template data for the project as a single complete page (bounded reference list — paging parameters are ignored). Requires X-Original-Authorization header (Keycloak bearer token).",
+        "operationId": "GetProjectTemplatesV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProjectTemplatesResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/Tags": {
+      "post": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Create a tag and assign it to a project",
+        "description": "Creates the named tag in the shared catalogue if it does not yet exist and assigns it to the project. Idempotent. Requires the tag-create permission.",
+        "operationId": "CreateProjectTagV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectTagBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProjectTagResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/Tags/{tagName}": {
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Assign an existing tag to a project",
+        "description": "Associates an existing catalogue tag with the project. Returns 404 when no tag with that name exists; it never creates one (use POST to create). Idempotent. Tags are identified by name.",
+        "operationId": "AssignProjectTagV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "tagName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Remove a tag from a project",
+        "description": "Removes the named tag's association with the project. Idempotent. The shared tag itself is not deleted.",
+        "operationId": "UnassignProjectTagV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "tagName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/Users/{idpUserId}": {
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Assign a user to a project",
+        "description": "Assigns a user to the project as a project member (creates or reactivates the membership and the project role). Idempotent reactivation of a previously removed user. Returns 409 when the user is already an active member, or when the project is read-only.",
+        "operationId": "AssignProjectUserV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "idpUserId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Remove a user from a project",
+        "description": "Removes a user's membership and project role from the project. The project owner cannot be removed (409). Returns 404 when the user is not an active member, 409 when the project is read-only.",
+        "operationId": "UnassignProjectUserV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "idpUserId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/ValidRoles": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "List assignable project roles for the caller",
+        "description": "Returns the project roles the caller may assign to other members of the project (strictly below the caller's own level, no lower than the member baseline) as a single complete page (bounded reference list — paging parameters are ignored).",
+        "operationId": "GetValidRolesV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetValidRolesResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/Users/{idpUserId}/Role": {
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Change a member's project role",
+        "description": "Changes a member's project role; the target role name is supplied in the request body (Body {RoleName}, matched case-insensitively). The caller may only assign a role strictly below their own level and no lower than the member baseline (403 otherwise); a project may hold at most one owner (409). Returns 400 for an unknown role, 409 when the project is read-only.",
+        "operationId": "ChangeProjectUserRoleV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "idpUserId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeProjectUserRoleBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}": {
+      "get": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Get provider by name",
+        "description": "Returns the provider details for the specified provider name.",
+        "operationId": "GetProviderByNameV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetProviderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers": {
+      "get": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "List providers",
+        "description": "Returns providers, optionally filtered by name and country. Paged via ?page=&limit= (default 50, max 200); the response body is the bare array, with pagination in the X-Total-Count and Link response headers.",
+        "operationId": "GetProvidersV2",
+        "parameters": [
+          {
+            "name": "Name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CountryCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProvidersResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Requests": {
+      "get": {
+        "tags": [
+          "Request"
+        ],
+        "summary": "List requests",
+        "description": "[DEPRECATED — use Users/Me/OnboardingRequests?Direction=Received] Returns requests on projects the authenticated user has a role on, optionally filtered by project, user, and state. The 'state' filter and the response 'type'/'state' fields use stable PascalCase names (e.g. Pending, SelfOnboarding), not the legacy ints. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "GetRequestsV2",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "IdpUserId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "State",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetRequestsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Request"
+        ],
+        "summary": "Create a self-onboarding request",
+        "description": "[DEPRECATED — use Projects/{projectShortName}/OnboardingRequests] Creates a self-onboarding request to join a project as a member. Body {ProjectShortName, RequestType}. RequestType is the stable PascalCase name; only \"SelfOnboarding\" is accepted (422 with code request.unsupported_type otherwise, 400 for an unknown name). Returns 201; 404 (request.not_found / caller.not_provisioned) when the project or caller is unknown; 409 when already a member or a pending request exists. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "CreateRequestV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRequestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRequestResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Requests/Sent": {
+      "get": {
+        "tags": [
+          "Request"
+        ],
+        "summary": "List requests sent by the current user",
+        "description": "[DEPRECATED — use Users/Me/OnboardingRequests?Direction=Sent] Returns requests submitted by the authenticated user, optionally filtered by state. The 'state' filter and the response 'type'/'state' fields use stable PascalCase names, not the legacy ints. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "GetSentRequestsV2",
+        "parameters": [
+          {
+            "name": "State",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetSentRequestsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Public/Requests/ByLink/{actionLink}": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Get public request info for action link",
+        "description": "Returns request details for an action link. No authentication required. On a failure read the 'code' extension for a machine-readable code (request.not_found, request.not_pending, request.expired, request.invalid_type); do not parse the message.",
+        "operationId": "GetPublicRequestInfoV2",
+        "parameters": [
+          {
+            "name": "actionLink",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPublicRequestInfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Requests/{slug}/Accept": {
+      "put": {
+        "tags": [
+          "Request"
+        ],
+        "summary": "Accept a self-onboarding request",
+        "description": "[DEPRECATED — use Projects/{projectShortName}/OnboardingRequests] Accepts a pending self-onboarding request and assigns the requester to the project as a member. Caller must hold a role on the request's project. Returns 204; 404 (request.not_found) when the request is unknown or outside the caller's scope — the two are deliberately indistinguishable; 409 when the request is already settled; 422 for non self-onboarding requests. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "AcceptRequestV2",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Requests/{slug}/Reject": {
+      "put": {
+        "tags": [
+          "Request"
+        ],
+        "summary": "Reject a self-onboarding request",
+        "description": "[DEPRECATED — use Projects/{projectShortName}/OnboardingRequests] Rejects a pending self-onboarding request (terminal). Caller must hold a role on the request's project. Optional 'reason' query is accepted for parity but not persisted. Returns 204; 404 (request.not_found) when unknown or outside scope — the two are deliberately indistinguishable; 409 when already settled; 422 for non self-onboarding requests. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "RejectRequestV2",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Reason",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Public/ActionLinks/{actionLink}": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Handle a request action link",
+        "description": "Settles a self-onboarding request via a single-use action-link token. No authentication required. Using a link invalidates its siblings. Returns 200 when handled; 400 (code request.invalid_action_link) for an unknown, expired, or already-handled link. On a failure read the machine-readable code; do not parse the message.",
+        "operationId": "HandleActionLinkV2",
+        "parameters": [
+          {
+            "name": "actionLink",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandleActionLinkResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/OnboardingRequests": {
+      "post": {
+        "tags": [
+          "OnboardingRequest"
+        ],
+        "summary": "Create an onboarding request",
+        "description": "Creates an onboarding request to join the route project as a member. The project is taken from the route; the request type is implicitly self-onboarding (no body). Any authenticated caller may create one (no project-scope check). Returns 201 with the GUID-free slug; 404 (onboarding_request.not_found / caller.not_provisioned) when the project or caller is unknown; 409 when already a member (onboarding_request.already_active_member) or a pending request exists (onboarding_request.duplicate_pending_request). On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "CreateOnboardingRequestV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOnboardingRequestResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/OnboardingRequests/{slug}/Accept": {
+      "put": {
+        "tags": [
+          "OnboardingRequest"
+        ],
+        "summary": "Accept an onboarding request",
+        "description": "Accepts a pending onboarding request and assigns the requester to the route project as a member, atomically. Caller must hold a role on the route project. Returns 204; 404 (onboarding_request.not_found) when the request is unknown, outside the caller's scope, or belongs to a different project — the three are deliberately indistinguishable; 409 when the request is already settled. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "AcceptOnboardingRequestV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/OnboardingRequests/{slug}/Reject": {
+      "put": {
+        "tags": [
+          "OnboardingRequest"
+        ],
+        "summary": "Reject an onboarding request",
+        "description": "Rejects a pending onboarding request (terminal). Caller must hold a role on the route project. Returns 204; 404 (onboarding_request.not_found) when the request is unknown, outside the caller's scope, or belongs to a different project — the three are deliberately indistinguishable; 409 when the request is already settled. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "RejectOnboardingRequestV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Users/Me/OnboardingRequests": {
+      "get": {
+        "tags": [
+          "OnboardingRequest"
+        ],
+        "summary": "List the onboarding requests the current user sent or can act on",
+        "description": "Returns, as a paged list (?page=&limit=), the onboarding requests the authenticated user sent and the ones received on projects where the user is Owner or Manager. 'Direction' keeps one half: 'Sent' or 'Received', case-sensitive; without it both are returned. 'State' filters by state name and defaults to all states; send State=Pending for the requests still waiting. 'ProjectShortName' narrows both halves to one project. Each item carries the slug used to address it and a 'Direction' field ('Sent' or 'Received'); a request the user sent to a project they now manage is listed once, as 'Received', and as 'Sent' under Direction=Sent. The 'state' filter and the response 'state' field use stable PascalCase names (e.g. Pending, Accepted), not the legacy ints. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "GetMyOnboardingRequestsV2",
+        "parameters": [
+          {
+            "name": "State",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Direction",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ProjectShortName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetMyOnboardingRequestsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/UserInfo": {
+      "get": {
+        "tags": [
+          "UserInfo"
+        ],
+        "summary": "Get user info from access token",
+        "description": "Returns LEXIS user info. Call on login to initialize/sync user.",
+        "operationId": "GetUserInfoV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/UserInfo/Extended": {
+      "get": {
+        "tags": [
+          "UserInfo"
+        ],
+        "summary": "Get extended user info from access token",
+        "description": "Returns extended LEXIS user info including project resources and HPC endpoint locations. Call on login alongside GetUserInfo.",
+        "operationId": "GetExtendedUserInfoV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoExtendedResponse"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not Modified"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Users/Me/Preferences": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get current user preferences",
+        "description": "Returns the authenticated user's JSON preferences, wrapped in a {\"Preferences\": {…}} envelope.",
+        "operationId": "GetUserPreferencesV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserPreferencesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update current user preferences",
+        "description": "Replaces the authenticated user's JSON preferences (created on first write). The body is a {\"Preferences\": {…}} envelope, so a GET response can be sent back unchanged. Returns 204; 400 when \"Preferences\" is missing or null; 404 when the caller is unknown.",
+        "operationId": "UpdateUserPreferencesV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserPreferencesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Locations": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "List locations",
+        "description": "Returns all active locations, optionally filtered by provider name or by location type name (locationType, for example HPC; Unspecified matches nothing). Each location carries its LocationType as a name.",
+        "operationId": "GetLocationsV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationType",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ELocationType"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetLocationsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Locations/{locationName}": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Get location by provider and name",
+        "description": "Returns a single active location addressed by its provider and name, with its LocationType as a name.",
+        "operationId": "GetLocationByProviderAndNameV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetLocationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/ProjectTags": {
+      "get": {
+        "tags": [
+          "ProjectTag"
+        ],
+        "summary": "List project tags",
+        "description": "Returns all project tags, optionally filtered by name.",
+        "operationId": "GetProjectTagsV2",
+        "parameters": [
+          {
+            "name": "tagName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProjectTagsResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/ProjectTags/{tagName}": {
+      "get": {
+        "tags": [
+          "ProjectTag"
+        ],
+        "summary": "Get project tag by name",
+        "description": "Returns a single project tag by its globally unique name.",
+        "operationId": "GetProjectTagByNameV2",
+        "parameters": [
+          {
+            "name": "tagName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetProjectTagResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/RequestStates": {
+      "get": {
+        "tags": [
+          "Enums"
+        ],
+        "summary": "List request states",
+        "description": "Returns all valid request states as a bare array (a single complete page; X-Total-Count header, no Link). Each item carries the stable PascalCase Name (used in request/response contracts) and the legacy integer Id.",
+        "operationId": "GetRequestStatesV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetRequestStatesResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/RequestTypes": {
+      "get": {
+        "tags": [
+          "Enums"
+        ],
+        "summary": "List request types",
+        "description": "Returns all valid request types as a bare array (a single complete page; X-Total-Count header, no Link). Each item carries the stable PascalCase Name (used in request/response contracts) and the legacy integer Id.",
+        "operationId": "GetRequestTypesV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetRequestTypesResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/OperationModes": {
+      "get": {
+        "tags": [
+          "Enums"
+        ],
+        "summary": "List operation modes",
+        "description": "Returns all valid operation mode identifiers and names.",
+        "operationId": "GetOperationModesV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetOperationModesResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/LocationTypes": {
+      "get": {
+        "tags": [
+          "Enums"
+        ],
+        "summary": "List location types",
+        "description": "Returns the valid location type names, without Unspecified.",
+        "operationId": "GetLocationTypesV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetLocationTypesResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/ProjectDomainTypes": {
+      "get": {
+        "tags": [
+          "Enums"
+        ],
+        "summary": "List project domain types",
+        "description": "Returns the names of all project domain types as a single complete page (bounded reference list — paging parameters are ignored). Use a returned name as the domainTypeName when updating a project.",
+        "operationId": "GetProjectDomainTypesV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProjectDomainTypesResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/AllocationUnitTypes": {
+      "get": {
+        "tags": [
+          "Enums"
+        ],
+        "summary": "List allocation unit types",
+        "description": "Returns the valid allocation unit type names, without None. A name from this list is what AllocationUnitType takes on the assignment writes.",
+        "operationId": "GetAllocationUnitTypesV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetAllocationUnitTypesResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/AuthenticationTypes": {
+      "get": {
+        "tags": [
+          "Enums"
+        ],
+        "summary": "List authentication types",
+        "description": "Returns the configured cluster authentication type names, the values PreferredAuthenticationType takes when creating a resource on a location. Whether a location's HEAppE instance offers a type is checked when the resource is provisioned.",
+        "operationId": "GetAuthenticationTypesV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetAuthenticationTypesResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Countries": {
+      "get": {
+        "tags": [
+          "Country"
+        ],
+        "summary": "List countries",
+        "description": "Returns reference country data, optionally filtered by country code (substring match).",
+        "operationId": "GetCountriesV2",
+        "parameters": [
+          {
+            "name": "countryCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetCountriesResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Statistics": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get weekly statistics",
+        "description": "Returns platform-wide totals and weekly creation counts for projects, users and resources.",
+        "operationId": "GetStatisticsV2",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetStatisticsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Resources": {
+      "get": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "List a provider's resources",
+        "description": "Returns the provider's resources that the caller can see (assigned to a project the caller has a role on), optionally filtered by project short name, location type name (locationType, for example HPC; Unspecified matches nothing) and validity dates. Each assignment carries its LocationType as a name.",
+        "operationId": "GetResourcesV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "projectShortName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationType",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ELocationType"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Resources/{resourceName}": {
+      "get": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "Get a provider's resource by name",
+        "description": "Returns a single resource by its (provider, name) natural key if it is assigned to a project the caller has a role on; otherwise 404. Each assignment carries its LocationType as a name.",
+        "operationId": "GetResourceByNameV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/ResourceRequests/{requestId}": {
+      "get": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "Get the status of an async resource-creation request",
+        "description": "Returns the flow status and per-step name/state summary for a resource-creation request submitted via the create-and-allocate endpoint (ADR-0057). Poll this URL — supplied as the 202 Accepted Location — until the flow reaches a terminal state (Completed or Failed). 404 when the request id is unknown.",
+        "operationId": "GetResourceRequestStatusV2",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetResourceRequestStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/ResourceRequests/{slug}/Cancel": {
+      "put": {
+        "tags": [
+          "ResourceRequest"
+        ],
+        "summary": "Cancel a resource-assignment request",
+        "description": "Cancels a resource-assignment request by resuming whichever approval gate it is parked at with a cancel signal; the request terminates as Cancelled. Caller must hold a role on the route project. Returns 204; 404 (resource_request.not_found) when the request is unknown, outside the caller's scope, or belongs to a different project — the three are deliberately indistinguishable; 409 when the request is already terminal (resource_request.not_cancellable) or the workflow is not yet parked at its gate (resource_request.not_cancellable_yet, retryable). On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "CancelResourceRequestV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/ResourceRequests/{slug}/ResendApproval": {
+      "post": {
+        "tags": [
+          "ResourceRequest"
+        ],
+        "summary": "Re-send the PI approval link for a resource-assignment request",
+        "description": "Regenerates the PI approval action link for a request still awaiting approval, invalidating the previous link, and re-emails the PI. Caller must hold a role on the route project. Returns 204; 404 (resource_request.not_found) when the request is unknown, outside the caller's scope, or belongs to a different project — the three are deliberately indistinguishable; 409 (resource_request.not_resendable) when the request is not awaiting PI approval. On a failure read the 'code' extension; do not parse the message.",
+        "operationId": "ResendResourceRequestApprovalV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Public/ResourceRequestActions/{token}": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Preview a resource-request action link",
+        "description": "Returns the resource request behind a single-use PI action-link token. No authentication required. Any unknown, expired, or already-used token returns an identical 404 (code resource_request.action_not_found) so token validity never leaks. Read the machine-readable code; do not parse the message.",
+        "operationId": "GetResourceRequestActionV2",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetResourceRequestActionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Settle a resource request via its action link",
+        "description": "Delivers the PI's Approve/Reject decision (with an optional reason on reject) through a single-use action-link token. No authentication required. Returns 204 when the decision is accepted; an identical 404 (code resource_request.action_not_found) for any unknown, expired, already-used, or already-settled token; 400 (code resource_request.invalid_decision) for a decision other than Approve or Reject.",
+        "operationId": "HandleResourceRequestActionV2",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandleResourceRequestActionBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Version": {
+      "get": {
+        "tags": [
+          "Meta"
+        ],
+        "summary": "Get application version",
+        "description": "Returns the current application version. No authentication required.",
+        "operationId": "GetVersionV2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetVersionResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/ResourceRequests": {
+      "post": {
+        "tags": [
+          "ResourceRequest"
+        ],
+        "summary": "Request that a provider's resource be assigned to a project",
+        "description": "Creates a project↔resource assignment request (ADR-0063). The caller must be an Owner or Manager of the route project (plan D10; out-of-scope is reported as 404 project.not_found, ADR-0018). Body {ProviderName, ResourceName, PrimaryInvestigatorEmail} names the resource and the PI to route approval to; the resource need not exist yet under that provider (it parks until created). Must not already be attached to the project (409 resource_request.already_attached), and must have no in-flight request for the same project/provider/resource (409 resource_request.duplicate_active). The provider is resolved within the caller's project scope, so one they cannot reach is reported as 404 provider.not_found, exactly like a missing one (ADR-0018). It must have a support e-mail (required to route requests for resources that do not yet exist; 422 resource_request.provider_no_support_email if missing). Starts the approval workflow asynchronously and returns 202 with the GUID-free slug and a Location header to the project's request list. On failure, read the 'code' extension, not the message. Status: 202 Accepted, 400 Bad Request, 404 project.not_found / provider.not_found, 409 resource_request.already_attached / resource_request.duplicate_active, 422 resource_request.provider_no_support_email, 502 resource_request.flow_start_failed (retryable).",
+        "operationId": "CreateResourceRequestV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateResourceRequestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateResourceRequestResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "get": {
+        "tags": [
+          "ResourceRequest"
+        ],
+        "summary": "List resource-assignment requests on a project",
+        "description": "Returns the resource-assignment requests raised on the specified project, optionally filtered by state, as a paged list (?page=&limit=). The caller must hold a role on the project (out-of-scope is reported as 404 project.not_found, ADR-0018). Each item carries the slug used to address the request's subsequent actions. The 'state' filter and the response 'state' field use stable PascalCase names (e.g. PendingPiApproval, Assigned). Status: 200 OK, 400 Bad Request (invalid state), 401 Unauthorized. On failure, read the 'code' extension, not the message.",
+        "operationId": "GetProjectResourceRequestsV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "State",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProjectResourceRequestsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Cyclops/Usage/{ProjectShortName}/{ProviderResourceName}": {
+      "get": {
+        "tags": [
+          "Cyclops"
+        ],
+        "summary": "Get Cyclops usage for a project resource",
+        "description": "Resource usage from the external Cyclops service. Served by the Gateway (authenticated and proxied to the Cyclops usage API); not implemented by Core, so it does not appear under api/v2.",
+        "operationId": "GetApiCyclopsUsageByProjectShortNameByProviderResourceName",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ProviderResourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage data returned by the Cyclops service."
+          },
+          "400": {
+            "description": "ProjectShortName or ProviderResourceName is missing from the path."
+          },
+          "401": {
+            "description": "The caller is not authenticated."
+          },
+          "403": {
+            "description": "The caller lacks permission to read usage for this project resource."
+          },
+          "500": {
+            "description": "The Cyclops integration is not configured, or the Cyclops service could not be reached."
+          }
+        }
+      }
+    },
+    "/api/Cyclops/TotalUsage/{ProviderResourceName}": {
+      "get": {
+        "tags": [
+          "Cyclops"
+        ],
+        "summary": "Get aggregated Cyclops usage for a resource",
+        "description": "Usage of a resource across all projects, aggregated by the external Cyclops service. Served by the Gateway (authenticated and proxied to the Cyclops aggregate usage API); not implemented by Core, so it does not appear under api/v2.",
+        "operationId": "GetApiCyclopsTotalUsageByProviderResourceName",
+        "parameters": [
+          {
+            "name": "ProviderResourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage data returned by the Cyclops service."
+          },
+          "400": {
+            "description": "ProviderResourceName is missing from the path."
+          },
+          "401": {
+            "description": "The caller is not authenticated."
+          },
+          "403": {
+            "description": "The caller lacks permission to read usage for this resource."
+          },
+          "500": {
+            "description": "The Cyclops integration is not configured, or the Cyclops service could not be reached."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BulkUpdateResult": {
+        "required": [
+          "Created",
+          "Updated",
+          "Deleted"
+        ],
+        "type": "object",
+        "properties": {
+          "Created": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Updated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Deleted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ClusterAttribute": {
+        "required": [
+          "Name",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "ClusterInfo": {
+        "required": [
+          "Name",
+          "Description",
+          "Url",
+          "IsPrivate",
+          "ClusterType",
+          "AllocationUnitCount",
+          "AllocationUnit",
+          "Attributes"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Url": {
+            "type": "string"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "ClusterType": {
+            "type": "string"
+          },
+          "AllocationUnitCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnit": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "Attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClusterAttribute"
+            }
+          }
+        }
+      },
+      "CreateOnboardingRequestResponse": {
+        "required": [
+          "Slug"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateProjectRequest": {
+        "required": [
+          "ShortName",
+          "Name",
+          "Description",
+          "ContactEmail",
+          "StartDate",
+          "EndDate",
+          "DomainTypeName"
+        ],
+        "type": "object",
+        "properties": {
+          "ShortName": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DomainTypeName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateProjectResponse": {
+        "required": [
+          "ShortName"
+        ],
+        "type": "object",
+        "properties": {
+          "ShortName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateProjectTagBody": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateProjectTagResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateRequestRequest": {
+        "required": [
+          "ProjectShortName",
+          "RequestType"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "RequestType": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateRequestResponse": {
+        "required": [
+          "Slug"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateResourceRequestRequest": {
+        "required": [
+          "ProviderName",
+          "ResourceName",
+          "PrimaryInvestigatorEmail"
+        ],
+        "type": "object",
+        "properties": {
+          "ProviderName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          },
+          "PrimaryInvestigatorEmail": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateResourceRequestResponse": {
+        "required": [
+          "Slug"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": "string"
+          }
+        }
+      },
+      "DataStagingLocationKey": {
+        "type": "object",
+        "properties": {
+          "BackupKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Key": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "JsonData": {
+            "type": "string"
+          }
+        }
+      },
+      "EAllocationUnitType": {
+        "enum": [
+          "None",
+          "Unspecified",
+          "NodeHours",
+          "CoreHours",
+          "Credits",
+          "GB",
+          "QPUSeconds"
+        ]
+      },
+      "ELocationType": {
+        "enum": [
+          "Unspecified",
+          "HPC",
+          "CLOUD",
+          "Kubernetes",
+          "Storage",
+          "iRODS",
+          "FirecREST",
+          "Quantum"
+        ]
+      },
+      "EProjectResourceState": {
+        "enum": [
+          "Draft",
+          "CheckHeappeStep",
+          "InitializeProjectResourceStep",
+          "InitializeHeappeStep",
+          "WaitingForCreationAccounts",
+          "FinalizeCreationProjectResourceStep",
+          "Published",
+          "Deleted",
+          "Failed"
+        ]
+      },
+      "GetAllocationUnitTypesResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          }
+        }
+      },
+      "GetAuthenticationTypesResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetCountriesResponse": {
+        "required": [
+          "Code",
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GetExtendedProjectAssignedResourceResponse": {
+        "required": [
+          "ResourceName",
+          "ResourceDescription",
+          "LocationName",
+          "LocationType",
+          "AllocationAmount",
+          "AllocationUnitType",
+          "AggregationName",
+          "Specifications"
+        ],
+        "type": "object",
+        "properties": {
+          "ResourceName": {
+            "type": "string"
+          },
+          "ResourceDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "LocationType": {
+            "$ref": "#/components/schemas/ELocationType"
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Specifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetExtendedProjectSpecificationEntry"
+            }
+          }
+        }
+      },
+      "GetExtendedProjectResponse": {
+        "required": [
+          "ShortName",
+          "Name",
+          "Description",
+          "Email",
+          "StartDate",
+          "EndDate",
+          "DomainTypeName",
+          "AssignedTags",
+          "AssignedResources"
+        ],
+        "type": "object",
+        "properties": {
+          "ShortName": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DomainTypeName": {
+            "type": "string"
+          },
+          "AssignedTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "AssignedResources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetExtendedProjectAssignedResourceResponse"
+            }
+          }
+        }
+      },
+      "GetExtendedProjectSpecificationEntry": {
+        "required": [
+          "Name",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "GetLocationResponse": {
+        "required": [
+          "Name",
+          "Description",
+          "Endpoint",
+          "IsPrivate",
+          "IsShared",
+          "LocationType",
+          "ProviderName",
+          "Mode",
+          "DefaultServiceIntegrationUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Endpoint": {
+            "type": "string"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "IsShared": {
+            "type": "boolean"
+          },
+          "LocationType": {
+            "$ref": "#/components/schemas/ELocationType"
+          },
+          "ProviderName": {
+            "type": "string"
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "DefaultServiceIntegrationUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GetLocationsResponse": {
+        "required": [
+          "Name",
+          "Description",
+          "Endpoint",
+          "IsPrivate",
+          "IsShared",
+          "LocationType",
+          "ProviderName",
+          "Mode",
+          "DefaultServiceIntegrationUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Endpoint": {
+            "type": "string"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "IsShared": {
+            "type": "boolean"
+          },
+          "LocationType": {
+            "$ref": "#/components/schemas/ELocationType"
+          },
+          "ProviderName": {
+            "type": "string"
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "DefaultServiceIntegrationUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GetLocationTypesResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "$ref": "#/components/schemas/ELocationType"
+          }
+        }
+      },
+      "GetMyOnboardingRequestsResponse": {
+        "required": [
+          "Slug",
+          "State",
+          "ProjectShortName",
+          "IdpUserId",
+          "ContactEmail",
+          "Direction"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "State": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "IdpUserId": {
+            "type": "string"
+          },
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Direction": {
+            "type": "string"
+          }
+        }
+      },
+      "GetOperationModesResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetProjectDomainTypesResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetProjectResourceRequestsResponse": {
+        "required": [
+          "Slug",
+          "State",
+          "ProviderName",
+          "ResourceName",
+          "RequesterIdpId",
+          "CreatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string"
+          },
+          "ProviderName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          },
+          "RequesterIdpId": {
+            "type": "string"
+          },
+          "CreatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GetProjectResponse": {
+        "required": [
+          "ShortName",
+          "Name",
+          "Description",
+          "Email",
+          "ExternalId",
+          "Mode",
+          "State",
+          "ServiceName",
+          "StartDate",
+          "EndDate",
+          "DomainType",
+          "IsDeleted",
+          "Tags",
+          "Users",
+          "Resources"
+        ],
+        "type": "object",
+        "properties": {
+          "ShortName": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ExternalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string"
+          },
+          "ServiceName": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DomainType": {
+            "type": "string"
+          },
+          "IsDeleted": {
+            "type": "boolean"
+          },
+          "Tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "Users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectUserRecord"
+            }
+          },
+          "Resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceDetailRecord"
+            }
+          }
+        }
+      },
+      "GetProjectsInfoAssignmentModel": {
+        "required": [
+          "LocationName",
+          "LocationDescription",
+          "ResourceType",
+          "AllocationAmount",
+          "AllocationUnitType",
+          "AggregationName",
+          "Specifications"
+        ],
+        "type": "object",
+        "properties": {
+          "LocationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "LocationDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ResourceType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Specifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfstringAndstring"
+            }
+          }
+        }
+      },
+      "GetProjectsInfoAssociatedProjectModel": {
+        "required": [
+          "Id",
+          "ProjectName",
+          "ShortName",
+          "CollectorName",
+          "StartDate",
+          "EndDate"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ProjectName": {
+            "type": "string"
+          },
+          "ShortName": {
+            "type": "string"
+          },
+          "CollectorName": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "GetProjectsInfoResourceModel": {
+        "required": [
+          "Id",
+          "Name",
+          "Description",
+          "StartDate",
+          "EndDate",
+          "AssociatedProjects",
+          "Assignments"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "AssociatedProjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectsInfoAssociatedProjectModel"
+            }
+          },
+          "Assignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectsInfoAssignmentModel"
+            }
+          }
+        }
+      },
+      "GetProjectsInfoResponse": {
+        "required": [
+          "ProviderId",
+          "ProviderName",
+          "ProviderDescription",
+          "Resources"
+        ],
+        "type": "object",
+        "properties": {
+          "ProviderId": {
+            "type": "string"
+          },
+          "ProviderName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProviderDescription": {
+            "type": "string"
+          },
+          "Resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectsInfoResourceModel"
+            }
+          }
+        }
+      },
+      "GetProjectsResponse": {
+        "required": [
+          "ShortName",
+          "Name",
+          "Email",
+          "ExternalId",
+          "Mode",
+          "State",
+          "ServiceName",
+          "StartDate",
+          "EndDate"
+        ],
+        "type": "object",
+        "properties": {
+          "ShortName": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ExternalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string"
+          },
+          "ServiceName": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GetProjectTagResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetProjectTagsResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetProjectTemplatesCommandTemplateResponse": {
+        "required": [
+          "Id",
+          "Name",
+          "IsGeneric",
+          "Parameters"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "IsGeneric": {
+            "type": "boolean"
+          },
+          "Parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectTemplatesTemplateParameterResponse"
+            }
+          }
+        }
+      },
+      "GetProjectTemplatesNodeAllocationResponse": {
+        "required": [
+          "LexisResourceName",
+          "CommandTemplates"
+        ],
+        "type": "object",
+        "properties": {
+          "LexisResourceName": {
+            "type": "string"
+          },
+          "CommandTemplates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectTemplatesCommandTemplateResponse"
+            }
+          }
+        }
+      },
+      "GetProjectTemplatesNodeResponse": {
+        "required": [
+          "NodeId",
+          "NodeType",
+          "NumberOfNodes",
+          "ClusterPerNode",
+          "MaxWallTime",
+          "FileTransferMethodId",
+          "Allocations"
+        ],
+        "type": "object",
+        "properties": {
+          "NodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "NodeType": {
+            "type": "string"
+          },
+          "NumberOfNodes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ClusterPerNode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "MaxWallTime": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "FileTransferMethodId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Allocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectTemplatesNodeAllocationResponse"
+            }
+          }
+        }
+      },
+      "GetProjectTemplatesResponse": {
+        "required": [
+          "IsAvailable",
+          "ClusterName",
+          "LocationId",
+          "ClusterId",
+          "Nodes"
+        ],
+        "type": "object",
+        "properties": {
+          "IsAvailable": {
+            "type": "boolean"
+          },
+          "ClusterName": {
+            "type": "string"
+          },
+          "LocationId": {
+            "type": "string"
+          },
+          "ClusterId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "Nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectTemplatesNodeResponse"
+            }
+          }
+        }
+      },
+      "GetProjectTemplatesTemplateParameterResponse": {
+        "required": [
+          "Identifier",
+          "Description"
+        ],
+        "type": "object",
+        "properties": {
+          "Identifier": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GetProjectUsersResponse": {
+        "required": [
+          "IdpUserId",
+          "Email",
+          "UserName",
+          "RoleName"
+        ],
+        "type": "object",
+        "properties": {
+          "IdpUserId": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string"
+          },
+          "UserName": {
+            "type": "string"
+          },
+          "RoleName": {
+            "type": "string"
+          }
+        }
+      },
+      "GetProviderResponse": {
+        "required": [
+          "Name",
+          "Description",
+          "SupportEmail",
+          "ExternalId",
+          "Mode",
+          "ServiceName",
+          "IsPrivate",
+          "CountryCode",
+          "IsDeleted",
+          "Locations"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SupportEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ExternalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "ServiceName": {
+            "type": "string"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "CountryCode": {
+            "type": "string"
+          },
+          "IsDeleted": {
+            "type": "boolean"
+          },
+          "Locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocationRecord"
+            }
+          }
+        }
+      },
+      "GetProvidersResponse": {
+        "required": [
+          "Name",
+          "Description",
+          "SupportEmail",
+          "ExternalId",
+          "Mode",
+          "ServiceName",
+          "IsPrivate",
+          "CountryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SupportEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ExternalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "ServiceName": {
+            "type": "string"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "CountryCode": {
+            "type": "string"
+          }
+        }
+      },
+      "GetPublicRequestInfoResponse": {
+        "required": [
+          "RequestorUserName",
+          "RequestorEmail",
+          "ProjectShortName",
+          "ProjectResourceName",
+          "ProviderName",
+          "RequestState",
+          "ValidTo",
+          "RequestType",
+          "AcceptActionLink",
+          "RejectActionLink"
+        ],
+        "type": "object",
+        "properties": {
+          "RequestorUserName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "RequestorEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "ProjectResourceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProviderName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "RequestState": {
+            "type": "string"
+          },
+          "ValidTo": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "RequestType": {
+            "type": "string"
+          },
+          "AcceptActionLink": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "RejectActionLink": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GetRequestsResponse": {
+        "required": [
+          "ContactEmail",
+          "Type",
+          "State",
+          "ProjectShortName",
+          "IdpUserId",
+          "ProviderName",
+          "ProjectResourceName"
+        ],
+        "type": "object",
+        "properties": {
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Type": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "IdpUserId": {
+            "type": "string"
+          },
+          "ProviderName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProjectResourceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GetRequestStatesResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetRequestTypesResponse": {
+        "required": [
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetResourceRequestActionResponse": {
+        "required": [
+          "Slug",
+          "ProjectShortName",
+          "ProviderName",
+          "ResourceName",
+          "RequesterIdpId",
+          "State"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "ProviderName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          },
+          "RequesterIdpId": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string"
+          }
+        }
+      },
+      "GetResourceRequestStatusResponse": {
+        "required": [
+          "RequestId",
+          "Status",
+          "Steps"
+        ],
+        "type": "object",
+        "properties": {
+          "RequestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Status": {
+            "$ref": "#/components/schemas/RequestStatus"
+          },
+          "Steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetResourceRequestStatusStepSummary"
+            }
+          }
+        }
+      },
+      "GetResourceRequestStatusStepSummary": {
+        "required": [
+          "StateName",
+          "ExecutionStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "StateName": {
+            "type": "string"
+          },
+          "ExecutionStatus": {
+            "$ref": "#/components/schemas/StepExecutionStatus"
+          }
+        }
+      },
+      "GetSentRequestsResponse": {
+        "required": [
+          "ContactEmail",
+          "Type",
+          "State",
+          "ProjectShortName",
+          "IdpUserId",
+          "ProviderName",
+          "ProjectResourceName"
+        ],
+        "type": "object",
+        "properties": {
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Type": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "IdpUserId": {
+            "type": "string"
+          },
+          "ProviderName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProjectResourceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "GetStatisticsResponse": {
+        "required": [
+          "NumberOfProjects",
+          "NumberOfUsers",
+          "NumberOfResources",
+          "WeeklyData"
+        ],
+        "type": "object",
+        "properties": {
+          "NumberOfProjects": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "NumberOfUsers": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "NumberOfResources": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "WeeklyData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetStatisticsWeeklyData"
+            }
+          }
+        }
+      },
+      "GetStatisticsWeeklyData": {
+        "required": [
+          "From",
+          "To",
+          "ProjectsCreated",
+          "UsersCreated",
+          "ResourcesCreated"
+        ],
+        "type": "object",
+        "properties": {
+          "From": {
+            "type": "string",
+            "format": "date"
+          },
+          "To": {
+            "type": "string",
+            "format": "date"
+          },
+          "ProjectsCreated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "UsersCreated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ResourcesCreated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "GetSyncDetailsLocationModel": {
+        "required": [
+          "Name",
+          "Descritpion",
+          "Endpoint",
+          "IsPrivate",
+          "Type",
+          "AllocationUnitCount",
+          "AllocationUnitType",
+          "Values"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Descritpion": {
+            "type": "string"
+          },
+          "Endpoint": {
+            "type": "string"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "Type": {
+            "type": "string"
+          },
+          "AllocationUnitCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "Values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfstringAndstring"
+            }
+          }
+        }
+      },
+      "GetSyncDetailsProjectResourceModel": {
+        "required": [
+          "Name",
+          "Description",
+          "StartDate",
+          "EndDate",
+          "State",
+          "Locations"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "State": {
+            "$ref": "#/components/schemas/EProjectResourceState"
+          },
+          "Locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetSyncDetailsLocationModel"
+            }
+          }
+        }
+      },
+      "GetSyncDetailsResponse": {
+        "required": [
+          "Id",
+          "KeycloakSid",
+          "Name",
+          "UserName",
+          "Email",
+          "IsDeleted",
+          "SystemRoles"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "KeycloakSid": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "UserName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsDeleted": {
+            "type": "boolean"
+          },
+          "SystemRoles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetSyncDetailsSystemRoleModel"
+            }
+          }
+        }
+      },
+      "GetSyncDetailsSystemRoleModel": {
+        "required": [
+          "ProjectShortName",
+          "UserEmail",
+          "RoleName",
+          "ProjectResources",
+          "SystemPermissionTypes"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "UserEmail": {
+            "type": "string"
+          },
+          "RoleName": {
+            "type": "string"
+          },
+          "ProjectResources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetSyncDetailsProjectResourceModel"
+            }
+          },
+          "SystemPermissionTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GetUserPreferencesResponse": {
+        "required": [
+          "Preferences"
+        ],
+        "type": "object",
+        "properties": {
+          "Preferences": {
+            "$ref": "#/components/schemas/JsonElement"
+          }
+        }
+      },
+      "GetValidRolesResponse": {
+        "required": [
+          "Name",
+          "Description",
+          "Permissions"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "Permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GetVersionResponse": {
+        "required": [
+          "Version"
+        ],
+        "type": "object",
+        "properties": {
+          "Version": {
+            "type": "string"
+          }
+        }
+      },
+      "GetWorkerDataDataStagingPart": {
+        "required": [
+          "Name",
+          "JsonData"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "JsonData": {
+            "type": "string"
+          }
+        }
+      },
+      "GetWorkerDataResponse": {
+        "required": [
+          "Name",
+          "PublicData",
+          "PrivateData"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "PublicData": {
+            "$ref": "#/components/schemas/GetWorkerDataDataStagingPart"
+          },
+          "PrivateData": {
+            "$ref": "#/components/schemas/GetWorkerDataDataStagingPart"
+          }
+        }
+      },
+      "HandleActionLinkResponse": {
+        "required": [
+          "Message"
+        ],
+        "type": "object",
+        "properties": {
+          "Message": {
+            "type": "string"
+          }
+        }
+      },
+      "HandleResourceRequestActionBody": {
+        "required": [
+          "Decision"
+        ],
+        "type": "object",
+        "properties": {
+          "Decision": {
+            "type": "string"
+          },
+          "Reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ChangeProjectUserRoleBody": {
+        "required": [
+          "RoleName"
+        ],
+        "type": "object",
+        "properties": {
+          "RoleName": {
+            "type": "string"
+          }
+        }
+      },
+      "JsonElement": { },
+      "KeyValuePairOfstringAndstring": {
+        "required": [
+          "Key",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Key": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Value": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "LocationRecord": {
+        "required": [
+          "Name",
+          "Endpoint",
+          "Description",
+          "IsPrivate",
+          "IsShared"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Endpoint": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "IsShared": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProjectResourceSummary": {
+        "required": [
+          "ResourceName",
+          "Description",
+          "StartDate",
+          "EndDate",
+          "Clusters"
+        ],
+        "type": "object",
+        "properties": {
+          "ResourceName": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Clusters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClusterInfo"
+            }
+          }
+        }
+      },
+      "ProjectShortName": { },
+      "ProjectUserRecord": {
+        "required": [
+          "UserName",
+          "Email"
+        ],
+        "type": "object",
+        "properties": {
+          "UserName": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestStatus": {
+        "enum": [
+          "Accepted",
+          "InProgress",
+          "AwaitingSignal",
+          "Completed",
+          "Failed"
+        ]
+      },
+      "ResourceAssignmentResponse": {
+        "required": [
+          "Slug",
+          "LocationType",
+          "IsLocationShared",
+          "LocationName",
+          "AllocationAmount",
+          "AllocationUnitType",
+          "AggregationName",
+          "OperationMode",
+          "Specifications"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "LocationType": {
+            "$ref": "#/components/schemas/ELocationType"
+          },
+          "IsLocationShared": {
+            "type": "boolean"
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "OperationMode": {
+            "type": "string"
+          },
+          "Specifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpecificationResponse"
+            }
+          }
+        }
+      },
+      "ResourceDetailRecord": {
+        "required": [
+          "ResourceName",
+          "StartDate",
+          "EndDate"
+        ],
+        "type": "object",
+        "properties": {
+          "ResourceName": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ResourceResponse": {
+        "required": [
+          "Name",
+          "ProviderResourceName",
+          "Description",
+          "PrimaryInvestigatorEmail",
+          "StartDate",
+          "EndDate",
+          "OperationMode",
+          "LicenseUrl",
+          "State",
+          "Assignments"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "ProviderResourceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PrimaryInvestigatorEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "OperationMode": {
+            "type": "string"
+          },
+          "LicenseUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "State": {
+            "$ref": "#/components/schemas/EProjectResourceState"
+          },
+          "Assignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceAssignmentResponse"
+            }
+          }
+        }
+      },
+      "SpecificationResponse": {
+        "required": [
+          "Name",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "StepExecutionStatus": {
+        "enum": [
+          "Running",
+          "Completed",
+          "Failed",
+          "RetryScheduled"
+        ]
+      },
+      "UpdateProjectRequest": {
+        "required": [
+          "Name",
+          "Description",
+          "ContactEmail",
+          "StartDate",
+          "EndDate",
+          "DomainTypeName"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DomainTypeName": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateUserPreferencesRequest": {
+        "required": [
+          "Preferences"
+        ],
+        "type": "object",
+        "properties": {
+          "Preferences": {
+            "$ref": "#/components/schemas/JsonElement"
+          }
+        }
+      },
+      "UserInfoExtendedResponse": {
+        "required": [
+          "IdentityProviderUserId",
+          "Name",
+          "UserName",
+          "Email",
+          "SystemRoles"
+        ],
+        "type": "object",
+        "properties": {
+          "IdentityProviderUserId": {
+            "type": "string"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "UserName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SystemRoles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSystemRoleExtendedRecord"
+            }
+          }
+        }
+      },
+      "UserInfoResponse": {
+        "required": [
+          "IdentityProviderUserId",
+          "Name",
+          "UserName",
+          "Email",
+          "SystemRoles"
+        ],
+        "type": "object",
+        "properties": {
+          "IdentityProviderUserId": {
+            "type": "string"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "UserName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SystemRoles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSystemRoleRecord"
+            }
+          }
+        }
+      },
+      "UserSystemRoleExtendedRecord": {
+        "required": [
+          "IdpUserId",
+          "UserEmail",
+          "RoleName",
+          "ProjectShortName",
+          "SystemPermissionTypes",
+          "ProjectResources"
+        ],
+        "type": "object",
+        "properties": {
+          "IdpUserId": {
+            "type": "string"
+          },
+          "UserEmail": {
+            "type": "string"
+          },
+          "RoleName": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SystemPermissionTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ProjectResources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectResourceSummary"
+            }
+          }
+        }
+      },
+      "UserSystemRoleRecord": {
+        "required": [
+          "IdpUserId",
+          "UserEmail",
+          "RoleName",
+          "ProjectShortName",
+          "SystemPermissionTypes"
+        ],
+        "type": "object",
+        "properties": {
+          "IdpUserId": {
+            "type": "string"
+          },
+          "UserEmail": {
+            "type": "string"
+          },
+          "RoleName": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SystemPermissionTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Paste only the JWT access token. The Bearer prefix is applied automatically.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "Service": {
+        "type": "apiKey",
+        "description": "Paste only the service token in format: Service TOKEN/KEY",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "DataStaging"
+    },
+    {
+      "name": "Service"
+    },
+    {
+      "name": "Project"
+    },
+    {
+      "name": "Provider"
+    },
+    {
+      "name": "Request"
+    },
+    {
+      "name": "Public"
+    },
+    {
+      "name": "OnboardingRequest"
+    },
+    {
+      "name": "UserInfo"
+    },
+    {
+      "name": "User"
+    },
+    {
+      "name": "Location"
+    },
+    {
+      "name": "ProjectTag"
+    },
+    {
+      "name": "Enums"
+    },
+    {
+      "name": "Country"
+    },
+    {
+      "name": "Statistics"
+    },
+    {
+      "name": "Resource"
+    },
+    {
+      "name": "ResourceRequest"
+    },
+    {
+      "name": "Meta"
+    }
+  ]
+}

@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waldur Sync Refactor — Plan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin: 5px 0;
+        }
+        .status-badge {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        .status-badge.amended {
+            background: #f39c12;
+        }
+        .summary {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #2c3e50;
+        }
+        .summary h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .summary p {
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+        .amendment-note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #856404;
+        }
+        .amendment-note strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .diagram {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #3498db;
+        }
+        .diagram h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .diagram pre {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.4;
+            border: 1px solid #e0e0e0;
+        }
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 50px 0 30px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            border-left: 5px solid #3498db;
+        }
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .card.decision-0053 { border-left-color: #e74c3c; }
+        .card.decision-0054 { border-left-color: #e67e22; }
+        .card.decision-0055 { border-left-color: #f39c12; }
+        .card.decision-0056 { border-left-color: #16a085; }
+        .card.decision-0057 { border-left-color: #27ae60; }
+        .card.decision-0058 { border-left-color: #2980b9; }
+        .card.decision-0059 { border-left-color: #8e44ad; }
+        .card.decision-0060 {
+            border-left: 3px dashed #95a5a6;
+            border-left-color: #95a5a6;
+        }
+        .card.decision-0061 { border-left-color: #16a085; }
+        .card.optional {
+            opacity: 0.95;
+            background: #fafbfc;
+        }
+        .card.amended .card-title::after {
+            content: " [AMENDED]";
+            font-size: 0.8em;
+            background: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+        .card-header {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .card.optional .card-header {
+            background: #f0f4f8;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .card-adr {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .optional-badge {
+            display: inline-block;
+            background: #95a5a6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 8px;
+            letter-spacing: 0.5px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-section {
+            margin-bottom: 18px;
+        }
+        .card-section:last-child {
+            margin-bottom: 0;
+        }
+        .card-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .card-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        .card-content ul, .card-content ol {
+            margin-left: 18px;
+            margin-top: 8px;
+        }
+        .card-content li {
+            margin-bottom: 8px;
+        }
+        .card-content code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "Courier New", monospace;
+            font-size: 13px;
+            color: #c7254e;
+        }
+        .reference-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #2980b9;
+        }
+        .reference-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .reference-section h3 {
+            font-size: 16px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+        .reference-section h4 {
+            font-size: 14px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        .normalization-checklist {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 12px 0;
+            border-left: 3px solid #2980b9;
+        }
+        .normalization-checklist ol {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+        .normalization-checklist li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .contract-code {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .contract-code pre {
+            background: #f8f9fa;
+            padding: 0;
+            border: none;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .phases-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #16a085;
+        }
+        .phases-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .phase-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+        .phase-block.optional {
+            background: #f0f4f8;
+            border-left: 3px dashed #95a5a6;
+        }
+        .phase-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+        .phase-title .badge {
+            display: inline-block;
+            background: #95a5a6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+        .phase-content {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #2c3e50;
+        }
+        .phase-content ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .phase-content li {
+            margin-bottom: 8px;
+        }
+        .verify-box {
+            background: #ecf0f1;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-top: 12px;
+            border-left: 3px solid #3498db;
+            font-size: 13px;
+        }
+        .phase-block.optional .verify-box {
+            background: #e8f1f8;
+            border-left-color: #95a5a6;
+        }
+        .verify-label {
+            font-weight: bold;
+            color: #2980b9;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #bdc3c7;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .decision-table {
+            font-size: 13px;
+        }
+        .decision-table td:first-child {
+            font-weight: bold;
+            color: #2980b9;
+            width: 40px;
+        }
+        .decision-table td:last-child {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        .decision-table tr.amended-row {
+            background: #fff9e6;
+        }
+        .decision-table tr.amended-row td:first-child {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .decision-table tr.optional-row {
+            background: #f0f4f8;
+        }
+        .decision-table tr.optional-row td:first-child {
+            color: #95a5a6;
+        }
+        .risks-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #e74c3c;
+        }
+        .risks-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .risk-row {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .risk-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .risk-label {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+        .footer {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 60px;
+        }
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Waldur Sync Refactor</h1>
+            <p>Event-producing sync module for the Waldur integration</p>
+            <p>A junior-friendly guide to the approved architecture and decisions</p>
+            <span class="status-badge">Approved 2026-07-06</span>
+            <span class="status-badge amended">Amended after independent review</span>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="summary">
+            <h2>What We Are Building</h2>
+            <p>
+                Replace the current Waldur integration (Waldur.EFP, Waldur.Puhuri, WaldurPlatform.Base,
+                ~5 000 LOC across multiple projects with complex channel pipelines) with a <strong>new,
+                simple, long-term-maintainable implementation</strong> that keeps all the functionality but
+                restructures it along a clear boundary.
+            </p>
+            <p>
+                The new shape has three parts:
+            </p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Waldur.Contracts</strong> — Integration event types + IWaldurEventPublisher port (the seam)</li>
+                <li><strong>Waldur.Sync</strong> — Pull module: per-instance sequential worker, SHA change detection, event emission</li>
+                <li><strong>Consumer handlers</strong> in Userorg.Adapter/Waldur — Small handlers, one per event type, apply events to the UserOrg database</li>
+            </ul>
+            <p style="margin-top: 15px;">
+                Still a monolith today, but the seam is <em>exactly where RabbitMQ slots in later</em>: swap the
+                in-process publisher for a queue publisher, host the handlers behind a queue consumer, lift Waldur.Sync
+                into its own container. Nothing else changes.
+            </p>
+            <p style="margin-top: 15px;">
+                <strong>Why this shape:</strong> The one boundary that matters is <em>"pull side produces events, UserOrg
+                side consumes them"</em>. Everything inside either side stays as plain, sequential, readable code. We
+                deliberately do NOT rebuild the current channel pipeline — it solved a throughput problem the
+                30-minute cadence doesn't have, at the cost of making "which item failed and why" nearly unanswerable.
+            </p>
+            <div class="amendment-note">
+                <strong>Review Status:</strong> This plan was approved on 2026-07-06 and then independently reviewed
+                by 2 reviewers the same day. Several ADRs carry <strong>Amendments</strong> sections that refine the original
+                decisions. Where this plan text and an ADR conflict, <strong>the ADR's Amendments section is authoritative</strong>
+                — this HTML already reflects the amended state.
+            </div>
+        </div>
+
+        <!-- Target Architecture Diagram -->
+        <div class="diagram">
+            <h2>Target Architecture & Iteration Algorithm</h2>
+            <pre>                 Waldur API (per instance: EFP, Puhuri, …)
+                          │  HTTP pull (30 min) — future: push trigger joins here
+                          ▼
+┌─ Waldur.Sync ────────────────────────────────────────────────────────┐
+│  per enabled instance (config Waldur:Instances):                     │
+│    WaldurApiClient  →  payload mapping  →  SHA diff  →  events       │
+│    + storage-config hash → StorageConfigurationChanged (ADR-0061)    │
+│    (sequential worker; SHA map in memory, cold rebuilt on start)     │
+└──────────────────────────────┬───────────────────────────────────────┘
+                               │ IWaldurEventPublisher (Waldur.Contracts)
+                               ▼         ← the future RabbitMQ seam
+┌─ Userorg.Adapter/Waldur (consumer) ──────────────────────────────────┐
+│  InProcessWaldurEventPublisher → handler per event type              │
+│  (own DI scope per event, direct IUserOrgDbContext, Heappe in        │
+│   ProjectUpsertHandler for both Created AND Updated, one event =     │
+│   one SaveChangesAsync)                                              │
+└──────────────────────────────────────────────────────────────────────┘</pre>
+            <p style="margin-top: 20px; font-size: 13px; color: #7f8c8d;">
+                <strong>Per-iteration algorithm (one instance):</strong><br>
+                0. <strong>Startup only:</strong> cold rebuild SHA map from DB; publish one StorageConfigurationChanged.<br>
+                1. <strong>Storage config:</strong> hash config; if ≠ map → publish StorageConfigurationChanged; SHA update only after ack.<br>
+                2. <strong>Providers:</strong> fetch customers; per customer fetch offerings; derive locations (ADR-0054/A3) → map to ProviderPayload → hash → Created/Updated or skip.<br>
+                3. <strong>Projects:</strong> fetch all projects; per project fetch resources + offering details (bounded concurrency) → apply eligibility rules (ADR-0054/A4) → map with IsRemoved flag → hash → Created/Updated or skip.<br>
+                4. <strong>Users:</strong> per eligible project fetch list_users (complete snapshot or explicit failure — D7). On success: diff per (projectExternalId, userName) → UserAssigned/UserRoleChanged/UserRemoved. On failure: warning, skip membership this iteration.<br>
+                5. <strong>Each event:</strong> successful PublishAsync → write SHA entry. Failure → structured error, no SHA write, continue. Absence transitions → warning (ADR-0058/A1).<br>
+                6. <strong>End of iteration:</strong> always-log summary; sleep delay measured from completion (ADR-0056/A2).
+            </p>
+        </div>
+
+        <!-- Locked Decisions Table -->
+        <div class="diagram">
+            <h2>Locked Decisions (D1–D18)</h2>
+            <p style="margin-bottom: 15px; font-size: 13px; color: #7f8c8d;">
+                D1–D13 from the grilling session (2026-07-06). D14–D18 added by independent review.
+                Amended rows have [AMENDED] markers and carry binding corrections from the review.
+            </p>
+            <div class="table-wrapper">
+                <table class="decision-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Decision</th>
+                            <th>ADR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>D1</td>
+                            <td>SHA state is in-memory only; cold rebuild from UserOrg DB on start (DB → DTO → hash). No sync-state table, no SHA columns.</td>
+                            <td>0055</td>
+                        </tr>
+                        <tr>
+                            <td>D2</td>
+                            <td>Fat events (event-carried state transfer). Consumer never calls back. Future Waldur push = second trigger on the producer input, not a pull-back channel.</td>
+                            <td>0054</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D3</td>
+                            <td><strong>[AMENDED]</strong> No delete from pull absence. Absence = warning on transition only (ADR-0058/A1), plus summary count. Project removal = IsRemoved payload flag (see D6), no separate ProjectDeleted event.</td>
+                            <td>0054, 0058/A1</td>
+                        </tr>
+                        <tr>
+                            <td>D4</td>
+                            <td>Sequential worker, phase order preserved: Providers → Projects → Users. No channels/worker pools; bounded parallelism only for API-latency hot spots. Timer = delay after iteration completion (ADR-0056/A2).</td>
+                            <td>0056</td>
+                        </tr>
+                        <tr>
+                            <td>D5</td>
+                            <td>Synchronous ack: SHA map updated only after the handler succeeded. Retry = next iteration. No DLQ. Handlers throw on missing parents — never skip-and-ack (ADR-0056/A1).</td>
+                            <td>0056, 0056/A1</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D6</td>
+                            <td><strong>[AMENDED]</strong> Taxonomy: ProviderCreated/Updated, ProjectCreated/Updated (resources embedded; IsRemoved flag in payload replaces the separate ProjectDeleted event), per-user UserAssigned/UserRoleChanged/UserRemoved, StorageConfigurationChanged (ADR-0061).</td>
+                            <td>0054/A1, 0061</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D7</td>
+                            <td><strong>[AMENDED]</strong> UserRemoved only from a successfully fetched complete member snapshot; failed member fetch → no membership events for that project that iteration. API client fails loudly on partial pagination (ADR-0056/A4).</td>
+                            <td>0054, 0056/A4</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D8</td>
+                            <td><strong>[AMENDED]</strong> Consumer = one handler per event type, shared EFP+Puhuri, direct IUserOrgDbContext. Heappe ensure runs in the project upsert path (Created AND Updated), per HPC resource (ADR-0057/A1), plus Heappe command-template sync trigger (ADR-0057/A2). One event = one DI scope = one terminal SaveChangesAsync (Heappe called before save, ADR-0057/A3).</td>
+                            <td>0057/A1–A3</td>
+                        </tr>
+                        <tr>
+                            <td>D9</td>
+                            <td>Projects: Waldur.Contracts ← Waldur.Sync / consumer in Userorg.Adapter/Waldur. EFP/Puhuri = config instances (Waldur:Instances), 0–N enabled concurrently, own worker + own SHA map each.</td>
+                            <td>0053</td>
+                        </tr>
+                        <tr>
+                            <td>D10</td>
+                            <td>STOMP listener not ported.</td>
+                            <td>0053</td>
+                        </tr>
+                        <tr>
+                            <td>D11</td>
+                            <td>Logging via StepUpLogging levels: Debug = troubleshooting detail, Info = per-entity start/end, always-log Info = iteration summary, Warning/Error = structured per-item failure with phase attribution (fetch|diff|publish|handler|heappe). Unchanged items log nothing.</td>
+                            <td>0058</td>
+                        </tr>
+                        <tr>
+                            <td>D12</td>
+                            <td>Cutover in one branch, old projects deleted; acceptance = parallel run old-vs-new with specified comparison methodology (natural keys, exclusion + expected-difference lists, Heappe isolated, old side one instance at a time, ADR-0059/A1).</td>
+                            <td>0059</td>
+                        </tr>
+                        <tr>
+                            <td>D13</td>
+                            <td>SHA-256 over the canonically serialized event payload; hash covers only pure functions of API data + config (ADR-0055/A2 normalization checklist is binding, incl. no clock reads, truncation in producer, canonical GUID format, UTC with defined precision, null conventions, collection ordering, decimal format, derived values reproducible from DB).</td>
+                            <td>0055/A1–A2</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D14</td>
+                            <td><strong>[NEW from review]</strong> EFP storage reconciliation: write-time association in the project upsert handler + config-hash-triggered StorageConfigurationChanged full reconcile; reconciliation-owned rows (ServiceName = EfpCoreServiceName) excluded from payload mapping/hashes (ADR-0055/A4, ADR-0061).</td>
+                            <td>0061</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D15</td>
+                            <td><strong>[NEW from review, AMENDED D2]</strong> Membership identity = UserName (Waldur user UUID is not stored in the DB and cannot seed a cold rebuild). UserRemoved carries (Instance, ProjectExternalId, UserName) (ADR-0054/A2).</td>
+                            <td>0054/A2</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D16</td>
+                            <td><strong>[NEW from review]</strong> Shared entities (users): hash instance-owned fields only (project, userName, role, access); user profile fields written on create only (ADR-0055/A3).</td>
+                            <td>0055/A3</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D17</td>
+                            <td><strong>[NEW from review, AMENDED D9]</strong> Puhuri semantics defined by intent, not by today's broken code: service name = instance name ("Puhuri-Waldur"), own service account, no storage reconciliation. Non-empty-DB cutover data check required (ADR-0059/A2–A3).</td>
+                            <td>0059/A2–A3</td>
+                        </tr>
+                        <tr class="amended-row">
+                            <td>D18</td>
+                            <td><strong>[NEW from review]</strong> Per-instance service account is ensured by the consumer (idempotent, from instance identity options); it is the CreatedBy/AssignedBy identity for all sync writes (ADR-0057/A5).</td>
+                            <td>0057/A5</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADR Cards -->
+        <h2 class="section-title">Architecture Decision Records (9 ADRs)</h2>
+        <p style="margin-bottom: 30px; font-size: 14px; color: #7f8c8d;">
+            One card per ADR. Cards for amended ADRs present the amended state as the truth.
+            ADR-0060 (optional Phase 6) is marked with a dashed border and lighter background.
+        </p>
+
+        <div class="cards-grid">
+            <!-- ADR 0053 -->
+            <div class="card decision-0053">
+                <div class="card-header">
+                    <div class="card-title">Rewrite as Event-Producing Module</div>
+                    <div class="card-adr">ADR-0053</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            The current integration is ~5 000 LOC split across four projects with complex
+                            channel pipelines (1–32 worker pool, drain phases, dead-letter queue) and
+                            fragmented logic making "which item failed and why" hard to answer.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice</div>
+                        <div class="card-content">
+                            Create three new projects with a clear boundary: <code>Waldur.Contracts</code>
+                            (event types + port), <code>Waldur.Sync</code> (pull side, sequential worker),
+                            and consumer handlers in <code>Userorg.Adapter/Waldur</code>. Instances (EFP, Puhuri)
+                            are configuration, not code. STOMP listener not ported.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Old projects deleted in the same branch → one cutover.</li>
+                                <li>Future RabbitMQ move = swap publisher + host handlers behind queue consumer; all core code stays byte-identical.</li>
+                                <li>Platform differences live in options and payload content only, no parallel class hierarchies.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs</div>
+                        <div class="card-content">
+                            You are building three small, focused projects instead of one complex pipeline.
+                            The pull side produces events. The write side consumes them. The seam between them
+                            (IWaldurEventPublisher) is where RabbitMQ will go later.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADR 0054 -->
+            <div class="card decision-0054 amended">
+                <div class="card-header">
+                    <div class="card-title">Fat CRUD Events</div>
+                    <div class="card-adr">ADR-0054 (AMENDED)</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            Thin notification events ("id changed, fetch it back") create request/reply loops
+                            and re-couple pull and write sides. Deletion hazards: false ProjectDeleted on paging
+                            bugs would be the most damaging failure of the whole integration.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice (Amended)</div>
+                        <div class="card-content">
+                            <ul>
+                                <li>Events carry full payload (event-carried state transfer); consumer never calls back.</li>
+                                <li><strong>Removal is an IsRemoved flag in ProjectPayload</strong>, not a separate ProjectDeleted event. Waldur's is_removed maps to this flag, included in hash.</li>
+                                <li>Resources travel inside project events (no independent lifecycle).</li>
+                                <li>Membership is diffed per user; <strong>membership identity is UserName, not Waldur UUID</strong> (UUID not stored; cold rebuild impossible).</li>
+                                <li><strong>Provider locations are derived from offerings</strong> and embedded in ProviderPayload (not raw API data).</li>
+                                <li><strong>Eligibility rules</strong> are part of the contract: resource needs allocations + EffectiveId/BackendId; project needs ≥1 eligible resource OR IsRemoved=true; ineligible projects emit no events (including membership).</li>
+                                <li><strong>UserRemoved only from a successfully fetched, complete member snapshot</strong>; failed fetch → no membership events for that project.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            Consumers are idempotent by construction (upsert semantics). Removal in Waldur is just
+                            another ProjectUpdated; no delete/create ping-pong. Producer must diff member lists per user.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs</div>
+                        <div class="card-content">
+                            When you map Waldur data to events, <strong>include everything the handler needs to write</strong>.
+                            No calling back. If Waldur says "removed", write an IsRemoved=true flag, not a delete.
+                            If a user isn't in the fetch, that's a real removal only if the fetch succeeded completely.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADR 0055 -->
+            <div class="card decision-0055 amended">
+                <div class="card-header">
+                    <div class="card-title">SHA Breadcrumb Map with Cold Rebuild</div>
+                    <div class="card-adr">ADR-0055 (AMENDED)</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            Today every 30-min iteration re-upserts everything — no change detection, wasted DB writes,
+                            log floods. Diff state must not drift from the database, and must survive moving Waldur.Sync
+                            to its own container.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice (Amended)</div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>In-memory map per instance:</strong> (instance, entityType, externalId[, userName]) → SHA-256.</li>
+                                <li>SHA computed from <strong>canonically serialized event payload</strong> (normalized DTO, not raw API).</li>
+                                <li><strong>No persistence.</strong> Cold rebuild on startup: DB → DTO (same shape as API mapping) → hash. First iteration more expensive; acceptable at 30-min cadence.</li>
+                                <li><strong>Normalization checklist (binding):</strong> (A1) No clock reads; (A2) truncation to DB limits in producer mapping; (A3) canonical GUID format (lowercase "D"); (A4) UTC, defined precision; (A5) null-date conventions; (A6) null=empty collections, sorted; (A7) strings trimmed, endpoint-normalized; (A8) decimals invariant-culture; (A9) derived values reproducible from DB.</li>
+                                <li><strong>Shared entities (users):</strong> hash only instance-owned fields (project, userName, role, access); profile fields create-only, not hashed (ADR-0055/A3).</li>
+                                <li><strong>Reconciliation-owned rows excluded:</strong> Any AssignedLocation/Location with ServiceName=EfpCoreServiceName never enters a payload or hash (ADR-0061).</li>
+                                <li><strong>Soft-deleted projects included</strong> in cold rebuild (IsRemoved is hashed).</li>
+                                <li><strong>Storage config never cold-rebuilt;</strong> worker always fires one StorageConfigurationChanged after startup.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            Unchanged items produce zero events, zero DB writes, zero log lines. Round-trip hash test
+                            (Phase 4.8) guards that API→DTO and DB→DTO produce identical hashes — the core invariant.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs</div>
+                        <div class="card-content">
+                            Your mapping function must be deterministic and idempotent. If it reads the clock,
+                            <strong>exclude that field from the hash</strong>. If the API sends GUIDs without dashes,
+                            normalize them in one place. Write truncation in mapping, not at save time.
+                            Test that reading the same item from Waldur API vs. the database produces the same hash.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADR 0056 -->
+            <div class="card decision-0056">
+                <div class="card-header">
+                    <div class="card-title">Sequential Worker, Synchronous Ack</div>
+                    <div class="card-adr">ADR-0056</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            Complex channel pipeline (worker pool, drain phases, DLQ) makes failure attribution
+                            hard. If SHA is updated before the handler finishes and then fails, the change is lost forever.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice (Amended)</div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>One sequential worker per instance.</strong> Plain loop: fetch → build DTO → diff → publish → continue. Parallelism allowed only where API latency demands it (bounded, not architectural).</li>
+                                <li><strong>Synchronous ack.</strong> PublishAsync completes only after the handler (DB write, Heappe init) completed. SHA written only on success. Failure → no SHA write → retry next iteration.</li>
+                                <li><strong>No DLQ.</strong> Retry is free from the pull loop. Permanent failures show as repeating structured errors (monitoring signal).</li>
+                                <li><strong>Missing parent = throw, never skip-and-ack</strong> (ADR-0056/A1). A ProjectCreated whose provider failed will fail in the handler → no ack → retry next iteration.</li>
+                                <li><strong>Timer measured from completion</strong> (ADR-0056/A2): sleep interval after iteration finishes, so overlap is impossible by construction.</li>
+                                <li><strong>Unique-constraint races on shared reference data</strong> are retriable failures (ADR-0056/A3). SQL 2601/2627 on concurrent get-or-creates is natural; next iteration wins by reading the existing row.</li>
+                                <li><strong>Fetch completeness explicit</strong> (ADR-0056/A4): API client throws on any page failure (old code silently truncated). Bounded concurrency for per-project detail fan-out.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            Failure attribution is trivial: one stack, one item, one log scope. Consumers must be idempotent
+                            (they are — upsert semantics). On RabbitMQ move, ack semantics shift (SHA on broker confirm, consumer
+                            retry); idempotence from day one makes that safe.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs</div>
+                        <div class="card-content">
+                            Write a for-loop iteration, not async pipelines. When something fails, log it with the item's ID
+                            and what phase it failed in (fetch, map, diff, publish, handler, heappe). Throw if you can't resolve
+                            a parent; don't log-and-ack. Let the loop retry.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADR 0057 -->
+            <div class="card decision-0057 amended">
+                <div class="card-header">
+                    <div class="card-title">Handlers, Direct DbContext, Heappe in Upsert</div>
+                    <div class="card-adr">ADR-0057 (AMENDED)</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            Today ~2 900 LOC of exporters (WaldurEfpExporter, PuhuriExporter) + extensions duplicate
+                            orchestration. They differ only in data, not behaviour. Heappe placement undefined.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice (Amended)</div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Small handlers, one per event type,</strong> shared by all instances (EFP/Puhuri differences in payload, not code).</li>
+                                <li><strong>Direct IUserOrgDbContext.</strong> No repo/port layer between handlers and DbContext.</li>
+                                <li><strong>One DI scope per event.</strong> Fresh DbContext, so concurrent workers can't share EF state.</li>
+                                <li><strong>Heappe runs in the ProjectUpsertHandler (Created AND Updated), per HPC resource</strong> (ADR-0057/A1). Not ProjectCreated alone — resources added to existing projects must be initialized. Heappe is get-or-create-or-update (idempotent); replay is safe.</li>
+                                <li><strong>Heappe command-template sync trigger</strong> per upserted HPC resource (ADR-0057/A2).</li>
+                                <li><strong>Atomicity: mutate tracker → external ensures (Heappe) → single terminal SaveChangesAsync</strong> (ADR-0057/A3). Heappe failure → exception → nothing committed → retry next iteration. No manual transactions (retrying strategy forbids bare BeginTransactionAsync).</li>
+                                <li><strong>Membership handlers cover five row kinds per member</strong> (ADR-0057/A4): User (create-only profile), AssignedUserToProject, UserPermission (role map), PlatformUser permission, UserProjectAccess.</li>
+                                <li><strong>Service account bootstrapped by consumer</strong> (ADR-0057/A5, D18): idempotent EnsureServiceAccountAsync per instance, the CreatedBy/AssignedBy identity for all writes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            ~2 900 LOC replaced by a handful of readable handlers. Ported behaviours (validation, upsert keys,
+                            role assignment, enrichment) re-expressed as tests first, then implementation. Partial handler success
+                            before exception tolerated by design (replay + idempotence).
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs</div>
+                        <div class="card-content">
+                            Write one handler per event type. Mutate the change tracker, call Heappe, then SaveChangesAsync once.
+                            If something fails, throw — the event won't be acked and will retry. Your handler is called as many
+                            times as it takes, so make it safe to replay (idempotent).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADR 0058 -->
+            <div class="card decision-0058">
+                <div class="card-header">
+                    <div class="card-title">Logging Contract (StepUpLogging Levels)</div>
+                    <div class="card-adr">ADR-0058</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            Today 488 lines of log messages across two LogMessages.cs files, including per-item logging
+                            of unchanged items. Hard to find signal in the noise.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice (Amended)</div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Debug:</strong> Payload summaries, SHA old/new comparison, per-event emission.</li>
+                                <li><strong>Information:</strong> Start/end of processing each Waldur entity. Normally suppressed; surfaces via step-up around failures, giving exact context.</li>
+                                <li><strong>Information (always-log):</strong> Iteration summary (2 lines per instance per iteration): start (instance, trigger) and result (duration, fetched, created, updated, removed, unchanged, failed, absent transitions, blocked-by-parent).</li>
+                                <li><strong>Warning / Error:</strong> One structured entry per failed item: instance, entityType, externalId, phase (fetch|diff|publish|handler|heappe), reason, outcome (retry next iteration).</li>
+                                <li><strong>Absence warns only on transition</strong> (ADR-0058/A1): item was in map, not in successful pull → transition warning. Ongoing absences appear as count in iteration summary. Prevents false step-ups on legitimately unserved projects.</li>
+                                <li><strong>Cascade error aggregation</strong> (ADR-0058/A2): failed parent cascades into N child errors per iteration by design. Summary counts them separately (failed: N (M blocked-by-parent)) so root cause doesn't read as N independent problems.</li>
+                                <li><strong>Unchanged items produce no log line at any level.</strong> Zero changes, zero failures → exactly two always-log lines per iteration.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            ~15 message definitions replace 488 lines. Permanently failing items visible as repeating errors
+                            with stable IDs (monitoring hook). Log volume scales with change volume and failures, not data volume.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs</div>
+                        <div class="card-content">
+                            Log Info when processing starts/ends. Log Warning/Error when something fails, with the item's ID.
+                            Use structured fields (instance, phase, externalId). Let step-up logging surface the context.
+                            Don't log unchanged items.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADR 0059 -->
+            <div class="card decision-0059">
+                <div class="card-header">
+                    <div class="card-title">Cutover & Acceptance: Parallel Run</div>
+                    <div class="card-adr">ADR-0059</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            Keeping two implementations side by side in the repo costs duplicate code and tests. Parallel
+                            enablement risks corrupting production.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice (Amended)</div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Replace in one feature branch.</strong> New Waldur.Contracts + Waldur.Sync + consumer handlers built; old projects deleted in the same branch. Merge = cutover (no window where both coexist on main).</li>
+                                <li><strong>Acceptance gate before deletion:</strong> both implementations run against their own empty UserOrg database with the same test Waldur instance; data compared using specified methodology (ADR-0059/A1).</li>
+                                <li><strong>Comparison methodology</strong> (ADR-0059/A1): project to natural-key projections (FKs joined through to external ids/names), explicit exclusion list (surrogate ids, CreatedAt, ModifiedAt, audit users), pre-approved expected-differences list (per-user vs. all-or-nothing membership transactions, manual-member sweep timing, eliminated no-ops, per-resource vs. per-project partial progress, removed projects now reaching DB).</li>
+                                <li><strong>Isolate Heappe:</strong> stub or sandbox HEAppE per run (both against live Heappe = double external side effects).</li>
+                                <li><strong>Run old side one instance at a time</strong> (old DI singletons never actually supported concurrent instances).</li>
+                                <li><strong>Puhuri baseline by intent</strong> (ADR-0059/A2): today's Puhuri is broken (writes EFP service names, user export can never succeed). Acceptance compares against <em>intended</em> semantics (service name = instance name, own service account, no storage reconciliation); equivalence only meaningful for EFP.</li>
+                                <li><strong>Non-empty-DB data check</strong> (ADR-0059/A3, D17): because of A2, existing rows may carry wrong ServiceNames. Count mismatches; if hits exist, one-time data fix required before enabling.</li>
+                                <li><strong>First-run storm expected</strong> (ADR-0059/A4): mapping nuances (truncation, normalization) may emit a one-time wave of ProjectUpdated. With idempotent Heappe ensure, this is noise, not damage.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            No dual maintenance window. Comparison script is the definitive functional-parity check and
+                            should be scripted/repeatable. Rollback strategy is git revert, not a runtime toggle.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs</div>
+                        <div class="card-content">
+                            Write a test script that can run the old system and the new system side by side, then compare
+                            the databases. Know what differences are intentional (no-op writes eliminated, different transaction
+                            scopes). Be ready for a first-run storm of updates; that's OK if they're idempotent replays.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADR 0060 -->
+            <div class="card decision-0060 optional">
+                <div class="card-header">
+                    <div class="card-title">Optional Phase 6: Container Split over HTTP <span class="optional-badge">OPTIONAL</span></div>
+                    <div class="card-adr">ADR-0060 (DEFERRED)</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            We are not committed to keeping the pull side in the monolith right now. If we decide to detach it
+                            later (without RabbitMQ), the split should be a composition change only, not a rewrite.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice (If/When Taken)</div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Core code stays byte-identical.</strong> Waldur.Contracts, Waldur.Sync internals, all handlers unchanged.</li>
+                                <li><strong>New host Waldur.Sync.Host</strong> (minimal worker host, ServiceDefaults/OTel); registers AddWaldurSync(...). Waldur:Instances config moves here.</li>
+                                <li><strong>HttpWaldurEventPublisher:</strong> POSTs serialized event to /internal/waldur-sync/events on userorg-api. API dispatches to the same handlers, returns 200 only after handler completes. HTTP response = ack → ADR-0056 semantics hold unchanged. Non-2xx or timeout = not acked. <strong>No automatic retries</strong> (ADR-0060/A1 — pull loop is the retry; Heappe makes handlers slow; retries race with already-running handler).</li>
+                                <li><strong>HttpShaMapRebuilder:</strong> startup calls GET /internal/waldur-sync/state?instance=… returning (entityType, externalId, userId?, sha). API-side computes hashes (DB → DTO → hasher), reusing same hasher from Waldur.Contracts → one implementation, round-trip guarantee intact.</li>
+                                <li><strong>Endpoints internal service-to-service only</strong> (/internal/waldur-sync/*; authenticated with API key or mTLS; rate-irrelevant).</li>
+                                <li><strong>Discipline adopted now:</strong> event payloads JSON-serializable, evolve additively only (cheap in monolith, mandatory after split).</li>
+                                <li><strong>Path to RabbitMQ:</strong> swap publisher for queue publisher, host handlers behind queue consumer. State endpoint stays HTTP.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            Monolith↔container decision becomes deployment choice, reversible: ~1 day of two adapter classes +
+                            one host + Aspire wiring. No core changes. Slight duplication of deployment surface (one more image/resource).
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs (If Implemented Later)</div>
+                        <div class="card-content">
+                            You are not building this now. But know it's possible: the pull side can move to its own container
+                            by swapping the publisher to HTTP and adding a rebuilder endpoint. Event payloads must be JSON-safe
+                            from day one (write them that way in Phase 0).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADR 0061 -->
+            <div class="card decision-0061">
+                <div class="card-header">
+                    <div class="card-title">EFP Storage Reconciliation</div>
+                    <div class="card-adr">ADR-0061</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-section">
+                        <div class="card-label">The Problem</div>
+                        <div class="card-content">
+                            ~600 LOC of InitializeStorageLocations runs at the end of every iteration, driven by
+                            configuration + current DB state, not pulled Waldur data — no CRUD event triggers it.
+                            Also, reconciliation-owned rows hang off the same resources that SHA cold rebuild reads → risk
+                            of permanent spurious-Updated storms if included in hashing.
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">The Choice</div>
+                        <div class="card-content">
+                            <ul>
+                                <li><strong>Write-time association (per project):</strong> Attaching/deactivating storage AssignedLocations for a project's resources becomes part of ProjectUpsertHandler. When project event is processed, handler reconciles that project's storage locations against current config (from event payload/consumer-side options). New resources get associations at write time, not in a later sweep.</li>
+                                <li><strong>Config-triggered full reconcile (per instance):</strong> Worker hashes instance's storage config (IrodsInstancesMap, StagingAreaInstancesMap, UseSharedIrodsForAllEntities, allocation amounts), keeps it in SHA map under key (instance, EntityType.StorageConfig, "config"). Publishes StorageConfigurationChanged on first iteration after startup and whenever config hash differs from map. Handler performs full sweep: ensure EFP-Core provider + shared-iRODS location, ensure/deactivate per-provider locations, walk all instance resources and fix associations (including deactivation when mapping disappears from config). Ack semantics as any other event.</li>
+                                <li><strong>Hash-exclusion rule (guards ADR-0055):</strong> DB → ProjectPayload mapping excludes reconciliation-owned rows (ServiceName = EfpCoreServiceName). They never enter a payload or hash. Reconciliation subsystem sole owner of those rows.</li>
+                                <li><strong>Puhuri unaffected:</strong> no storage config → no event, no handler work.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">Key Consequence</div>
+                        <div class="card-content">
+                            Config changes take effect within one iteration with change detection. Steady state uses
+                            write-time association; full sweep runs only on startup and config change. Old end-of-iteration
+                            failure (storage reconcile fails whole iteration) replaced by ordinary per-event failure (logged,
+                            retried next iteration).
+                        </div>
+                    </div>
+                    <div class="card-section">
+                        <div class="card-label">For Junior Devs</div>
+                        <div class="card-content">
+                            When you upsert a project, also reconcile its storage locations against the config you have
+                            (from the event or from options). When the storage config hash changes, emit StorageConfigurationChanged
+                            so the full-sweep handler runs. Mark reconciliation-owned rows so they don't pollute the SHA hash.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Junior Implementation Reference -->
+        <h2 class="section-title">Junior Implementation Reference</h2>
+
+        <div class="reference-section">
+            <h2>Per-Entity Upsert Keys (NOT Uniform)</h2>
+            <p style="margin-bottom: 15px; font-size: 14px; color: #7f8c8d;">
+                Each entity is keyed differently. Read this table to know what makes an item "the same" as before.
+            </p>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Upsert Key (Today)</th>
+                            <th>SHA Map Key</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Provider (customer)</strong></td>
+                            <td>(ExternalId, ServiceName)</td>
+                            <td>(Provider, externalId)</td>
+                            <td>Country + LocationType resolved from DB; missing → item fails (throw)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Project</strong></td>
+                            <td>(ExternalId, ServiceName)</td>
+                            <td>(Project, externalId)</td>
+                            <td>ServiceName latent bug today (ignored); new lookups always include it</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ProjectResource</strong></td>
+                            <td><strong>(Name, ServiceName)</strong> — ExternalId is null</td>
+                            <td>inside project hash</td>
+                            <td>Name = EffectiveId ?? BackendId after grouping; grouping + Min/Max dates must be reproducible from DB (ADR-0055/A2.9)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AssignedLocation</strong></td>
+                            <td>(ExternalId = resource uuid, ServiceName)</td>
+                            <td>inside project hash</td>
+                            <td>Reconciliation-owned rows (EfpCoreServiceName) excluded everywhere (D14)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Location</strong></td>
+                            <td>endpoint+service, fallback endpoint-only</td>
+                            <td>inside provider hash</td>
+                            <td>Derivation rules ADR-0054/A3; ambiguity → failure</td>
+                        </tr>
+                        <tr>
+                            <td><strong>User</strong></td>
+                            <td><strong>UserName only</strong> (no instance scope; shared row)</td>
+                            <td>(Member, projectExternalId, userName)</td>
+                            <td>Profile fields create-only, not hashed (D16); shared between instances</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Options Schema (Full Surface)</h3>
+            <p style="margin-bottom: 15px; font-size: 14px; color: #7f8c8d;">
+                Waldur:Instances is an array; each element carries:
+            </p>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin: 15px 0; border-left: 3px solid #2980b9; font-size: 14px; line-height: 1.6;">
+                <strong>Name</strong> ("EFP" | "Puhuri" | future) · <strong>Enabled</strong><br>
+                <strong>BaseUrl</strong> + 4 relative endpoint URIs · <strong>Auth:</strong> AuthorizationHeader, Prefix, EndpointApiKey<br>
+                <strong>Timeout, RateLimitPerSecond, RateLimitBurst, RetryCount, RetryInitialBackoffMs, RetryMaxDelayMs<br>
+                SyncIntervalMinutes</strong><br>
+                <strong>Identity:</strong> ServiceName (upsert discriminator: "EFP-Waldur"/"Puhuri-Waldur"), ServiceAccountUserName, ServiceAccountEmail, WaldurPIEmail, WaldurPreferredAuthType<br>
+                <strong>HeappeInstancesMap</strong> (base-level, required for HPC resources)<br>
+                <strong>AllocationUnitMap</strong> (node-hours×1, core-hours→k-Hours×1000, GB→TB-hours×1000)<br>
+                <strong>Storage (EFP only):</strong> IrodsInstancesMap, StagingAreaInstancesMap, UseSharedIrodsForAllEntities, EfpCoreServiceName, allocation amounts<br>
+                <strong>ServiceProjectDomainName</strong>
+            </div>
+
+            <h3>Normalization Checklist (Binding for Phase 0)</h3>
+            <p style="margin-bottom: 15px; font-size: 14px; color: #7f8c8d;">
+                Apply these rules when mapping API data to payloads and DB data to payloads.
+                They live in one place: WaldurPayloadHasher and the mapping code it documents.
+            </p>
+            <div class="normalization-checklist">
+                <ol>
+                    <li><strong>No clock reads</strong> anywhere in payload mapping (rule ADR-0055/A1). Audit fields never hashed.</li>
+                    <li><strong>Truncation to DB limits in producer mapping</strong> (Name → DbConstants.NameMaxLength, Description → 512, …) so payload equals what lands in DB.</li>
+                    <li><strong>Canonical GUID format:</strong> lowercase "D" with dashes. Waldur API delivers dashless GUIDs; normalize at client boundary.</li>
+                    <li><strong>UTC everywhere, defined precision.</strong> Round to seconds unless field demonstrably needs more. DB round-trip must not lose hashed precision.</li>
+                    <li><strong>Null-date conventions preserved:</strong> EndDate ?? DateTime.MaxValue applied in mapping, not at write time.</li>
+                    <li><strong>Null vs. empty collection are the same value.</strong> Collections sorted by defined key before serialization.</li>
+                    <li><strong>Strings trimmed;</strong> endpoint normalization (ssh:// strip, case rules) in mapping.</li>
+                    <li><strong>Decimals serialized invariant-culture, fixed format.</strong></li>
+                    <li><strong>Derived/aggregated values</strong> (resource Min/Max date grouping, provider location derivation per ADR-0054/A3) must be reproducible from DB rows.</li>
+                </ol>
+            </div>
+
+            <h3>Contract Shapes (Sketch)</h3>
+            <p style="margin-bottom: 15px; font-size: 14px; color: #7f8c8d;">
+                The exact names and fields below are the intent; adjust to repo conventions. Do not add abstraction layers.
+            </p>
+            <div class="contract-code">
+                <pre>// ── Waldur.Contracts ──────────────────────────────────────────
+public abstract record WaldurIntegrationEvent
+{
+    public required string Instance { get; init; }        // "EFP", "Puhuri", …
+    public required string ServiceName { get; init; }     // upsert-key discriminator
+}
+
+public sealed record ProviderCreated(ProviderPayload Payload) : WaldurIntegrationEvent;
+public sealed record ProviderUpdated(ProviderPayload Payload) : WaldurIntegrationEvent;
+public sealed record ProjectCreated(ProjectPayload Payload) : WaldurIntegrationEvent;
+public sealed record ProjectUpdated(ProjectPayload Payload) : WaldurIntegrationEvent;
+public sealed record UserAssigned(ProjectUserPayload Payload) : WaldurIntegrationEvent;
+public sealed record UserRoleChanged(ProjectUserPayload Payload) : WaldurIntegrationEvent;
+public sealed record UserRemoved(string ProjectExternalId, string UserName) : WaldurIntegrationEvent;
+public sealed record StorageConfigurationChanged(StorageConfigPayload Config) : WaldurIntegrationEvent;
+
+// Fat payloads (fields enumerated by reading exporter usage):
+public sealed record ProviderPayload(string ExternalId, string Name, …,
+    IReadOnlyList&lt;ProviderLocationPayload&gt; Locations);  // derived from offerings!
+public sealed record ProjectPayload(string ExternalId, string Name, bool IsRemoved, …,
+    IReadOnlyList&lt;ResourcePayload&gt; Resources);
+public sealed record ResourcePayload(/* identity, offering, dates, allocations,
+    heappe/storage enrichment inputs */);
+public sealed record ProjectUserPayload(string ProjectExternalId, string UserName,
+    string Role, /* access flags; profile fields = create-only, NOT hashed */);
+
+// The port:
+public interface IWaldurEventPublisher
+{
+    Task PublishAsync(WaldurIntegrationEvent evt, CancellationToken ct);
+}
+
+// One canonical hasher (normalization lives here):
+public static class WaldurPayloadHasher
+{
+    public static string Hash(object payload); // → SHA-256 hex
+}</pre>
+            </div>
+        </div>
+
+        <!-- Phases Section -->
+        <div class="phases-section">
+            <h2>Implementation Phases</h2>
+            <p style="margin-bottom: 25px; font-size: 14px; color: #7f8c8d;">
+                Each phase ends green (build + tests) and is independently reviewable. TDD throughout.
+            </p>
+
+            <div class="phase-block">
+                <div class="phase-title">Phase 0 — Contracts (Waldur.Contracts)</div>
+                <div class="phase-content">
+                    <ul>
+                        <li>New classlib (does not exist today; no collision).</li>
+                        <li>Event records + payloads per §Contracts. Enumerate fields by reading WaldurEfpExporter/PuhuriExporter usage (incl. iRODS/staging inputs, Heappe enrichment inputs from offering plugin_options).</li>
+                        <li>IWaldurEventPublisher port.</li>
+                        <li>WaldurPayloadHasher + canonical serializer implementing ADR-0055/A2 normalization checklist verbatim. Unit tests: property-order independence, collection-order normalization, culture invariance, known-vector stability, over-length strings, null dates (adversarial vectors).</li>
+                    </ul>
+                </div>
+                <div class="verify-box">
+                    <span class="verify-label">Verify:</span> Zero project references; hasher tests green.
+                </div>
+            </div>
+
+            <div class="phase-block">
+                <div class="phase-title">Phase 1 — Waldur API Client + Payload Mapping (Waldur.Sync)</div>
+                <div class="phase-content">
+                    <ul>
+                        <li>New classlib (ref: Waldur.Contracts only).</li>
+                        <li>IWaldurApiClient (typed HttpClient): 6 endpoints per plan; port rate limiting + Polly retry; pagination throws on any page failure (D7); bounded concurrency for per-project/per-offering fan-out.</li>
+                        <li>Options per §Options schema, bound + validated at startup; instance registration AddWaldurSync(IConfiguration); zero enabled instances → nothing registers.</li>
+                        <li>Pure mapping (API → payloads): provider location derivation (ADR-0054/A3), resource grouping/naming, eligibility rules (ADR-0054/A4), IsRemoved flag; three validation layers (AggregateDataValidator + EnsureValidator + inline skips) re-expressed as mapping validation: invalid item → structured warning + skip, no event, no SHA.</li>
+                    </ul>
+                </div>
+                <div class="verify-box">
+                    <span class="verify-label">Verify:</span> Mapping matrix tests (per-platform maps, derivation, eligibility, validator rules), rate-limit + retry + pagination-failure tests.
+                </div>
+            </div>
+
+            <div class="phase-block">
+                <div class="phase-title">Phase 2 — SHA Map + Diff Engine (Waldur.Sync)</div>
+                <div class="phase-content">
+                    <ul>
+                        <li>ShaBreadcrumbMap: Dictionary&lt;ShaKey, string&gt; per instance worker (sequential access; no concurrency primitives).</li>
+                        <li>DiffEngine (pure): payloads + map → events. Rules: unknown id → Created; hash differs → Updated; equal → nothing; membership per-user diff with UserRemoved only from complete snapshots (D7/D15); ineligible project → no events incl. membership (ADR-0054/A4); absence transitions reported (ADR-0058/A1 logging).</li>
+                        <li>IShaMapRebuilder port + storage-config hash slot (never cold-rebuilt; ADR-0055/A4).</li>
+                    </ul>
+                </div>
+                <div class="verify-box">
+                    <span class="verify-label">Verify:</span> Full diff matrix incl.: removed project (flag flip → Updated, stable thereafter); member missing from successful snapshot → UserRemoved; failed snapshot → no membership events + untouched member SHAs; project absent → transition warning only, no event; storage-config change → StorageConfigurationChanged.
+                </div>
+            </div>
+
+            <div class="phase-block">
+                <div class="phase-title">Phase 3 — Sequential Worker (Waldur.Sync)</div>
+                <div class="phase-content">
+                    <ul>
+                        <li>WaldurSyncWorker : BackgroundService, one per enabled instance; iteration per §Iteration algorithm; try/catch per item; SHA write only after ack (D5); delay measured from iteration completion (ADR-0056/A2).</li>
+                        <li>Startup: cold rebuild, then one unconditional StorageConfigurationChanged (EFP-configured instances only).</li>
+                        <li>Logging per ADR-0058 incl. amendments (~15 LoggerMessage definitions): per-entity Info start/end, per-item structured Warning/Error with phase (fetch|map|diff|publish|handler|heappe), transition-only absence warnings, always-log summary with absent and blocked-by-parent counts. OTel: iteration counters + duration histogram + map-size gauge; ActivitySource + Meter named for Waldur.Sync.</li>
+                    </ul>
+                </div>
+                <div class="verify-box">
+                    <span class="verify-label">Verify:</span> Worker tests with fake client + fake publisher: ordering, per-item failure isolation, SHA-only-after-ack, startup sequence, summary content, cancellation.
+                </div>
+            </div>
+
+            <div class="phase-block">
+                <div class="phase-title">Phase 4 — Consumer Handlers (Userorg.Adapter/Waldur, new content)</div>
+                <div class="phase-content">
+                    <ul>
+                        <li>InProcessWaldurEventPublisher: resolve IWaldurEventHandler&lt;TEvent&gt;, new DI scope per event, await completion.</li>
+                        <li>ProviderUpsertHandler: customer + derived locations upsert; Country/LocationType resolution → throw if missing (retriable).</li>
+                        <li><strong>ProjectUpsertHandler (the big one):</strong> (a) project upsert (SyncFrom semantics; IsRemoved → soft delete); (b) resource upserts + location/allocation-unit enrichment; (c) storage association for this project per current config (D14 write-time half); (d) Heappe enrichment (missing HeappeInstancesMap → throw) + Heappe ensure per HPC resource via IProjectCreationService (Created AND Updated — ADR-0057/A1); (e) Heappe command-template sync trigger per upserted resource (ADR-0057/A2); (f) mutate tracker → external ensures → single terminal SaveChangesAsync (ADR-0057/A3).</li>
+                        <li>Membership handlers (ADR-0057/A4): UserAssignedHandler writes five row kinds (User create-only, AssignedUserToProject, project UserPermission via role map with unknown→ProjectMember+warning, PlatformUser permission, UserProjectAccess); UserRoleChangedHandler; UserRemovedHandler dual soft-delete (assignment AND access), no-op when absent.</li>
+                        <li>StorageReconciliationHandler for StorageConfigurationChanged (D14 full-reconcile half): EFP-Core provider + shared iRODS ensure/undelete, per-provider iRODS/staging ensure + deactivate-on-config-removal, association sweep over instance's resources. Behaviour matrix tests per ADR-0061.</li>
+                        <li>Service-account bootstrap EnsureServiceAccountAsync (D18) — startup or first-event-lazy, driven by per-instance identity options.</li>
+                        <li>IShaMapRebuilder implementation: DB → payloads (same shapes as Phase 1, excluding reconciliation-owned rows, including soft-deleted projects, membership entries per non-deleted assignment) → WaldurPayloadHasher.</li>
+                        <li><strong>Round-trip hash test (guardian of D1/D13):</strong> API-shaped payload → handlers write DB → rebuilder reads DB → hashes equal. Vectors include over-length strings, null-date fallbacks, storage-reconciled projects (exclusion rule), removed projects.</li>
+                    </ul>
+                </div>
+                <div class="verify-box">
+                    <span class="verify-label">Verify:</span> Handler tests on InMemory DbContext re-pinning WaldurExporterExportDataTests + tracking-state behaviours; round-trip test; Heappe failure → nothing committed, no ack.
+                </div>
+            </div>
+
+            <div class="phase-block">
+                <div class="phase-title">Phase 5 — Wire-up + Old Code Removal</div>
+                <div class="phase-content">
+                    <ul>
+                        <li>Register module in AddModules(); delete old AddWaldurModuleIfEnabled path.</li>
+                        <li>UserOrg.ServiceDefaults (compile-time dependency!): replace Waldur.EFP references with Waldur.Sync OTel registration (new ActivitySource/Meter names); update dashboards/alerts.</li>
+                        <li>AppHost: rewrite EnableWaldurSyncIntegration/WaldurSyncIntegrationPeriod parameters + env wiring (ProjectConfigurationExtensions.cs) to Waldur:Instances shape (mind "N"-format GUID dictionary keys); wire Puhuri explicitly for first time; drop STOMP env vars.</li>
+                        <li>Deployment runbook item: rename production env vars (Waldur__* → Waldur__Instances__0__* equivalents), drop STOMP vars, add Puhuri instance secrets.</li>
+                        <li>Non-empty-DB data check (D17/0059-A3): count rows whose ServiceName mismatches their true instance; if hits → one-time data fix agreed with team before enabling.</li>
+                        <li>Acceptance run (D12, before deletion): scripted parallel run per ADR-0059/A1 — old vs new each on own empty DB, same test Waldur, Heappe stubbed/sandboxed, old side one instance at a time; diff natural-key projections with exclusion + expected-difference lists. Keep script in Tools/ (reusable for RabbitMQ move).</li>
+                        <li>Delete WaldurPlatform.Base, Waldur.EFP, Waldur.Puhuri, old exporter/orchestrator/extension code, Waldur.Tests, Waldur.Adapter.Tests, WebsocketStompClient reference.</li>
+                        <li>Full solution build + test sweep; grep for orphans (old options keys, DI registrations, metric names, ISyncIterationDbChangeCounter).</li>
+                    </ul>
+                </div>
+                <div class="verify-box">
+                    <span class="verify-label">Verify:</span> Solution green; acceptance diff empty or fully explained; zero references to deleted types; AppHost boots with 0, 1 and 2 enabled instances.
+                </div>
+            </div>
+
+            <div class="phase-block optional">
+                <div class="phase-title">Phase 6 — Container Split over HTTP <span class="badge">OPTIONAL</span></div>
+                <div class="phase-content">
+                    <p style="margin-bottom: 12px;">
+                        <strong>Decision deferred (ADR-0060).</strong> If/when we decide to detach the pull side without RabbitMQ, the split is a composition change only. Core code stays byte-identical (~1 day):
+                    </p>
+                    <ul>
+                        <li>New host Waldur.Sync.Host (minimal worker host + ServiceDefaults/OTel), registers AddWaldurSync(...); Waldur:Instances config moves here. Added to AppHost as Aspire resource.</li>
+                        <li>HttpWaldurEventPublisher : IWaldurEventPublisher — POSTs to /internal/waldur-sync/events on userorg-api; API dispatches to same handlers, returns 200 after handler completes. HTTP response = ack → ADR-0056 semantics hold. No automatic retries (ADR-0060/A1 — pull loop is the retry; handlers are slow).</li>
+                        <li>HttpShaMapRebuilder : IShaMapRebuilder — startup GET /internal/waldur-sync/state?instance=… returns (entityType, externalId, userId?, sha). API-side computes hashes (same hasher from Waldur.Contracts) → one implementation, round-trip guarantee intact.</li>
+                        <li>Endpoints internal service-to-service only (/internal/waldur-sync/*; authenticated per platform convention).</li>
+                        <li>Event payloads JSON-serializable, evolve additively only (cheap now, mandatory after split).</li>
+                        <li>Path to RabbitMQ: swap publisher for queue publisher, host handlers behind queue consumer; state endpoint stays HTTP.</li>
+                    </ul>
+                </div>
+                <div class="verify-box">
+                    <span class="verify-label">Discipline:</span> Event payloads JSON-serializable and additive-only from day one.
+                </div>
+            </div>
+        </div>
+
+        <!-- Risks Section -->
+        <div class="risks-section">
+            <h2>Risks & Mitigations</h2>
+            <div class="risk-row">
+                <div class="risk-label">DB→DTO vs API→DTO drift → spurious events after restart</div>
+                <div>Round-trip hash test (Phase 4.8) with adversarial vectors, in CI; ADR-0055/A2 checklist is binding.</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Clock-derived field sneaks into a hash → perpetual Updated storm</div>
+                <div>ADR-0055/A1 rule + hasher test asserting payload hash stability across time.</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Payload misses a field an exporter silently used</div>
+                <div>Phase 0 enumerates by reading exporter usage; acceptance diff (Phase 5.6) catches the rest.</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Heappe regression (resource added to existing project)</div>
+                <div>D8 amended: ensure runs on upsert per resource; pinned by test.</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Storage config change has no effect</div>
+                <div>D14: write-time association + config-hash-triggered reconcile; behaviour matrix tests.</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Stale membership after restart</div>
+                <div>D15: UserName-keyed map is DB-rebuildable; rebuild spec ADR-0055/A4.</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Puhuri on non-empty DB duplicates rows</div>
+                <div>Phase 5.5 data check before enable (0059/A3).</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Permanently failing item loops every iteration</div>
+                <div>By design (no DLQ); repeating structured error + blocked-by-parent aggregation is the monitoring hook.</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Two instances racing on shared reference data</div>
+                <div>Unique violation = retriable failure; optional retry-once (0056/A3); DI scope per event.</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Acceptance diff drowns in nondeterminism</div>
+                <div>0059/A1 methodology: natural keys, exclusion + expected-difference lists, Heappe isolation.</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Plan Status:</strong> Approved 2026-07-06 · Amended after independent review 2026-07-06</p>
+            <p style="margin-top: 10px; font-size: 13px;">
+                For questions, refer to the ADRs in <code>docs/architecture/adr/</code> (0053–0061) or
+                the plan document <code>docs/plan-ready-waldur-sync-refactor.md</code>.
+            </p>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span>ADR-0053 (Module rewrite)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e67e22;"></div>
+                    <span>ADR-0054 (Fat events, amended)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f39c12;"></div>
+                    <span>ADR-0055 (SHA map, amended)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #16a085;"></div>
+                    <span>ADR-0056 (Sequential worker)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #27ae60;"></div>
+                    <span>ADR-0057 (Handlers, amended)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #2980b9;"></div>
+                    <span>ADR-0058 (Logging)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #8e44ad;"></div>
+                    <span>ADR-0059 (Cutover, amended)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #95a5a6; border: 1px dashed #95a5a6;"></div>
+                    <span>ADR-0060 (Optional split)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #16a085;"></div>
+                    <span>ADR-0061 (Storage reconciliation)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

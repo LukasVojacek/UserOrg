@@ -1,0 +1,214 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@inject RoleManagementState State
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@implements IDisposable
+
+<div class="rm-card">
+    <div class="rm-card-header">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h2>Endpoints</h2>
+            <button class="rm-button" @onclick="ShowCreateForm">
+                + New Endpoint
+            </button>
+        </div>
+        <input type="text"
+               class="rm-search"
+               placeholder="Search endpoints..."
+               @bind="searchTerm"
+               @bind:event="oninput"
+               aria-label="Search endpoints" />
+    </div>
+
+    @if (showCreateForm)
+    {
+        <div class="rm-card" style="background: #f8fafc; margin-bottom: 1rem;">
+            <h3 style="margin-top: 0; font-size: 1rem; color: #0f766e;">Create New Endpoint</h3>
+            
+            <div class="rm-form-group">
+                <label>Endpoint Name *</label>
+                <input type="text" class="rm-input" @bind="newEndpointName" placeholder="e.g., GetUserById" />
+                <small class="rm-help-text">Unique identifier for this endpoint</small>
+            </div>
+
+            <div class="rm-form-group">
+                <label>Path Template *</label>
+                <input type="text" class="rm-input" @bind="newPathTemplate" placeholder="e.g., /api/users/{id}" />
+                <small class="rm-help-text">Use {`{paramName}`} for dynamic segments</small>
+            </div>
+
+            <div class="rm-form-group">
+                <label>HTTP Method *</label>
+                <select class="rm-select" @bind="newHttpMethod">
+                    <option value="">Select method</option>
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="PATCH">PATCH</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+            </div>
+
+            <div class="rm-form-group">
+                <label>Description</label>
+                <textarea class="rm-textarea" rows="2" @bind="newDescription" placeholder="Optional description"></textarea>
+            </div>
+
+            <div class="rm-form-actions">
+                <button class="rm-button" @onclick="CreateEndpoint" disabled="@(!CanCreate || State.IsBusy)">
+                    @(State.IsBusy ? "Creating..." : "Create")
+                </button>
+                <button class="rm-button secondary" @onclick="HideCreateForm" disabled="@State.IsBusy">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    }
+
+    @if (State.IsLoading)
+    {
+        <p class="rm-info">Loading endpoints...</p>
+    }
+    else if (!FilteredEndpoints.Any())
+    {
+        <p class="rm-info">No endpoints found. Create one to get started.</p>
+    }
+    else
+    {
+        <div class="rm-list">
+            @foreach (var endpoint in FilteredEndpoints)
+            {
+                <div class="rm-list-item @(IsSelected(endpoint) ? "selected" : "")"
+                     @onclick="() => SelectEndpoint(endpoint)">
+                    <div class="rm-list-item-header">
+                        <span class="rm-list-item-title">@endpoint.EndpointName</span>
+                        <span class="rm-badge @GetMethodClass(endpoint.HttpMethod)">@endpoint.HttpMethod</span>
+                    </div>
+                    <div class="rm-list-item-body">
+                        <small class="rm-help-text">@endpoint.PathTemplate</small>
+                        @if (!string.IsNullOrWhiteSpace(endpoint.Description))
+                        {
+                            <p class="rm-help-text">@endpoint.Description</p>
+                        }
+                        @if (endpoint.Permissions.Any())
+                        {
+                            <div class="rm-tags">
+                                @foreach (var perm in endpoint.Permissions.Take(3))
+                                {
+                                    <span class="rm-tag">@perm</span>
+                                }
+                                @if (endpoint.Permissions.Count > 3)
+                                {
+                                    <span class="rm-tag">+@(endpoint.Permissions.Count - 3) more</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="rm-list-item-actions">
+                        <button class="rm-button" @onclick:stopPropagation="true" @onclick="() => SelectEndpoint(endpoint)">
+                            View
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnEndpointSelected { get; set; }
+
+    [Parameter]
+    public string? SelectedEndpointName { get; set; }
+
+    private string searchTerm = string.Empty;
+    private bool showCreateForm = false;
+    private string newEndpointName = string.Empty;
+    private string newPathTemplate = string.Empty;
+    private string newHttpMethod = string.Empty;
+    private string newDescription = string.Empty;
+
+    private bool CanCreate =>
+        !string.IsNullOrWhiteSpace(newEndpointName) &&
+        !string.IsNullOrWhiteSpace(newPathTemplate) &&
+        !string.IsNullOrWhiteSpace(newHttpMethod);
+
+    private IEnumerable<EndpointMappingInfo> FilteredEndpoints => State.EndpointMappings
+        .Where(e => string.IsNullOrWhiteSpace(searchTerm) ||
+                    e.EndpointName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    (e.PathTemplate?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false))
+        .OrderBy(e => e.EndpointName);
+
+    protected override void OnInitialized()
+    {
+        State.OnChange += StateHasChanged;
+    }
+
+    private bool IsSelected(EndpointMappingInfo endpoint)
+    {
+        return !string.IsNullOrWhiteSpace(SelectedEndpointName) &&
+               endpoint.EndpointName.Equals(SelectedEndpointName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task SelectEndpoint(EndpointMappingInfo endpoint)
+    {
+        await OnEndpointSelected.InvokeAsync(endpoint.EndpointName);
+    }
+
+    private void ShowCreateForm()
+    {
+        showCreateForm = true;
+        ResetCreateForm();
+    }
+
+    private void HideCreateForm()
+    {
+        showCreateForm = false;
+        ResetCreateForm();
+    }
+
+    private void ResetCreateForm()
+    {
+        newEndpointName = string.Empty;
+        newPathTemplate = string.Empty;
+        newHttpMethod = string.Empty;
+        newDescription = string.Empty;
+    }
+
+    private async Task CreateEndpoint()
+    {
+        if (!CanCreate)
+            return;
+
+        var result = await State.CreateEndpointAsync(
+            newEndpointName,
+            newPathTemplate,
+            newHttpMethod,
+            newDescription);
+
+        if (result.IsSuccess)
+        {
+            HideCreateForm();
+            // Automatically select the newly created endpoint
+            await OnEndpointSelected.InvokeAsync(newEndpointName);
+        }
+    }
+
+    private static string GetMethodClass(string? method)
+    {
+        return method?.ToUpperInvariant() switch
+        {
+            "GET" => "success",
+            "POST" => "info",
+            "PUT" => "warning",
+            "PATCH" => "warning",
+            "DELETE" => "danger",
+            _ => "secondary"
+        };
+    }
+
+    public void Dispose()
+    {
+        State.OnChange -= StateHasChanged;
+    }
+}

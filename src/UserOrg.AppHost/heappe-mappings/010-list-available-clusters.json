@@ -1,0 +1,101 @@
+{
+  "Guid": "0a0a0000-0000-0000-0000-000000000010",
+  "Priority": 10,
+  "Request": {
+    "Methods": [ "GET" ],
+    "Path": {
+      "Matchers": [
+        { "Name": "WildcardMatcher", "Pattern": "*ListAvailableClusters*", "IgnoreCase": true }
+      ]
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Headers": { "Content-Type": "application/json" },
+    "BodyAsJson": [
+      {
+        "Id": 1,
+        "Name": "loc1",
+        "Description": "Seeded location loc1",
+        "FileTransferMethodIds": [ 1 ],
+        "NodeTypes": [
+          {
+            "Id": 11,
+            "Name": "qcpu",
+            "Description": "Seeded node type",
+            "NumberOfNodes": 8,
+            "CoresPerNode": 128,
+            "MaxWalltime": 172800,
+            "FileTransferMethodId": 1,
+            "Queue": "qcpu",
+            "QualityOfService": "normal",
+            "ClusterAllocationName": "loc1-qcpu",
+            "ClusterNodeTypeAggregation": {
+              "Id": 21,
+              "Name": "loc1-qcpu-aggregation",
+              "Description": "Seeded aggregation",
+              "AllocationType": "NodeHours",
+              "ValidityFrom": "2024-01-01T00:00:00Z",
+              "ValidityTo": null
+            },
+            "Accounting": [],
+            "Projects": [
+              {
+                "Id": 31,
+                "Name": "res1",
+                "Description": "Seeded allocation res1",
+                "AccountingString": "res1",
+                "StartDate": "2024-01-01T00:00:00Z",
+                "EndDate": "2029-12-31T00:00:00Z",
+                "UsageType": 0,
+                "UseAccountingStringForScheduler": true,
+                "KeyScriptsDirectoryPath": "/home/res1/.key_scripts",
+                "IsOneToOneMapping": true,
+                "CommandTemplates": [
+                  {
+                    "Id": 41,
+                    "Name": "Generic bash",
+                    "Description": "Seeded generic command template",
+                    "ExtendedAllocationCommand": "",
+                    "IsGeneric": true,
+                    "IsEnabled": true,
+                    "CreatedFromGenericTemplateId": null,
+                    "TemplateParameters": [
+                      { "Identifier": "inputParam", "Description": "Seeded template parameter" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "Id": 32,
+                "Name": "res2",
+                "Description": "Seeded allocation res2",
+                "AccountingString": "res2",
+                "StartDate": "2024-01-01T00:00:00Z",
+                "EndDate": "2029-12-31T00:00:00Z",
+                "UsageType": 0,
+                "UseAccountingStringForScheduler": true,
+                "KeyScriptsDirectoryPath": "/home/res2/.key_scripts",
+                "IsOneToOneMapping": true,
+                "CommandTemplates": [
+                  {
+                    "Id": 42,
+                    "Name": "Generic bash",
+                    "Description": "Seeded generic command template",
+                    "ExtendedAllocationCommand": "",
+                    "IsGeneric": true,
+                    "IsEnabled": true,
+                    "CreatedFromGenericTemplateId": null,
+                    "TemplateParameters": [
+                      { "Identifier": "inputParam", "Description": "Seeded template parameter" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

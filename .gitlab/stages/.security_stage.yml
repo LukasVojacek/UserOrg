@@ -1,0 +1,123 @@
+# ── Security stage ────────────────────────────────────────────────────────────
+# Quality/posture jobs ported from the BFF pipeline. Logic lives in .gitlab/scripts/*.sh
+# (the jobs only wire image, rules and artifacts). secret_detection keeps UserOrg's existing
+# GitLab Secret-Detection template (NOT swapped for gitleaks).
+#
+# Schedule note: only the posture jobs that need NO build artifacts (secret_detection,
+# dotnet_dependency_scan) carry the nightly-schedule rule, so the scheduled pipeline on main stays
+# lean. The build-dependent jobs (spectral / oasdiff / roslyn) run on feature/MR only — the build
+# job does not run on a schedule pipeline, so they have nothing to consume there.
+
+secret_detection:
+  extends:
+    - .secret-analyzer
+    - .rules-mr-to-main-or-schedule
+  stage: security
+  needs: []
+  allow_failure: false
+  after_script:
+    - |
+      if [ -f gl-secret-detection-report.json ]; then
+        if grep -q '"vulnerabilities": \[' gl-secret-detection-report.json; then
+          echo "Vulnerabilities found!";
+          exit 1;
+        else
+          echo "No vulnerabilities found.";
+        fi
+      else
+        echo "No report found.";
+      fi
+  artifacts:
+    reports:
+      secret_detection: gl-secret-detection-report.json
+    paths:
+      - gl-secret-detection-report.json
+
+dotnet_dependency_scan:
+  image: ${DOTNET_IMAGE}
+  stage: security
+  extends: .rules-mr-to-main-or-schedule
+  # No build artifacts needed — the script runs its own restore, so it starts immediately in
+  # parallel with build instead of queueing behind it. Parsing uses `jq` (already in the dev-base
+  # image); no python3 install — the runner is non-root and cannot apt-get.
+  needs: []
+  script:
+    - bash .gitlab/scripts/dotnet-dependency-scan.sh "UserOrganization.slnx" "src/Core/API/API.csproj"
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - gl-sbom-nuget-nuget.cdx.json
+      - test-results/dependency-scanning.xml
+    reports:
+      cyclonedx: gl-sbom-nuget-nuget.cdx.json
+      junit: test-results/dependency-scanning.xml
+
+lint_openapi:
+  stage: security
+  image:
+    name: stoplight/spectral:6.15
+    entrypoint: [""]
+  extends: .rules-mr-to-main-or-feature
+  needs:
+    - job: userorg
+      artifacts: true
+  before_script:
+    - apk add --no-cache python3 || true
+  script:
+    - sh .gitlab/scripts/lint-openapi.sh API_user.json API_administration.json API_service.json
+  allow_failure: true
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - spectral-reports/
+      - test-results/spectral-report.xml
+    reports:
+      junit: test-results/spectral-report.xml
+
+openapi_diff:
+  stage: security
+  image:
+    name: tufin/oasdiff:main
+    entrypoint: [""]
+  extends: .rules-mr-to-main-or-feature
+  needs:
+    - job: userorg
+      artifacts: true
+  variables:
+    GIT_DEPTH: 2
+  before_script:
+    - 'if ! command -v bash >/dev/null 2>&1; then (apk add --no-cache bash 2>/dev/null || apt-get update && apt-get install -y bash) || true; fi'
+  script:
+    # Diffs the committed User, Administration and Service documents (repo root) between HEAD~1 and HEAD for breaking changes.
+    - bash .gitlab/scripts/openapi-diff.sh "API_user.json" "API_administration.json" "API_service.json"
+  allow_failure: true
+  artifacts:
+    when: always
+    expire_in: 1 hour
+    paths:
+      - API_user.json.previous
+      - API_administration.json.previous
+      - API_service.json.previous
+      - test-results/openapi-diff.xml
+    reports:
+      junit: test-results/openapi-diff.xml
+
+roslyn_security_analysis:
+  image: ${DOTNET_IMAGE}
+  stage: security
+  extends: .rules-mr-to-main-or-feature
+  # Self-restores and rebuilds the solution with analyzers, so it needs no build artifacts.
+  needs: []
+  script:
+    - bash .gitlab/scripts/roslyn-security-analysis.sh "UserOrganization.slnx" "src"
+  allow_failure: true
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - security-reports/
+      - test-results/roslyn-security.xml
+    reports:
+      junit: test-results/roslyn-security.xml

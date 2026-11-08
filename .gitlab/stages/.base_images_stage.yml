@@ -1,0 +1,66 @@
+build_dotnet_dev_base:
+  stage: base_images
+  image: docker:28.0.0
+  allow_failure: true
+  extends: .rules-base-image-manual
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "${CI_REGISTRY_PASSWORD:-$CI_JOB_TOKEN}" "$CI_REGISTRY"
+    - docker build --pull -f Dockerfile.dotnet-dev-base -t "$CI_REGISTRY_IMAGE/dotnet-dev-base:$CI_COMMIT_SHORT_SHA" .
+    - docker tag "$CI_REGISTRY_IMAGE/dotnet-dev-base:$CI_COMMIT_SHORT_SHA" "$CI_REGISTRY_IMAGE/dotnet-dev-base:latest"
+    - docker push "$CI_REGISTRY_IMAGE/dotnet-dev-base:$CI_COMMIT_SHORT_SHA"
+    - docker push "$CI_REGISTRY_IMAGE/dotnet-dev-base:latest"
+
+build_dotnet_prod_base:
+  stage: base_images
+  image: docker:28.0.0
+  allow_failure: true
+  extends: .rules-base-image-manual
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "${CI_REGISTRY_PASSWORD:-$CI_JOB_TOKEN}" "$CI_REGISTRY"
+    - docker build --pull -f Dockerfile.dotnet-prod-base -t "$CI_REGISTRY_IMAGE/dotnet-prod-base:$CI_COMMIT_SHORT_SHA" .
+    - docker tag "$CI_REGISTRY_IMAGE/dotnet-prod-base:$CI_COMMIT_SHORT_SHA" "$CI_REGISTRY_IMAGE/dotnet-prod-base:latest"
+    - docker push "$CI_REGISTRY_IMAGE/dotnet-prod-base:$CI_COMMIT_SHORT_SHA"
+    - docker push "$CI_REGISTRY_IMAGE/dotnet-prod-base:latest"
+
+# Preview / debug runtime base = prod base + vsdbg + diagnostics. Built FROM the already-published
+# dotnet-prod-base:latest (passed via --build-arg, refreshed with --pull). Rebuild dotnet-prod-base
+# FIRST if the prod base changed, otherwise this layers debug tooling onto a stale prod base.
+build_dotnet_preview_base:
+  stage: base_images
+  image: docker:28.0.0
+  allow_failure: true
+  extends: .rules-base-image-manual
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "${CI_REGISTRY_PASSWORD:-$CI_JOB_TOKEN}" "$CI_REGISTRY"
+    - docker build --pull --build-arg PROD_BASE="$CI_REGISTRY_IMAGE/dotnet-prod-base:latest" -f Dockerfile.dotnet-preview-base -t "$CI_REGISTRY_IMAGE/dotnet-preview-base:$CI_COMMIT_SHORT_SHA" .
+    - docker tag "$CI_REGISTRY_IMAGE/dotnet-preview-base:$CI_COMMIT_SHORT_SHA" "$CI_REGISTRY_IMAGE/dotnet-preview-base:latest"
+    - docker push "$CI_REGISTRY_IMAGE/dotnet-preview-base:$CI_COMMIT_SHORT_SHA"
+    - docker push "$CI_REGISTRY_IMAGE/dotnet-preview-base:latest"
+
+build_semantic_release_base:
+  stage: base_images
+  image: docker:28.0.0
+  allow_failure: true
+  extends: .rules-base-image-manual
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "${CI_REGISTRY_PASSWORD:-$CI_JOB_TOKEN}" "$CI_REGISTRY"
+    - docker build --pull -f Dockerfile.semantic-release-base -t "$CI_REGISTRY_IMAGE/semantic-release-base:$CI_COMMIT_SHORT_SHA" .
+    - docker tag "$CI_REGISTRY_IMAGE/semantic-release-base:$CI_COMMIT_SHORT_SHA" "$CI_REGISTRY_IMAGE/semantic-release-base:latest"
+    - docker push "$CI_REGISTRY_IMAGE/semantic-release-base:$CI_COMMIT_SHORT_SHA"
+    - docker push "$CI_REGISTRY_IMAGE/semantic-release-base:latest"

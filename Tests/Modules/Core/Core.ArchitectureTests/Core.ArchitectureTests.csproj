@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsTestProject>true</IsTestProject>
+        <TargetFramework>net10.0</TargetFramework>
+        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+        <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+        <IsPackable>false</IsPackable>
+        <LangVersion>latest</LangVersion>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="xunit.v3.mtp-v2" />
+        <PackageReference Include="xunit.runner.visualstudio">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <!-- The three Core module assemblies under test. Referenced so they sit next to the
+         test binary and can be inspected by reflection (no NetArchTest dependency). -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\src\Modules\Core\Core.csproj" />
+        <ProjectReference Include="..\..\..\..\src\Modules\Core.DataAccess\Core.DataAccess.csproj" />
+        <ProjectReference Include="..\..\..\..\src\Modules\Core.Domain\Core.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit" />
+    </ItemGroup>
+
+</Project>

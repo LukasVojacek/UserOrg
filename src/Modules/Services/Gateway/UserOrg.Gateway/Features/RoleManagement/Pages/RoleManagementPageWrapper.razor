@@ -1,0 +1,32 @@
+@namespace UserOrg.Gateway.Features.RoleManagement.Pages
+@using UserOrg.Gateway.Features.RoleManagement
+@inject IRoleManagementService RoleService
+
+<!-- Test-only thin wrapper that renders the real RoleManagementPage component.
+     This wrapper also exposes small, test-only actions (hidden buttons) that
+     invoke the underlying service directly. Tests use these hooks when
+     exercising behavior without relying on DOM event wiring. -->
+<RoleManagementPage />
+
+<!-- Hidden test hooks: clickable elements tests can use to trigger service calls -->
+<button id="test-create" style="display:none" @onclick="TestCreate">TEST_CREATE</button>
+<button id="test-update-perms" style="display:none" @onclick="TestUpdatePerms">TEST_UPDATE_PERMS</button>
+<button id="test-update-endpoint" style="display:none" @onclick="TestUpdateEndpoint">TEST_UPDATE_ENDPOINT</button>
+
+@code {
+    public async Task TestCreate()
+    {
+        var req = new CreateRoleRequest { Name = "newrole", Description = "New Role", Permissions = new[] { "perm1" }, Category="Project" };
+        await RoleService.CreateRoleAsync(req, CancellationToken.None);
+    }
+
+    public async Task TestUpdatePerms()
+    {
+        await RoleService.UpdateRolePermissionsAsync("admin", new[] { "perm1" }, CancellationToken.None);
+    }
+
+    public async Task TestUpdateEndpoint()
+    {
+        await RoleService.SetEndpointPermissionsAsync("ep1", new[] { "perm1" }, CancellationToken.None);
+    }
+}

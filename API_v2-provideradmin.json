@@ -1,0 +1,2516 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "UserOrg API v0.0.0.1",
+    "description": "UserOrg Management API",
+    "contact": {
+      "name": "IT4Innovations",
+      "url": "https://opencode.it4i.eu/lexis-platform/backend/userorg",
+      "email": "support@lexis.tech"
+    },
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "0.0.0.1"
+  },
+  "paths": {
+    "/api/v2/ProviderAdmin/Projects": {
+      "get": {
+        "tags": [
+          "ProviderAdmin"
+        ],
+        "summary": "List projects",
+        "description": "Returns projects scoped to the caller: all for a platform admin, the projects consuming the caller's own provider's resources for a provider identity, or the caller's own project scope otherwise.",
+        "operationId": "GetProjectsProviderAdminV2",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProjectsProviderAdminResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Projects/{projectShortName}/Providers/{providerName}/Resources/{resourceName}": {
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Assign a resource to a project",
+        "description": "Assigns a resource to a project (Admin or the owning provider identity). The resource is addressed by its per-provider natural key in the route (ADR-0026). Idempotent reactivation of a previously removed assignment. Returns 204; 400 on input validation; 403 when not allowed; 404 when the project or resource (or a cross-provider name) does not exist; 409 when the resource is already assigned or the project already holds a non-shared resource; 422 when the resource is read-only. Use the machine-readable `code`, not the message.",
+        "operationId": "AssignProjectResourceV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Remove a resource from a project",
+        "description": "Removes a resource's assignment from a project (Admin or the owning provider identity). The resource is addressed by its per-provider natural key in the route (ADR-0026). Returns 204; 400 on input validation; 403 when not allowed; 404 when the project or resource (or a cross-provider name) does not exist, or the resource is not assigned; 422 when the resource is read-only. Use the machine-readable `code`, not the message.",
+        "operationId": "UnassignProjectResourceV2",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}": {
+      "put": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Update a provider",
+        "description": "Updates a provider's description, support email, privacy, and country (Admin or the owning provider identity). Body {CountryCode, Description?, SupportEmail?, IsPrivate}. Returns 204; 400 on validation / unknown country; 403 when not allowed; 404 when the provider does not exist.",
+        "operationId": "UpdateProviderV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProviderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Reactivate": {
+      "post": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Reactivate a provider",
+        "description": "Reactivates a deactivated provider (Admin or the owning provider identity). Returns 204; 403 when not allowed; 404 when the provider does not exist; 409 when it is not deactivated.",
+        "operationId": "ReactivateProviderV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Locations": {
+      "post": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Add a location to a provider",
+        "description": "Adds a location under a provider (Admin or the owning provider identity). Body {Name, Endpoint, LocationType, IsPrivate, IsShared, Description?}; LocationType is required and given by name (e.g. \"HPC\"). Returns 201 with a Location header; 400 on validation, including provider.invalid_location_type for an Unspecified, undefined or unseeded LocationType; 403 when not allowed; 404 when the provider does not exist; 409 when a location with the same name already exists.",
+        "operationId": "AddLocationV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddLocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddLocationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Locations/{locationName}": {
+      "put": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Update a provider's location",
+        "description": "Updates a location's endpoint and description (Admin or the owning provider identity). Body {Endpoint, Description?}. Returns 204; 400 on validation; 403 when not allowed; 404 when the provider or location does not exist; 409 when the location is deleted.",
+        "operationId": "UpdateLocationV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Remove a provider's location",
+        "description": "Soft-deletes a location (Admin or the owning provider identity). Returns 204; 403 when not allowed; 404 when the provider or location does not exist; 409 when the location is already deleted.",
+        "operationId": "RemoveLocationV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Locations/{locationName}/Assignments": {
+      "post": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Assign a project resource to a location",
+        "description": "Assigns a project resource to a location under a provider (Admin or the owning provider identity). The resource is addressed by its name (ADR-0024). Body {ResourceName, AllocationUnitType, AllocationUnitCount?, Description?, AggregationName?, Specifications?}. Returns 201 with a Location header to the created allocation (addressed by its slug); 400 on input validation (including an allocation unit type name that is not in GET AllocationUnitTypes) or a domain invariant breach; 422 on an allocation unit type with no catalog entry (None) or a read-only resource; 403 when not allowed; 404 when the provider, location, or resource does not exist. Use the machine-readable `code`, not the message.",
+        "operationId": "AssignResourceV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignResourceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignResourceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Locations/{locationName}/Assignments/{slug}": {
+      "put": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Update a resource assignment",
+        "description": "Updates an assignment's details and replaces its specifications (Admin or the owning provider identity). Body {AllocationUnitType, AllocationUnitCount?, Description?, AggregationName?, Specifications?}. Returns 204; 400 on input validation (including an allocation unit type name that is not in GET AllocationUnitTypes); 422 on an allocation unit type with no catalog entry (None) or a read-only resource; 403 when not allowed; 404 when the provider, location, or assignment does not exist; 409 when the assignment is already deleted. Use the machine-readable `code`, not the message.",
+        "operationId": "UpdateAssignmentV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAssignmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Provider"
+        ],
+        "summary": "Remove a resource assignment",
+        "description": "Soft-deletes an assignment (Admin or the owning provider identity). Returns 204; 422 when the resource is read-only; 403 when not allowed; 404 when the provider, location, or assignment does not exist; 409 when the assignment is already deleted. Use the machine-readable `code`, not the message.",
+        "operationId": "RemoveAssignmentV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/ProviderAdmin/Locations": {
+      "get": {
+        "tags": [
+          "ProviderAdmin"
+        ],
+        "summary": "List locations",
+        "description": "Returns active locations scoped to the caller: all for a platform admin, or the caller's own provider's locations for a provider identity.",
+        "operationId": "GetLocationsProviderAdminV2",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetLocationsProviderAdminResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/ProviderAdmin/Providers": {
+      "get": {
+        "tags": [
+          "ProviderAdmin"
+        ],
+        "summary": "List administered providers",
+        "description": "Paged via ?page=&limit= (bare array; X-Total-Count and Link headers). includeInactive=true also lists deactivated providers, flagged IsDeleted: true, with their non-deleted locations. All providers for a platform admin, the caller's own provider for a provider identity.",
+        "operationId": "GetProvidersProviderAdminV2",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetProviderResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/ProviderAdmin/Providers/{providerName}/Resources": {
+      "get": {
+        "tags": [
+          "ProviderAdmin"
+        ],
+        "summary": "List a provider's resources",
+        "description": "Returns the provider's resources that the caller can see (assigned to a project the caller has a role on), optionally filtered by project short name, location type name (locationType, for example HPC; Unspecified matches nothing) and validity dates. Each assignment carries its LocationType as a name.",
+        "operationId": "GetResourcesProviderAdminV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "projectShortName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationType",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ELocationType"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Resources": {
+      "post": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "Create a provider's resource and allocate it to one or more locations",
+        "description": "Creates a resource under a provider and allocates it to every named location in one atomic transaction (ADR-0043/ADR-0050; Admin or the owning provider identity). The resource belongs to that provider and its name is unique per provider (ADR-0026). Body {Name, Description?, PrimaryInvestigatorEmail, StartDate, EndDate, Locations: [{LocationName, AllocationUnitTypeId, AllocationUnitCount?, AllocationDescription?, AggregationName?, Specifications?}]} — at least one location is required. All-or-nothing: any failing location aborts the whole request. Every named location's HEAppE instance is health-probed first; if any is unreachable, none of them are reported individually — the whole set of unreachable ones is returned together. Submits the create-and-allocate workflow asynchronously (ADR-0057) and returns 202 Accepted with a Location header to the request-status poll route and the flow RequestId in the body; 400 on input validation (incl. duplicate location+aggregation pairs) or a domain invariant breach (incl. requesting a second non-shared location for the same resource); 403 when not allowed; 404 when the provider or a named location does not exist; 409 when the name already exists for the provider; 422 on an unknown allocation unit type; 502 when one or more named locations' HEAppE instance is unreachable. Use the machine-readable `code`, not the message.",
+        "operationId": "CreateResourceV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateResourceOnLocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateResourceOnLocationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Resources/{resourceName}": {
+      "put": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "Update a provider's resource",
+        "description": "Updates a resource's metadata under a provider (Admin or the owning provider identity). The name and owning provider are immutable (rename is disabled, ADR-0030) — body {Description?, PrimaryInvestigatorEmail, StartDate, EndDate}. Returns 204; 400 on validation; 403 when not allowed; 404 when the resource does not exist under this provider. Use the machine-readable `code`, not the message.",
+        "operationId": "UpdateResourceV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateResourceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "Delete a provider's resource",
+        "description": "Soft-deletes a resource under a provider (Admin or the owning provider identity). Returns 204; 403 when not allowed; 404 when the resource does not exist under this provider. Use the machine-readable `code`, not the message.",
+        "operationId": "DeleteResourceV2",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Resources/{resourceName}/Publish": {
+      "post": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "Publish a provider's resource",
+        "description": "Publishes a resource under a provider (Admin or the owning provider identity). Returns 204; 400 on validation; 403 when not allowed; 404 when the resource does not exist under this provider. Use the machine-readable `code`, not the message.",
+        "operationId": "PublishResource",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Resources/{resourceName}/CheckAccountAccess": {
+      "post": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "Check account access to a clusters",
+        "description": "Checks if the current user has access to a clusters.",
+        "operationId": "CheckAccountAccess",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v2/Providers/{providerName}/Resources/{resourceName}/ProvisionAccounts": {
+      "post": {
+        "tags": [
+          "Resource"
+        ],
+        "summary": "Provision accounts for a provider's resource",
+        "description": "Provisions accounts for a resource under a provider (Admin or the owning provider identity). Returns 204; 400 on validation; 403 when not allowed; 404 when the resource does not exist under this provider. Use the machine-readable `code`, not the message.",
+        "operationId": "ProvisionAccounts",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReprovisionAccountsReprovisionAccountsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddLocationRequest": {
+        "required": [
+          "Name",
+          "Endpoint",
+          "LocationType",
+          "IsPrivate",
+          "IsShared",
+          "Description"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Endpoint": {
+            "type": "string"
+          },
+          "LocationType": {
+            "$ref": "#/components/schemas/ELocationType"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "IsShared": {
+            "type": "boolean"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "AddLocationResponse": {
+        "required": [
+          "ProviderName",
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "ProviderName": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "AssignResourceRequest": {
+        "required": [
+          "ResourceName",
+          "AllocationUnitType",
+          "AllocationUnitCount",
+          "Description",
+          "AggregationName",
+          "Specifications"
+        ],
+        "type": "object",
+        "properties": {
+          "ResourceName": {
+            "type": "string"
+          },
+          "AllocationUnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "AllocationUnitCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Specifications": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AssignResourceSpecificationItem"
+            }
+          }
+        }
+      },
+      "AssignResourceResponse": {
+        "required": [
+          "Slug"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": "string"
+          }
+        }
+      },
+      "AssignResourceSpecificationItem": {
+        "required": [
+          "Name",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateResourceOnLocationCluster": {
+        "required": [
+          "ClusterName",
+          "ScratchPath",
+          "ProjectPath"
+        ],
+        "type": "object",
+        "properties": {
+          "ClusterName": {
+            "type": "string"
+          },
+          "ScratchPath": {
+            "type": "string"
+          },
+          "ProjectPath": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateResourceOnLocationLocationAssignment": {
+        "required": [
+          "LocationName",
+          "AllocationUnitType",
+          "AggregationName",
+          "AllocationUnitCount",
+          "AllocationDescription",
+          "PreferredAuthenticationType",
+          "Specifications"
+        ],
+        "type": "object",
+        "properties": {
+          "LocationName": {
+            "type": "string"
+          },
+          "AllocationUnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AllocationUnitCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PreferredAuthenticationType": {
+            "type": "string"
+          },
+          "Specifications": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateResourceOnLocationSpecificationItem"
+            }
+          }
+        }
+      },
+      "CreateResourceOnLocationRequest": {
+        "required": [
+          "Name",
+          "Description",
+          "PrimaryInvestigatorEmail",
+          "StartDate",
+          "EndDate",
+          "BypassHeappe",
+          "AccountString",
+          "UnitType",
+          "MappingOneToOne",
+          "UseAccountingStringForScheduler",
+          "Clusters",
+          "Usernames",
+          "LicenseUrl",
+          "AssignedLocations"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PrimaryInvestigatorEmail": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "BypassHeappe": {
+            "type": "boolean"
+          },
+          "AccountString": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "UnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "MappingOneToOne": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "UseAccountingStringForScheduler": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "Clusters": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CreateResourceOnLocationCluster"
+            }
+          },
+          "Usernames": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "LicenseUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AssignedLocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateResourceOnLocationLocationAssignment"
+            }
+          }
+        }
+      },
+      "CreateResourceOnLocationResponse": {
+        "required": [
+          "Name",
+          "RequestId"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "RequestId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateResourceOnLocationSpecificationItem": {
+        "required": [
+          "Name",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "EAllocationUnitType": {
+        "enum": [
+          "None",
+          "Unspecified",
+          "NodeHours",
+          "CoreHours",
+          "Credits",
+          "GB",
+          "QPUSeconds"
+        ]
+      },
+      "ELocationType": {
+        "enum": [
+          "Unspecified",
+          "HPC",
+          "CLOUD",
+          "Kubernetes",
+          "Storage",
+          "iRODS",
+          "FirecREST",
+          "Quantum"
+        ]
+      },
+      "EProjectResourceState": {
+        "enum": [
+          "Draft",
+          "CheckHeappeStep",
+          "InitializeProjectResourceStep",
+          "InitializeHeappeStep",
+          "WaitingForCreationAccounts",
+          "FinalizeCreationProjectResourceStep",
+          "Published",
+          "Deleted",
+          "Failed"
+        ]
+      },
+      "GetLocationsProviderAdminResponse": {
+        "required": [
+          "Name",
+          "Endpoint"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Endpoint": {
+            "type": "string"
+          }
+        }
+      },
+      "GetProjectsProviderAdminResponse": {
+        "required": [
+          "ShortName",
+          "Name",
+          "Email",
+          "ExternalId",
+          "Mode",
+          "State",
+          "ServiceName",
+          "StartDate",
+          "EndDate"
+        ],
+        "type": "object",
+        "properties": {
+          "ShortName": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ExternalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "State": {
+            "type": "string"
+          },
+          "ServiceName": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GetProviderResponse": {
+        "required": [
+          "Name",
+          "Description",
+          "SupportEmail",
+          "ExternalId",
+          "Mode",
+          "ServiceName",
+          "IsPrivate",
+          "CountryCode",
+          "IsDeleted",
+          "Locations"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SupportEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ExternalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "ServiceName": {
+            "type": "string"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "CountryCode": {
+            "type": "string"
+          },
+          "IsDeleted": {
+            "type": "boolean"
+          },
+          "Locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocationRecord"
+            }
+          }
+        }
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "LocationRecord": {
+        "required": [
+          "Name",
+          "Endpoint",
+          "Description",
+          "IsPrivate",
+          "IsShared"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Endpoint": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "IsShared": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ReprovisionAccountsReprovisionAccountsRequest": {
+        "required": [
+          "Usernames"
+        ],
+        "type": "object",
+        "properties": {
+          "Usernames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ResourceAssignmentResponse": {
+        "required": [
+          "Slug",
+          "LocationType",
+          "IsLocationShared",
+          "LocationName",
+          "AllocationAmount",
+          "AllocationUnitType",
+          "AggregationName",
+          "OperationMode",
+          "Specifications"
+        ],
+        "type": "object",
+        "properties": {
+          "Slug": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "LocationType": {
+            "$ref": "#/components/schemas/ELocationType"
+          },
+          "IsLocationShared": {
+            "type": "boolean"
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "OperationMode": {
+            "type": "string"
+          },
+          "Specifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpecificationResponse"
+            }
+          }
+        }
+      },
+      "ResourceResponse": {
+        "required": [
+          "Name",
+          "ProviderResourceName",
+          "Description",
+          "PrimaryInvestigatorEmail",
+          "StartDate",
+          "EndDate",
+          "OperationMode",
+          "LicenseUrl",
+          "State",
+          "Assignments"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "ProviderResourceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PrimaryInvestigatorEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "OperationMode": {
+            "type": "string"
+          },
+          "LicenseUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "State": {
+            "$ref": "#/components/schemas/EProjectResourceState"
+          },
+          "Assignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceAssignmentResponse"
+            }
+          }
+        }
+      },
+      "SpecificationResponse": {
+        "required": [
+          "Name",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateAssignmentRequest": {
+        "required": [
+          "AllocationUnitType",
+          "AllocationUnitCount",
+          "Description",
+          "AggregationName",
+          "Specifications"
+        ],
+        "type": "object",
+        "properties": {
+          "AllocationUnitType": {
+            "$ref": "#/components/schemas/EAllocationUnitType"
+          },
+          "AllocationUnitCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Specifications": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/UpdateAssignmentSpecificationItem"
+            }
+          }
+        }
+      },
+      "UpdateAssignmentSpecificationItem": {
+        "required": [
+          "Name",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateLocationRequest": {
+        "required": [
+          "Endpoint",
+          "Description"
+        ],
+        "type": "object",
+        "properties": {
+          "Endpoint": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UpdateProviderRequest": {
+        "required": [
+          "CountryCode",
+          "Description",
+          "SupportEmail",
+          "IsPrivate"
+        ],
+        "type": "object",
+        "properties": {
+          "CountryCode": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SupportEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateResourceRequest": {
+        "required": [
+          "Description",
+          "PrimaryInvestigatorEmail",
+          "StartDate",
+          "EndDate",
+          "LicenseUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PrimaryInvestigatorEmail": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "LicenseUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Paste only the JWT access token. The Bearer prefix is applied automatically.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "Service": {
+        "type": "apiKey",
+        "description": "Paste only the service token in format: Service TOKEN/KEY",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "ProviderAdmin"
+    },
+    {
+      "name": "Project"
+    },
+    {
+      "name": "Provider"
+    },
+    {
+      "name": "Resource"
+    }
+  ]
+}

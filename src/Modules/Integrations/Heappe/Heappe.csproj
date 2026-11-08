@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Nullable>annotations</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Lukdrasil.Result" />
+	  <PackageReference Include="Lukdrasil.Error" />
+    <PackageReference Include="Lukdrasil.Validation" />
+	  <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+	  <PackageReference Include="Microsoft.Extensions.Features" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+	  <PackageReference Include="Microsoft.Extensions.Http" />
+	  <PackageReference Include="Microsoft.FeatureManagement" />
+	  <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="TokenDelegation" />
+    <PackageReference Include="OpenTelemetry.Api" />
+
+
+  </ItemGroup>
+
+	<!--<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Heappe.Adapter</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>-->
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Heappe.UnitTests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>DatabaseMigrations</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\UserOrg.Shared\UserOrg.Shared.csproj" />
+	  <ProjectReference Include="..\Heappe.Contracts\Heappe.Contracts.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Persistence\Migrations\" />
+	</ItemGroup>
+
+</Project>

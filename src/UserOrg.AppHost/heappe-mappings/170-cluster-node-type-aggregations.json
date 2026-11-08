@@ -1,0 +1,26 @@
+{
+  "Guid": "0a0a0000-0000-0000-0000-000000000170",
+  "Priority": 170,
+  "Request": {
+    "Methods": [ "GET" ],
+    "Path": {
+      "Matchers": [
+        { "Name": "WildcardMatcher", "Pattern": "*/heappe/Management/ClusterNodeTypeAggregations", "IgnoreCase": true }
+      ]
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Headers": { "Content-Type": "application/json" },
+    "BodyAsJson": [
+      {
+        "Id": 7,
+        "Name": "mock-aggregation",
+        "Description": "",
+        "AllocationType": "CoreHours",
+        "ValidityFrom": "2026-01-01T00:00:00Z",
+        "ValidityTo": null
+      }
+    ]
+  }
+}

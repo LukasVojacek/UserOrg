@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TemplatesInfo: v1 vs v2 — chování při více HEAppE instancích</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f8; color: #1a1a2e; }
+
+    .page { max-width: 1060px; margin: 0 auto; padding: 36px 28px; }
+
+    h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 6px; }
+    h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 8px; }
+    p  { font-size: 0.875rem; color: #444; line-height: 1.55; }
+    code { font-family: 'Menlo','Consolas',monospace; font-size: 0.82em; background: #f3f4f6; padding: 1px 5px; border-radius: 4px; }
+
+    .subtitle { color: #666; font-size: 0.82rem; margin-bottom: 32px; line-height: 1.5; }
+    .subtitle em { color: #374151; font-style: normal; font-weight: 600; }
+
+    section { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 1px 6px rgba(0,0,0,.08); margin-bottom: 22px; }
+
+    .section-tag { display: inline-block; background: #e0e7ff; color: #3730a3; border-radius: 4px; padding: 2px 9px; font-size: 0.7rem; font-weight: 700; letter-spacing: .04em; margin-bottom: 12px; }
+    .section-tag.red   { background: #fee2e2; color: #b91c1c; }
+    .section-tag.green { background: #dcfce7; color: #15803d; }
+    .section-tag.amber { background: #fef9c3; color: #92400e; }
+
+    /* badges */
+    .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; }
+    .b-green  { background: #dcfce7; color: #15803d; }
+    .b-red    { background: #fee2e2; color: #b91c1c; }
+    .b-amber  { background: #fef9c3; color: #92400e; }
+    .b-blue   { background: #dbeafe; color: #1d4ed8; }
+    .b-purple { background: #f3e8ff; color: #7c3aed; }
+    .b-cyan   { background: #e0f2fe; color: #0369a1; }
+
+    /* resource pills */
+    .pill { display: inline-block; border-radius: 99px; padding: 3px 11px; font-size: 0.75rem; font-weight: 600; }
+    .pill-ok     { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .pill-dead   { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .pill-gray   { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+
+    /* topology diagram */
+    .topo { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin: 18px 0; }
+    .topo-project {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      color: white; border-radius: 12px; padding: 14px 22px;
+      font-weight: 700; text-align: center; min-width: 120px;
+      box-shadow: 0 2px 8px rgba(59,130,246,.35);
+    }
+    .topo-project .lbl { font-size: 0.65rem; opacity: .75; letter-spacing:.06em; margin-bottom: 3px; }
+    .topo-project .name { font-size: 0.95rem; }
+    .topo-arrow { font-size: 1.8rem; color: #9ca3af; flex-shrink: 0; }
+    .topo-instances { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 280px; }
+
+    .he-box { border-radius: 10px; padding: 14px 16px; border: 2px solid; }
+    .he-alive { border-color: #16a34a; background: #f0fdf4; }
+    .he-dead  { border-color: #dc2626; background: #fef2f2; }
+
+    .he-label { font-size: 0.82rem; font-weight: 700; margin-bottom: 8px; }
+    .he-label.alive { color: #15803d; }
+    .he-label.dead  { color: #b91c1c; }
+    .he-pills { display: flex; gap: 7px; flex-wrap: wrap; }
+
+    /* compare 2-col */
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 16px; }
+    @media (max-width: 680px) { .compare { grid-template-columns: 1fr; } }
+    .c-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }
+    .c-card.v1 { border-top: 4px solid #7c3aed; }
+    .c-card.v2 { border-top: 4px solid #0891b2; }
+    .c-card.v2-warn { border-top: 4px solid #dc2626; }
+
+    /* task groups visual */
+    .task-group { border-radius: 7px; padding: 8px 12px; font-size: 0.8rem; margin-bottom: 6px; font-weight: 500; }
+    .tg-purple { background: #f3e8ff; color: #5b21b6; border-left: 3px solid #7c3aed; }
+    .tg-cyan   { background: #e0f2fe; color: #0369a1; border-left: 3px solid #0891b2; }
+
+    /* counter grid */
+    .counters { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
+    .counter { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; text-align: center; }
+    .counter .num { font-size: 1.7rem; font-weight: 800; line-height: 1; }
+    .counter .lbl { font-size: 0.68rem; color: #666; margin-top: 3px; line-height: 1.3; }
+    .c-purple .num { color: #7c3aed; }
+    .c-cyan   .num { color: #0891b2; }
+    .c-green  .num { color: #16a34a; }
+    .c-red    .num { color: #dc2626; }
+
+    /* response mock */
+    .resp-status { border-radius: 7px; padding: 9px 13px; margin-bottom: 10px; font-weight: 700; font-size: 0.9rem; }
+    .rs-200 { background: #dcfce7; color: #15803d; }
+    .rs-503 { background: #fee2e2; color: #b91c1c; }
+    .rs-200-warn { background: #fef9c3; color: #92400e; border: 2px dashed #d97706; }
+
+    .json-box { background: #1e1e2e; color: #cdd6f4; border-radius: 8px; padding: 12px 14px; font-family: 'Menlo','Consolas',monospace; font-size: 0.76rem; line-height: 1.6; overflow-x: auto; }
+    .json-key   { color: #89b4fa; }
+    .json-str   { color: #a6e3a1; }
+    .json-false { color: #f38ba8; font-weight: 700; }
+    .json-true  { color: #a6e3a1; font-weight: 700; }
+    .json-comment { color: #6c7086; font-style: italic; }
+
+    /* notes */
+    .note { border-left: 4px solid; padding: 11px 15px; border-radius: 0 8px 8px 0; font-size: 0.84rem; margin-top: 14px; line-height: 1.5; }
+    .note-amber { background: #fffbeb; border-color: #f59e0b; color: #78350f; }
+    .note-red   { background: #fef2f2; border-color: #dc2626; color: #7f1d1d; }
+    .note-green { background: #f0fdf4; border-color: #16a34a; color: #14532d; }
+    .note-blue  { background: #eff6ff; border-color: #3b82f6; color: #1e3a8a; }
+
+    /* summary table */
+    table { width: 100%; border-collapse: collapse; font-size: 0.845rem; margin-top: 14px; }
+    th { text-align: left; padding: 9px 11px; background: #f9fafb; color: #555; font-weight: 600; border-bottom: 2px solid #e5e7eb; }
+    td { padding: 9px 11px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .row-warn { background: #fff8f8 !important; }
+
+    /* action items */
+    .action-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px; border-radius: 10px; border: 1px solid; margin-bottom: 10px; }
+    .action-item:last-child { margin-bottom: 0; }
+    .ai-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .ai-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; }
+    .ai-body  { font-size: 0.82rem; line-height: 1.5; }
+    .ai-red    { background: #fef2f2; border-color: #fca5a5; }
+    .ai-red    .ai-title { color: #b91c1c; }
+    .ai-red    .ai-body  { color: #7f1d1d; }
+    .ai-amber  { background: #fffbeb; border-color: #fde68a; }
+    .ai-amber  .ai-title { color: #92400e; }
+    .ai-amber  .ai-body  { color: #78350f; }
+    .ai-green  { background: #f0fdf4; border-color: #86efac; }
+    .ai-green  .ai-title { color: #15803d; }
+    .ai-green  .ai-body  { color: #166534; }
+
+    /* info strip */
+    .info-strip { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .is-box { flex: 1; min-width: 180px; border-radius: 8px; padding: 12px 14px; border: 1px solid #e5e7eb; }
+    .is-box .is-label { font-size: 0.7rem; font-weight: 700; letter-spacing:.05em; color: #9ca3af; margin-bottom: 4px; }
+    .is-box .is-val   { font-size: 0.85rem; font-weight: 600; color: #111; }
+
+    /* v-label */
+    .v-label { font-size: 0.85rem; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>TemplatesInfo — chování při více HEAppE instancích</h1>
+  <p class="subtitle">
+    Report pro PM · Větev <strong>feat/refactor-core</strong> · 2026-06-28<br>
+    Odpověď na otázku: <em>„Testovací projekt má resources z Deucalionu i z jiných HEAppE instancí — jaké je očekávané chování TemplatesInfo v1 vs v2?"</em>
+  </p>
+
+  <!-- ───────── 1. CO JE TEMPLATESINFO ───────── -->
+  <section>
+    <div class="section-tag">CO TO JE</div>
+    <h2>TemplatesInfo — co endpoint dělá</h2>
+    <p>
+      Endpoint vrací pro daný projekt seznam dostupných HPC prostředků: clustery, typy výpočetních uzlů a předdefinované
+      příkazy (šablony), které uživatel může spustit. Informace přicházejí ze <strong>všech HEAppE instancí</strong>,
+      ke kterým je projekt připojen přes přiřazené resources.
+    </p>
+
+    <div class="info-strip" style="margin-top:16px">
+      <div class="is-box" style="border-top: 3px solid #7c3aed">
+        <div class="is-label">LEGACY VERZE</div>
+        <div class="is-val">GET /api/Project/TemplatesInfo/{shortName}</div>
+        <p style="font-size:0.76rem;margin-top:4px;color:#666">Stále v provozu, obsluhuje současné klienty</p>
+      </div>
+      <div class="is-box" style="border-top: 3px solid #0891b2">
+        <div class="is-label">NOVÁ VERZE (refaktor)</div>
+        <div class="is-val">GET /v2/projects/{shortName}/templates</div>
+        <p style="font-size:0.76rem;margin-top:4px;color:#666">Refaktorovaná — ADR-0038, lepší škálování</p>
+      </div>
+    </div>
+
+    <div class="note note-blue">
+      Obě verze běží paralelně. Klienti mohou přejít na v2 postupně. Legacy zůstane až do plného přechodu.
+    </div>
+  </section>
+
+  <!-- ───────── 2. TESTOVACÍ PROJEKT — TOPOLOGIE ───────── -->
+  <section>
+    <div class="section-tag green">TOPOLOGIE PROJEKTU</div>
+    <h2>Testovací projekt — jak vypadá</h2>
+    <p>Projekt má přiřazeny resources ze <strong>dvou různých HEAppE instancí</strong>. Resources R1 a R2 sdílejí stejné
+       HEAppE URL (Deucalion) — to je klíčový bod rozdílu v1 vs v2.</p>
+
+    <div class="topo">
+      <div class="topo-project">
+        <div class="lbl">PROJEKT</div>
+        <div class="name">test-project</div>
+      </div>
+      <div class="topo-arrow">⟶</div>
+      <div class="topo-instances">
+
+        <div class="he-box he-alive">
+          <div class="he-label alive">🟢 HEAppE Instance A — Deucalion (IT4Innovations)</div>
+          <div class="he-pills">
+            <span class="pill pill-ok">R1 — Deucalion CPU</span>
+            <span class="pill pill-ok">R2 — Deucalion GPU</span>
+          </div>
+          <p style="font-size:0.73rem;color:#666;margin-top:7px">Oba resources sdílejí stejné HEAppE URL → v1 pošle 2 dotazy, v2 pošle 1</p>
+        </div>
+
+        <div class="he-box he-alive">
+          <div class="he-label alive">🟢 HEAppE Instance B — jiná HE (např. Karolina / LUMI)</div>
+          <div class="he-pills">
+            <span class="pill pill-ok">R3 — Standard CPU</span>
+            <span class="pill pill-ok">R4 — GPU partition</span>
+          </div>
+          <p style="font-size:0.73rem;color:#666;margin-top:7px">Vlastní HEAppE URL → 1 dotaz v obou verzích</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 3. NORMÁLNÍ PROVOZ ───────── -->
+  <section>
+    <div class="section-tag green">NORMÁLNÍ PROVOZ</div>
+    <h2>✅ Vše funguje — jak v1 a v2 pracují jinak, přestože výsledek je stejný</h2>
+    <p style="margin-bottom:16px">
+      Obě verze vrátí uživateli <strong>identická data</strong>: šablony ze všech čtyř resources. Liší se jen tím,
+      <em>kolik volání</em> do HEAppE pošlou a jak efektivně práci provádějí.
+    </p>
+
+    <div class="compare">
+
+      <!-- v1 -->
+      <div class="c-card v1">
+        <div class="v-label"><span class="badge b-purple">v1 legacy</span> Jak zpracovává request</div>
+        <p style="font-size:0.82rem;margin-bottom:12px;color:#555">
+          Vytváří skupinu pro každý resource na každé instanci zvlášť.
+          Všechny skupiny pak běží <strong>paralelně</strong>.
+        </p>
+
+        <div class="task-group tg-purple">🔵 Skupina 1 — R1 / Deucalion (Instance A)</div>
+        <div class="task-group tg-purple">🔵 Skupina 2 — R2 / Deucalion (Instance A)</div>
+        <div class="task-group tg-purple">🔵 Skupina 3 — R3 / Instance B</div>
+        <div class="task-group tg-purple">🔵 Skupina 4 — R4 / Instance B</div>
+
+        <div class="counters">
+          <div class="counter c-purple"><div class="num">4</div><div class="lbl">paralelní skupiny</div></div>
+          <div class="counter c-purple"><div class="num">4</div><div class="lbl">liveness probes</div></div>
+          <div class="counter c-purple"><div class="num">4</div><div class="lbl">klony katalogu</div></div>
+          <div class="counter c-purple"><div class="num">1</div><div class="lbl">DB dotaz (šablony)</div></div>
+        </div>
+        <p style="font-size:0.76rem;color:#9333ea;margin-top:10px;font-weight:600">
+          ⚠️ Deucalion dostane 2 liveness proby a jeho katalog se 2× naklonuje — zbytečné
+        </p>
+      </div>
+
+      <!-- v2 -->
+      <div class="c-card v2">
+        <div class="v-label"><span class="badge b-cyan">v2 nová</span> Jak zpracovává request</div>
+        <p style="font-size:0.82rem;margin-bottom:12px;color:#555">
+          Vytváří skupinu pro každou <strong>instanci</strong> (ne resource). Resources na stejné instanci
+          jsou v jedné skupině.
+        </p>
+
+        <div class="task-group tg-cyan">🔷 Skupina 1 — R1 + R2 / Deucalion (Instance A)</div>
+        <div class="task-group tg-cyan">🔷 Skupina 2 — R3 + R4 / Instance B</div>
+        <div style="height: 40px"></div>
+
+        <div class="counters">
+          <div class="counter c-cyan"><div class="num">2</div><div class="lbl">paralelní skupiny</div></div>
+          <div class="counter c-cyan"><div class="num">2</div><div class="lbl">liveness probes</div></div>
+          <div class="counter c-green"><div class="num">0</div><div class="lbl">klony katalogu</div></div>
+          <div class="counter c-cyan"><div class="num">1</div><div class="lbl">DB dotaz (šablony)</div></div>
+        </div>
+        <p style="font-size:0.76rem;color:#0369a1;margin-top:10px;font-weight:600">
+          ✅ Deucalion: 1 probe, 1 fetch — nezáleží na počtu resources na instanci
+        </p>
+      </div>
+
+    </div>
+
+    <div class="note note-green">
+      <strong>Pro uživatele i frontend je výsledek identický.</strong> Dostane šablony ze všech čtyř resources.
+      v2 je jen efektivnější — škáluje lépe s rostoucím počtem resources na sdílené instanci.
+    </div>
+  </section>
+
+  <!-- ───────── 4. SCÉNÁŘ: Deucalion dole ───────── -->
+  <section>
+    <div class="section-tag amber">DEGRADACE — ČÁSTEČNÁ</div>
+    <h2>🟡 Deucalion nedostupný — Instance B funguje normálně</h2>
+
+    <div class="topo">
+      <div class="topo-project">
+        <div class="lbl">PROJEKT</div>
+        <div class="name">test-project</div>
+      </div>
+      <div class="topo-arrow">⟶</div>
+      <div class="topo-instances">
+
+        <div class="he-box he-dead">
+          <div class="he-label dead">🔴 Instance A — Deucalion — NEDOSTUPNÝ</div>
+          <div class="he-pills">
+            <span class="pill pill-dead">R1 — Deucalion CPU ✗</span>
+            <span class="pill pill-dead">R2 — Deucalion GPU ✗</span>
+          </div>
+        </div>
+
+        <div class="he-box he-alive">
+          <div class="he-label alive">🟢 Instance B — funguje normálně</div>
+          <div class="he-pills">
+            <span class="pill pill-ok">R3 — Standard CPU ✓</span>
+            <span class="pill pill-ok">R4 — GPU partition ✓</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="compare" style="margin-top:18px">
+
+      <!-- v1 partial -->
+      <div class="c-card v1">
+        <div class="v-label"><span class="badge b-purple">v1 legacy</span></div>
+        <div class="resp-status rs-200">HTTP 200 OK</div>
+
+        <div class="json-box">
+<span class="json-comment">// R3, R4 — dostupné</span>
+{ <span class="json-key">"clusterName"</span>: <span class="json-str">"Karolina"</span>,
+  <span class="json-key">"isAvailable"</span>: <span class="json-true">true</span>,
+  <span class="json-key">"nodes"</span>: [ <span class="json-comment">... šablony ...</span> ] },
+{ <span class="json-key">"clusterName"</span>: <span class="json-str">"Karolina GPU"</span>,
+  <span class="json-key">"isAvailable"</span>: <span class="json-true">true</span>, ... },
+
+<span class="json-comment">// R1, R2 — Deucalion nedostupný</span>
+{ <span class="json-key">"clusterName"</span>: <span class="json-str">"Deucalion"</span>,
+  <span class="json-key">"isAvailable"</span>: <span class="json-false">false</span>,
+  <span class="json-key">"nodes"</span>: [] },
+{ <span class="json-key">"clusterName"</span>: <span class="json-str">"Deucalion GPU"</span>,
+  <span class="json-key">"isAvailable"</span>: <span class="json-false">false</span>, ... }
+        </div>
+
+        <div style="margin-top:12px;background:#f3f4f6;border-radius:7px;padding:10px;font-size:0.78rem">
+          <strong>Navíc HTTP hlavička:</strong><br>
+          <code>X-Unavailable-HEAppE-Instances:</code><br>
+          <code style="color:#7c3aed">IT4I/R1 (Deucalion-L1);&nbsp;IT4I/R2 (Deucalion-L2)</code>
+          <br>
+          <span style="color:#666;font-size:0.75rem;margin-top:3px;display:block">→ 2 záznamy v hlavičce pro 1 mrtvou instanci</span>
+        </div>
+
+        <p style="font-size:0.78rem;color:#555;margin-top:10px">
+          ⏱ Rychlost: Deucalion selže po liveness probe timeoutu (~15 s).
+          Výsledek se <strong>neuloží do cache</strong>.
+        </p>
+      </div>
+
+      <!-- v2 partial -->
+      <div class="c-card v2">
+        <div class="v-label"><span class="badge b-cyan">v2 nová</span></div>
+        <div class="resp-status rs-200">HTTP 200 OK</div>
+
+        <div class="json-box">
+<span class="json-comment">// R3, R4 — dostupné</span>
+{ <span class="json-key">"clusterName"</span>: <span class="json-str">"Karolina"</span>,
+  <span class="json-key">"isAvailable"</span>: <span class="json-true">true</span>,
+  <span class="json-key">"nodes"</span>: [ <span class="json-comment">... šablony ...</span> ] },
+{ <span class="json-key">"clusterName"</span>: <span class="json-str">"Karolina GPU"</span>,
+  <span class="json-key">"isAvailable"</span>: <span class="json-true">true</span>, ... },
+
+<span class="json-comment">// R1, R2 — Deucalion nedostupný</span>
+{ <span class="json-key">"clusterName"</span>: <span class="json-str">"Deucalion"</span>,
+  <span class="json-key">"isAvailable"</span>: <span class="json-false">false</span>,
+  <span class="json-key">"nodes"</span>: [] },
+{ <span class="json-key">"clusterName"</span>: <span class="json-str">"Deucalion GPU"</span>,
+  <span class="json-key">"isAvailable"</span>: <span class="json-false">false</span>, ... }
+        </div>
+
+        <div style="margin-top:12px;background:#f3f4f6;border-radius:7px;padding:10px;font-size:0.78rem;color:#555">
+          <strong>Žádná extra hlavička.</strong><br>
+          Caller pozná degradaci z <code>isAvailable: false</code> v datech.
+          Žádná info o konkrétní příčině selhání v odpovědi.
+        </div>
+
+        <p style="font-size:0.78rem;color:#555;margin-top:10px">
+          ⏱ Rychlost: Deucalion selže po 1 liveness probe (~15 s, ne 2 jako v1).
+          Výsledek se <strong>neuloží do cache</strong>.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="note note-green">
+      <strong>Z pohledu uživatele a frontendu: chování je prakticky stejné.</strong>
+      Uživatel uvidí dostupné šablony z Instance B a Deucalion resources jako nedostupné (cluster
+      greyed-out nebo s varovnou ikonou). v2 je o něco rychlejší (1 probe na Deucalion místo 2).
+    </div>
+  </section>
+
+  <!-- ───────── 5. SCÉNÁŘ: vše dole ───────── -->
+  <section>
+    <div class="section-tag red">DEGRADACE — TOTÁLNÍ</div>
+    <h2>⛔ Všechny HEAppE instance nedostupné — KLÍČOVÝ ROZDÍL</h2>
+    <p style="margin-bottom:16px">Toto je scénář, kde se v1 a v2 chovají <strong>zásadně odlišně</strong> a kde existuje known gap.</p>
+
+    <div class="topo">
+      <div class="topo-project">
+        <div class="lbl">PROJEKT</div>
+        <div class="name">test-project</div>
+      </div>
+      <div class="topo-arrow">⟶</div>
+      <div class="topo-instances">
+        <div class="he-box he-dead">
+          <div class="he-label dead">🔴 Instance A — Deucalion — NEDOSTUPNÝ</div>
+          <div class="he-pills">
+            <span class="pill pill-dead">R1 ✗</span>
+            <span class="pill pill-dead">R2 ✗</span>
+          </div>
+        </div>
+        <div class="he-box he-dead">
+          <div class="he-label dead">🔴 Instance B — NEDOSTUPNÁ</div>
+          <div class="he-pills">
+            <span class="pill pill-dead">R3 ✗</span>
+            <span class="pill pill-dead">R4 ✗</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare" style="margin-top:18px">
+
+      <!-- v1 total -->
+      <div class="c-card v1">
+        <div class="v-label"><span class="badge b-purple">v1 legacy</span></div>
+        <div class="resp-status rs-503">HTTP 503 Service Unavailable</div>
+
+        <div class="json-box">
+{
+  <span class="json-key">"title"</span>: <span class="json-str">"HEAppE service unavailable"</span>,
+  <span class="json-key">"status"</span>: 503,
+  <span class="json-key">"failures"</span>: [
+    {
+      <span class="json-key">"instance"</span>: <span class="json-str">"IT4I/R1 (Deucalion-L1)"</span>,
+      <span class="json-key">"cause"</span>: <span class="json-str">"unreachable"</span>
+    },
+    {
+      <span class="json-key">"instance"</span>: <span class="json-str">"IT4I/R2 (Deucalion-L2)"</span>,
+      <span class="json-key">"cause"</span>: <span class="json-str">"unreachable"</span>
+    },
+    {
+      <span class="json-key">"instance"</span>: <span class="json-str">"InstanceB/R3"</span>,
+      <span class="json-key">"cause"</span>: <span class="json-str">"timeout"</span>
+    },
+    ...
+  ]
+}
+        </div>
+
+        <ul style="font-size:0.82rem;padding-left:18px;margin-top:12px;line-height:1.8">
+          <li>✅ Jasný HTTP signál: <strong>503</strong></li>
+          <li>✅ Monitoring / alerting zachytí na status kódu</li>
+          <li>✅ Response obsahuje příčinu selhání per resource</li>
+          <li>✅ Frontend může zobrazit "HEAppE nedostupné, zkuste znovu"</li>
+        </ul>
+      </div>
+
+      <!-- v2 total — gap! -->
+      <div class="c-card v2-warn">
+        <div class="v-label"><span class="badge b-red">v2 nová</span> <span style="color:#dc2626;font-size:0.8rem">⚠️ known gap</span></div>
+        <div class="resp-status rs-200-warn">HTTP 200 OK &nbsp;←&nbsp; pozor, toto je jinak než v1!</div>
+
+        <div class="json-box">
+<span class="json-comment">// VŠECHNY záznamy isAvailable: false</span>
+[
+  { <span class="json-key">"clusterName"</span>: <span class="json-str">"Deucalion"</span>,
+    <span class="json-key">"isAvailable"</span>: <span class="json-false">false</span>, <span class="json-key">"nodes"</span>: [] },
+  { <span class="json-key">"clusterName"</span>: <span class="json-str">"Deucalion GPU"</span>,
+    <span class="json-key">"isAvailable"</span>: <span class="json-false">false</span>, <span class="json-key">"nodes"</span>: [] },
+  { <span class="json-key">"clusterName"</span>: <span class="json-str">"Karolina"</span>,
+    <span class="json-key">"isAvailable"</span>: <span class="json-false">false</span>, <span class="json-key">"nodes"</span>: [] },
+  { <span class="json-key">"clusterName"</span>: <span class="json-str">"Karolina GPU"</span>,
+    <span class="json-key">"isAvailable"</span>: <span class="json-false">false</span>, <span class="json-key">"nodes"</span>: [] }
+]
+        </div>
+
+        <ul style="font-size:0.82rem;padding-left:18px;margin-top:12px;line-height:1.8">
+          <li>⚠️ HTTP status je <strong>200</strong> — ne 503</li>
+          <li>⚠️ Monitoring na HTTP status kódu výpadek nezachytí</li>
+          <li>⚠️ Žádná info o příčině selhání</li>
+          <li>⚠️ Frontend musí zkontrolovat každý záznam v poli</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Visual comparison strip -->
+    <div style="margin-top:20px;display:flex;gap:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px;border-radius:8px;padding:14px;background:#f0fdf4;border:1px solid #86efac;text-align:center">
+        <div style="font-size:1.5rem;margin-bottom:4px">🚨</div>
+        <div style="font-weight:700;font-size:0.85rem;color:#15803d">v1: monitoring zachytí</div>
+        <div style="font-size:0.78rem;color:#166534;margin-top:4px">HTTP 503 → alert se spustí automaticky</div>
+      </div>
+      <div style="flex:1;min-width:200px;border-radius:8px;padding:14px;background:#fef2f2;border:1px solid #fca5a5;text-align:center">
+        <div style="font-size:1.5rem;margin-bottom:4px">😶</div>
+        <div style="font-weight:700;font-size:0.85rem;color:#b91c1c">v2: monitoring to přehlédne</div>
+        <div style="font-size:0.78rem;color:#7f1d1d;margin-top:4px">HTTP 200 → status-based alerting nezareaguje</div>
+      </div>
+      <div style="flex:1;min-width:200px;border-radius:8px;padding:14px;background:#eff6ff;border:1px solid #93c5fd;text-align:center">
+        <div style="font-size:1.5rem;margin-bottom:4px">🛠</div>
+        <div style="font-weight:700;font-size:0.85rem;color:#1d4ed8">Plánovaná oprava</div>
+        <div style="font-size:0.78rem;color:#1e40af;margin-top:4px">v2 dostane 503 při totální degradaci — podmínka F7 gate</div>
+      </div>
+    </div>
+
+    <div class="note note-red">
+      <strong>⚠️ Toto je known gap — G1 (blocker pro F7 parity gate).</strong>
+      V2 musí před přechodem klientů dostat explicitní 503 při totálním výpadku HEAppE.
+      Do té doby je nutné, aby frontend a monitoring reagovaly na data (<code>isAvailable</code>), ne jen na HTTP status.
+    </div>
+  </section>
+
+  <!-- ───────── 6. PŘEHLEDNÁ TABULKA ───────── -->
+  <section>
+    <div class="section-tag">PŘEHLED</div>
+    <h2>Co si zapamatovat — všechny scénáře najednou</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:22%">Situace</th>
+          <th style="width:8%">v1 status</th>
+          <th style="width:30%">v1 — co uživatel / monitoring dostane</th>
+          <th style="width:8%">v2 status</th>
+          <th style="width:30%">v2 — co uživatel / monitoring dostane</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>✅ Vše funguje</td>
+          <td><span class="badge b-green">200</span></td>
+          <td>Šablony ze všech resources (R1–R4), <code>isAvailable: true</code></td>
+          <td><span class="badge b-green">200</span></td>
+          <td>Totéž — identický výsledek</td>
+        </tr>
+        <tr>
+          <td>🟡 Deucalion (Instance A) nedostupný, Instance B OK</td>
+          <td><span class="badge b-green">200</span></td>
+          <td>R3, R4 dostupné. R1, R2 jako <code>false</code>. Extra hlavička s 2 záznamy pro Deucalion.</td>
+          <td><span class="badge b-green">200</span></td>
+          <td>R3, R4 dostupné. R1, R2 jako <code>false</code>. Žádná extra hlavička.</td>
+        </tr>
+        <tr>
+          <td>🟡 Instance B nedostupná, Deucalion OK</td>
+          <td><span class="badge b-green">200</span></td>
+          <td>R1, R2 dostupné. R3, R4 jako <code>false</code>.</td>
+          <td><span class="badge b-green">200</span></td>
+          <td>R1, R2 dostupné. R3, R4 jako <code>false</code>.</td>
+        </tr>
+        <tr class="row-warn">
+          <td>🔴 <strong>Všechny instance nedostupné</strong></td>
+          <td><span class="badge b-red">503</span></td>
+          <td>Chybová hláška + seznam instancí + příčina. Monitoring zareaguje na status.</td>
+          <td><span class="badge b-amber">200 ⚠️</span></td>
+          <td>Všechny záznamy <code>isAvailable: false</code>. Žádná info o příčině. <strong>Monitoring musí číst data.</strong></td>
+        </tr>
+        <tr>
+          <td>🔁 Výsledek v cache po úspěchu</td>
+          <td colspan="2">Ano, 5 minut (HybridCache)</td>
+          <td colspan="2">Ano, 5 minut (OutputCache)</td>
+        </tr>
+        <tr>
+          <td>🔁 Výsledek v cache při degradaci</td>
+          <td colspan="4" style="text-align:center;color:#15803d;font-weight:600">❌ Nikdy — obě verze garantují, že degradovaný výsledek se nikdy neskladuje do cache</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ───────── 7. AKČNÍ BODY ───────── -->
+  <section>
+    <div class="section-tag amber">AKČNÍ BODY</div>
+    <h2>Co je potřeba před přechodem klientů na v2</h2>
+
+    <div class="action-item ai-red">
+      <div class="ai-icon">🚨</div>
+      <div>
+        <div class="ai-title">G1 — Blocker: v2 musí vracet 503 při totálním výpadku všech HEAppE instancí</div>
+        <div class="ai-body">
+          Aktuálně v2 vrátí 200 OK i když je úplně vše dole. To je breaking change oproti v1.
+          Monitoring, alerting a klienti reagující na HTTP status kód to nerozeznají od normálního stavu.
+          Oprava: přidat detekci totální degradace a vrátit 503 — podmínka F7 parity gate.
+        </div>
+      </div>
+    </div>
+
+    <div class="action-item ai-amber">
+      <div class="ai-icon">🔧</div>
+      <div>
+        <div class="ai-title">G3 — Střední: v2 nemá možnost obejít cache (?noCache=true)</div>
+        <div class="ai-body">
+          V1 podporuje <code>?noCache=true</code> pro ops potřeby (ověření live dat, debug, post-provisioning kontrola).
+          V2 tuto možnost nemá — caller nemůže vynutit čerstvý fetch z HEAppE bez čekání na vypršení cache.
+          Plán: doplnit jako query param nebo Cache-Control hlavičku.
+        </div>
+      </div>
+    </div>
+
+    <div class="action-item ai-green">
+      <div class="ai-icon">✅</div>
+      <div>
+        <div class="ai-title">Dobré zprávy: testovací projekt s Deucalionem + jinými instancemi funguje správně v obou verzích</div>
+        <div class="ai-body">
+          Šablony ze všech resources se vrátí. Částečný výpadek jedné instance (Deucalion nebo jiné HE) se
+          správně zobrazí jako <code>isAvailable: false</code> pro dotčené resources v obou verzích.
+          v2 navíc díky ADR-0038 škáluje lépe — sdílení instance A dvěma resources (R1, R2) nezpůsobí
+          redundantní dotazy do HEAppE.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <p style="font-size:0.75rem;color:#aaa;text-align:right;margin-top:4px">
+    Report pro PM · feat/refactor-core · 2026-06-28 · Zdroj: ADR-0073, ADR-0074, ADR-0038, analýza zdrojového kódu
+  </p>
+
+</div>
+</body>
+</html>

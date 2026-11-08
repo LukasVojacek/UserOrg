@@ -1,0 +1,6445 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "UserOrg API v0.0.0.1",
+    "description": "UserOrg Management API",
+    "contact": {
+      "name": "IT4Innovations",
+      "url": "https://opencode.it4i.eu/lexis-platform/backend/userorg",
+      "email": "support@lexis.tech"
+    },
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "0.0.0.1"
+  },
+  "paths": {
+    "/api/Enums/RequestStates": {
+      "get": {
+        "tags": [
+          "ListEnums"
+        ],
+        "summary": "Get \"LEXIS request states enums\" ",
+        "description": "Get list of request states enum values ",
+        "operationId": "GetApiEnumsRequestStates",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumValueModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Enums/RequestTypes": {
+      "get": {
+        "tags": [
+          "ListEnums"
+        ],
+        "summary": "Get \"LEXIS request types enums\" ",
+        "description": "Get list of request types enum values ",
+        "operationId": "GetApiEnumsRequestTypes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumValueModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Enums/OperationModeResponses": {
+      "get": {
+        "tags": [
+          "ListEnums"
+        ],
+        "summary": "Get \"LEXIS operation mode responses enums\" ",
+        "description": "Get list of operation mode responses enum values ",
+        "operationId": "GetApiEnumsOperationModeResponses",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumValueModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Other/Country": {
+      "get": {
+        "tags": [
+          "OtherManagement"
+        ],
+        "summary": "Get list of countries",
+        "description": "Get lists of all countries",
+        "operationId": "GetApiOtherCountry",
+        "parameters": [
+          {
+            "name": "CountryCode",
+            "in": "query",
+            "description": "CountryCode",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CountryModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Other/Statistics": {
+      "get": {
+        "tags": [
+          "OtherManagement"
+        ],
+        "summary": "Get weekly statistics",
+        "description": "weekly statistics",
+        "operationId": "GetApiOtherStatistics",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "Specify the start date for the statistics. If not provided, the default is the current month.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "Specify the end date for the statistics. If not provided, the default is today. An end date that is not after the start date is moved to seven days after it.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StatisticsModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Other/CyclopsUsage/{ProjectShortName}/{ResourceName}": {
+      "get": {
+        "tags": [
+          "OtherManagement"
+        ],
+        "summary": "Get Cyclops usage for a project resource",
+        "description": "Resource usage for one LEXIS Project Resource, taken from the external Cyclops accounting service. The request never reaches this handler in a deployed system: the Gateway intercepts every /api/Other/CyclopsUsage/ path, checks the caller's permissions, resolves the project short name to a Cyclops customer id, forwards fromDate and toDate as the Cyclops from/to window together with that customer id, and returns the Cyclops response. It answers 400 when the project and resource segments are missing, 404 when no Cyclops customer matches the project, and 500 when the Cyclops credentials or the Cyclops customer lookup are unavailable. This route exists in Core only so the operation is published and RBAC-mapped; called directly it accepts the request and returns no content.",
+        "operationId": "GetApiOtherCyclopsUsageByProjectShortNameByResourceName",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "Start of the usage window, forwarded to Cyclops as 'from'. Omit for the Cyclops default window.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "End of the usage window, forwarded to Cyclops as 'to'. Omit for the Cyclops default window.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name. Resolved by the Gateway to the matching Cyclops customer; the match is by customer name and is case-insensitive.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "ResourceName",
+            "in": "path",
+            "description": "LEXIS Project Resource name.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/{ProjectShortName}/Users": {
+      "get": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Get list of \"LEXIS Users\" assigned to \"LEXIS Projects\" ",
+        "description": "Get list of all \"LEXIS Users\" associated with \"LEXIS Projects\" ",
+        "operationId": "GetApiProjectByProjectShortNameUsers",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectUserModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project": {
+      "get": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Get \"LEXIS Project\" ",
+        "description": "Get specific \"LEXIS Project\" ",
+        "operationId": "GetProject",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "query",
+            "description": "LEXIS Project Short-Name",
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Create \"LEXIS Project\" ",
+        "description": "Create specific \"LEXIS Project\" <br>Domain types: {Agricultural and Veterinary Sciences - 1, Engineering and Technology - 2, Natural Sciences - 3, Medical and Health Sciences - 4, Others - 5}",
+        "operationId": "PostApiProject",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Update \"LEXIS Project\" ",
+        "description": "Update specific \"LEXIS Project\" <br>Domain types: {Agricultural and Veterinary Sciences - 1, Engineering and Technology - 2, Natural Sciences - 3, Medical and Health Sciences - 4, Others - 5}",
+        "operationId": "PutApiProject",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/{ProjectShortName}/User/{IdpUserId}/Assign/{RoleId}": {
+      "put": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Update assigned \"LEXIS User Role\" for \"LEXIS Project\" ",
+        "description": "Update assigned \"LEXIS User Role\" for \"LEXIS Project\" ",
+        "operationId": "PutApiProjectByProjectShortNameUserByIdpUserIdAssignByRoleId",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "IdpUserId",
+            "in": "path",
+            "description": "LEXIS Identity Provider User Id of the user whose role is being changed",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RoleId",
+            "in": "path",
+            "description": "LEXIS User Role Id to assign, as listed by GET /Project/{ProjectShortName}/ValidRoles. The caller must already hold a role on the project that outranks the role being assigned.",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/{ProjectShortName}": {
+      "delete": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Remove \"LEXIS Project\" ",
+        "description": "Remove specific \"LEXIS Project\" ",
+        "operationId": "DeleteApiProjectByProjectShortName",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/{ProjectShortName}/ProjectResource/{ProjectResourceName}": {
+      "put": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Assign \"LEXIS Project Resource\" with \"LEXIS Project\" ",
+        "description": "Assign \"LEXIS Project Resource\" with \"LEXIS Project\" ",
+        "operationId": "PutApiProjectByProjectShortNameProjectResourceByProjectResourceName",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "ProjectResourceName",
+            "in": "path",
+            "description": "LEXIS Project Resource Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Unassign \"LEXIS Project Resource\" with \"LEXIS Project\" ",
+        "description": "Unassign \"LEXIS Project Resource\" with \"LEXIS Project\" ",
+        "operationId": "DeleteApiProjectByProjectShortNameProjectResourceByProjectResourceName",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "ProjectResourceName",
+            "in": "path",
+            "description": "LEXIS Project Resource name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/{ProjectShortName}/User/{IdpUserId}": {
+      "put": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Associate \"LEXIS User\" with \"LEXIS Project\" ",
+        "description": "Associate \"LEXIS User\" with \"LEXIS Project\" ",
+        "operationId": "PutApiProjectByProjectShortNameUserByIdpUserId",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "IdpUserId",
+            "in": "path",
+            "description": "LEXIS Identity Provider User Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Un-associate \"LEXIS User\" from \"LEXIS Project\" ",
+        "description": "Un-associate \"LEXIS User\" with \"LEXIS Project\" ",
+        "operationId": "DeleteApiProjectByProjectShortNameUserByIdpUserId",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "IdpUserId",
+            "in": "path",
+            "description": "LEXIS Identity Provider User Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/{ProjectShortName}/ProjectTag/{ProjectTagId}": {
+      "put": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Associate \"LEXIS ProjectTag\" with \"LEXIS Project\" ",
+        "description": "Associate \"LEXIS ProjectTag\" with \"LEXIS Project\" ",
+        "operationId": "PutApiProjectByProjectShortNameProjectTagByProjectTagId",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "ProjectTagId",
+            "in": "path",
+            "description": "LEXIS ProjectTag Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Un-associate \"LEXIS ProjectTag\" from \"LEXIS Project\" ",
+        "description": "Un-associate \"LEXIS ProjectTag\" with \"LEXIS Project\" ",
+        "operationId": "DeleteApiProjectByProjectShortNameProjectTagByProjectTagId",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "ProjectTagId",
+            "in": "path",
+            "description": "LEXIS ProjectTag Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/TemplatesInfo/{projectShortName}": {
+      "get": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Get the HEAppE command templates available to a \"LEXIS Project\" ",
+        "description": "Gets the HEAppE command templates available to the \"LEXIS Project\", collected from every HEAppE instance behind the project's resources using the caller's own bearer token. Results are cached; the response is served from the cache unless noCache is set. HEAppE instances that did not answer are not an error: their templates are simply absent from the body, and the instances are named in the X-Unavailable-HEAppE-Instances response header so a caller can tell why a cluster looks unavailable.",
+        "operationId": "TemplatesInfo",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "noCache",
+            "in": "query",
+            "description": "Pass true to bypass both cache layers (TemplatesInfo and HEAppE clusters) and query HEAppE directly without storing the result; the existing cached entry is left untouched.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TemplateInfoResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/ExtendedProjectInfo": {
+      "get": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Get extended \"LEXIS Project\" ",
+        "description": "Get extended specific \"LEXIS Project\" ",
+        "operationId": "ExtendedProjectInfo",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "query",
+            "description": "LEXIS Project Short-Name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExtendedProjectModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Project/{ProjectShortName}/ValidRoles": {
+      "get": {
+        "tags": [
+          "ProjectManagement"
+        ],
+        "summary": "Get valid roles for project and current user",
+        "description": "Return a list of system roles that are valid for the specified project and current user to change to.",
+        "operationId": "ValidRoles",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "Project short name",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SystemRoleModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/ProjectResourceAssignment": {
+      "get": {
+        "tags": [
+          "ProjectResourceAssignmentManagement"
+        ],
+        "summary": "Get list of \"LEXIS Project Resources Assignments\" ",
+        "description": "Get list of all \"LEXIS Project Resources Assignments\" ",
+        "operationId": "GetApiProjectResourceAssignment",
+        "parameters": [
+          {
+            "name": "ProjectResourceId",
+            "in": "query",
+            "description": "Provider Service Key",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectResourceAssignmentModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ProjectResourceAssignmentManagement"
+        ],
+        "summary": "Create \"LEXIS Project Resource Assignment\" ",
+        "description": "Create specific \"LEXIS Project Resource Assignment\" <br>Allocation unit types: {Unspecified - 1, Node-hours - 2, Core-hours - 3, Credits - 4, GB - 5, QPU-seconds - 6} ",
+        "operationId": "PostApiProjectResourceAssignment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectResourceAssignmentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ProjectResourceAssignmentManagement"
+        ],
+        "summary": "Update \"LEXIS Project Resource Assignment\" ",
+        "description": "Update specific \"LEXIS Project Resource Assignment\" <br>Allocation unit types: {Unspecified - 1, Node-hours - 2, Core-hours - 3, Credits - 4, GB - 5, QPU-seconds - 6} ",
+        "operationId": "PutApiProjectResourceAssignment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectResourceAssignmentUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/ProjectResourceAssignment/{Id}": {
+      "get": {
+        "tags": [
+          "ProjectResourceAssignmentManagement"
+        ],
+        "summary": "Get \"LEXIS Project Resource Assignment\" ",
+        "description": "Get specific \"LEXIS Project Resource Assignment\" ",
+        "operationId": "GetProjectResourceAssignment",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "Provider Service Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResourceAssignmentModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ProjectResourceAssignmentManagement"
+        ],
+        "summary": "Remove \"LEXIS Project Resource Assignment\" ",
+        "description": "Remove specific \"LEXIS Project Resource Assignment\" ",
+        "operationId": "DeleteApiProjectResourceAssignmentById",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "Provider Service Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/ProjectResource": {
+      "get": {
+        "tags": [
+          "ProjectResourceManagement"
+        ],
+        "summary": "Get list of \"LEXIS Project Resources\" ",
+        "description": "Get list of all \"LEXIS Project Resources\" <br>Status types: {Pending - 1, Accepted - 2, Declined - 3} <br>Locations types: {HPC - 1, Cloud - 2, K8s - 3, Storage - 4, iRODS -5, FirecREST -6, Quantum -7}",
+        "operationId": "GetApiProjectResource",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "query",
+            "description": "Provider Service Key",
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          },
+          {
+            "name": "LocationTypeId",
+            "in": "query",
+            "description": "LEXIS Project Short Name",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "description": "LEXIS Status Id",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "description": "LEXIS Location Type Id",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectResourceModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ProjectResourceManagement"
+        ],
+        "summary": "Create \"LEXIS Project Resource\" ",
+        "description": "Create specific \"LEXIS Project Resource\" ",
+        "operationId": "PostApiProjectResource",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectResourceCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ProjectResourceManagement"
+        ],
+        "summary": "Update \"LEXIS Project Resource\" ",
+        "description": "Update specific \"LEXIS Project Resource\" <br>Status types: {Pending - 1, Accepted - 2, Declined - 3} <br>Locations types: {HPC - 1, Cloud - 2, K8s - 3, Storage - 4, iRODS -5, FirecREST -6, Quantum -7}",
+        "operationId": "PutApiProjectResource",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectResourceUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/ProjectResource/{Id}": {
+      "get": {
+        "tags": [
+          "ProjectResourceManagement"
+        ],
+        "summary": "Get \"LEXIS Project Resource\" ",
+        "description": "Get specific \"LEXIS Project Resource\" ",
+        "operationId": "GetProjectResource",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "Provider Service Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResourceModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ProjectResourceManagement"
+        ],
+        "summary": "Remove \"LEXIS Project Resource\" ",
+        "description": "Remove specific \"LEXIS Project Resource\" ",
+        "operationId": "DeleteApiProjectResourceById",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "Provider Service Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/ProjectTag": {
+      "get": {
+        "tags": [
+          "ProjectTagManagement"
+        ],
+        "summary": "Get list of \"LEXIS Project Tags\" ",
+        "description": "Get list all of \"LEXIS Project Tags\" ",
+        "operationId": "GetApiProjectTag",
+        "parameters": [
+          {
+            "name": "TagName",
+            "in": "query",
+            "description": "LEXIS Project Tag Name",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectTagModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ProjectTagManagement"
+        ],
+        "summary": "Create \"LEXIS Project Tag\" ",
+        "description": "Create specific \"LEXIS Project tag\" ",
+        "operationId": "PostApiProjectTag",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectTagCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ProjectTagManagement"
+        ],
+        "summary": "Update \"LEXIS Project Tag\" ",
+        "description": "Update specific \"LEXIS Project Tag\" ",
+        "operationId": "PutApiProjectTag",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectTagUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/ProjectTag/{Id}": {
+      "get": {
+        "tags": [
+          "ProjectTagManagement"
+        ],
+        "summary": "Get \"LEXIS Project Tag\" ",
+        "description": "Get specific \"LEXIS Project Tag\" ",
+        "operationId": "GetProjectTag",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "LEXIS Project Tag",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectTagModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ProjectTagManagement"
+        ],
+        "summary": "Remove \"LEXIS Project Tag\" ",
+        "description": "Remove specific \"LEXIS Project Tag\" ",
+        "operationId": "DeleteApiProjectTagById",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "LEXIS Project Tag",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Requests": {
+      "get": {
+        "tags": [
+          "RequestsManagement"
+        ],
+        "summary": "Get \"LEXIS Project\" requests for \"LEXIS Project\" that actual \"LEXIS User\" is responsible for.",
+        "description": "Get \"LEXIS Project\" requests for \"LEXIS Project\" that actual \"LEXIS User\" is responsible for. <br/><b>States: { Pending - 1, PendingForPIAccept - 2, PendingForHPCProject - 3, Accepted - 4, Rejected - 5 }</b><br/><b>Types: { SelfOnboarding - 1, ProjectResourceAssignment - 2, HEAppECreation - 3}</b><br/><b>Note: For SelfOnboarding requests the valid states are: Pending (1), Accepted (4), Rejected (5).</b>",
+        "operationId": "GetApiRequests",
+        "parameters": [
+          {
+            "name": "State",
+            "in": "query",
+            "description": "Request State: {Pending - 1, PendingForPIAccept - 2, PendingForHPCProject - 3, Accepted - 4, Rejected - 5 }",
+            "schema": {
+              "$ref": "#/components/schemas/ERequestState"
+            }
+          },
+          {
+            "name": "Type",
+            "in": "query",
+            "description": "Request Type: { SelfOnboarding - 1, ProjectResourceAssignment - 2, HEAppECreation - 3}",
+            "schema": {
+              "$ref": "#/components/schemas/ERequestType"
+            }
+          },
+          {
+            "name": "ProjectShortName",
+            "in": "query",
+            "description": "LEXIS Project Short-Name",
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RequestModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "RequestsManagement"
+        ],
+        "summary": "Create request to assign actual \"LEXIS User\" to \"LEXIS Project",
+        "description": "Create request to assign actual \"LEXIS User\" to \"LEXIS Project\"  <br/><b>States: { Pending - 1, PendingForPIAccept - 2, PendingForHPCProject - 3, Accepted - 4, Rejected - 5 }</b><br/><b>Types: { SelfOnboarding - 1, ProjectResourceAssignment - 2, HEAppECreation - 3}</b><br/><b>Note: For SelfOnboarding requests the valid states are: Pending (1), Accepted (4), Rejected (5).</b>  ",
+        "operationId": "PostApiRequests",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Requests/SentRequests": {
+      "get": {
+        "tags": [
+          "RequestsManagement"
+        ],
+        "summary": "Get \"LEXIS Project\" sent requests for actual \"LEXIS User\".",
+        "description": "Get \"LEXIS Project\" sent requests for actual \"LEXIS User\". <br/><b>States: { Pending - 1, PendingForPIAccept - 2, PendingForHPCProject - 3, Accepted - 4, Rejected - 5 }</b><br/><b>Types: { SelfOnboarding - 1, ProjectResourceAssignment - 2, HEAppECreation - 3}</b><br/><b>Note: For SelfOnboarding requests the valid states are: Pending (1), Accepted (4), Rejected (5).</b>",
+        "operationId": "GetApiRequestsSentRequests",
+        "parameters": [
+          {
+            "name": "State",
+            "in": "query",
+            "description": "Request State: {Pending - 1, PendingForPIAccept - 2, PendingForHPCProject - 3, Accepted - 4, Rejected - 5 }",
+            "schema": {
+              "$ref": "#/components/schemas/ERequestState"
+            }
+          },
+          {
+            "name": "Type",
+            "in": "query",
+            "description": "Request Type: { SelfOnboarding - 1, ProjectResourceAssignment - 2, HEAppECreation - 3}",
+            "schema": {
+              "$ref": "#/components/schemas/ERequestType"
+            }
+          },
+          {
+            "name": "ProjectShortName",
+            "in": "query",
+            "description": "LEXIS Project Short-Name",
+            "schema": {
+              "$ref": "#/components/schemas/ProjectShortName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RequestModel"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Requests/{RequestId}/Accept": {
+      "put": {
+        "tags": [
+          "RequestsManagement"
+        ],
+        "summary": "Accepts request with RequestId",
+        "description": "Accepts request with RequestId",
+        "operationId": "PutApiRequestsByRequestIdAccept",
+        "parameters": [
+          {
+            "name": "RequestId",
+            "in": "path",
+            "description": "OnBoarding Request Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Requests/{requestId}/Reject": {
+      "put": {
+        "tags": [
+          "RequestsManagement"
+        ],
+        "summary": "Rejects request with requestId with optional Reason message",
+        "description": "Rejects request with requestId with optional Reason message",
+        "operationId": "PutApiRequestsByRequestIdReject",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "OnBoarding Request Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Reason",
+            "in": "query",
+            "description": "Reason",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/User/Preferences": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get \"LEXIS User\" preferences json object",
+        "description": "Get \"LEXIS User\" preferences json object",
+        "operationId": "GetApiUserPreferences",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update \"LEXIS User\" preferences json object",
+        "description": "Update \"LEXIS User\" preferences json object",
+        "operationId": "PutApiUserPreferences",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonElement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/UserInfo": {
+      "get": {
+        "tags": [
+          "UserInfo"
+        ],
+        "summary": "Get \"LEXIS User\" information about user from access token",
+        "description": "Get \"LEXIS User\" information about user from access token. This should be called every time when user is logged in WebGui to make sure internal database User entity is initialized and synchronized with data from Keycloak.",
+        "operationId": "GetApiUserInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/UserInfo/Extended": {
+      "get": {
+        "tags": [
+          "UserInfo"
+        ],
+        "summary": "Get extended \"LEXIS User\" information about user from access token",
+        "description": "Get extended \"LEXIS User\" information about user from access token.",
+        "operationId": "GetApiUserInfoExtended",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoExtendedModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Service/SyncDetails": {
+      "get": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Get synchronization details for a \"LEXIS Provider\" ",
+        "description": "Get synchronization details for a \"LEXIS Provider\" ",
+        "operationId": "SyncDetails",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserInfoExtendedModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Service/ProjectsInfo": {
+      "get": {
+        "tags": [
+          "Service"
+        ],
+        "summary": "Get information about all \"LEXIS Projects\" grouped by \"LEXIS Provider\" ",
+        "description": "Get information about all \"LEXIS Projects\" grouped by \"LEXIS Provider\" ",
+        "operationId": "ProjectsInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectInfoModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Public/Handle/{actionLink}": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Settle a \"LEXIS Project\" request from its emailed action link",
+        "description": "Settles a \"LEXIS Project\" resource-assignment request from one of the two single-use action links generated for it and sent to the person who has to decide. The route is unauthenticated: possession of the link is the credential. Which link is presented decides the outcome — the accept link accepts the request, the reject link declines it with an empty reason. Handling then burns EVERY live action link of that request, the accept and the reject link alike, so neither can be replayed. A link that is unknown, already burned or past its validity window does not resolve and the request fails. Returns 200 with \"Request was handled\" when the link settled the request, and 400 when the link carried neither action.",
+        "operationId": "PostApiPublicHandleByActionLink",
+        "parameters": [
+          {
+            "name": "actionLink",
+            "in": "path",
+            "description": "The single-use action link identifier taken from the emailed accept or reject URL.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Public/RequestInfo/{requestId}": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Get the public summary of a \"LEXIS Project\" resource-assignment request",
+        "description": "Returns the unauthenticated summary an action-link landing page needs to present the decision: the \"LEXIS Project\" short name, the \"LEXIS Project Resource\" name, the \"LEXIS Provider\", the requester's user name and e-mail, the request state and validity, and BOTH action links — accept and reject — so the page can offer the two buttons. It is served only while the request is still actionable, and is otherwise refused with a 400 validation problem naming the reason: the request must still be pending (not yet accepted or rejected), it must be of type ProjectResourceAssignment, and its action links must not have expired longer ago than the configured action-link duration. The request must also still have exactly its two live action links.",
+        "operationId": "GetApiPublicRequestInfoByRequestId",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "Identifier (GUID) of the \"LEXIS Project\" request the action links belong to.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicRequestModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AssociatedProjectModel": {
+        "required": [
+          "Id",
+          "ProjectName",
+          "ShortName",
+          "CollectorName",
+          "StartDate",
+          "EndDate"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ProjectName": {
+            "type": "string"
+          },
+          "ShortName": {
+            "type": "string"
+          },
+          "CollectorName": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "CommandTemplate": {
+        "required": [
+          "Id",
+          "Name",
+          "IsGeneric",
+          "Parameters"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "IsGeneric": {
+            "type": "boolean"
+          },
+          "Parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TemplateParameterModel"
+            }
+          }
+        }
+      },
+      "CountryModel": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "EnumValueModel": {
+        "required": [
+          "Id",
+          "Name"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "EOperationModeResponse": {
+        "enum": [
+          "Unspecified",
+          "ReadOnly",
+          "Editable"
+        ]
+      },
+      "ERequestState": {
+        "enum": [
+          "Pending",
+          "PendingForPIAccept",
+          "PendingForHPCProject",
+          "Accepted",
+          "Rejected"
+        ],
+        "type": [
+          "null",
+          "string"
+        ]
+      },
+      "ERequestType": {
+        "enum": [
+          "Unknown",
+          "SelfOnboarding",
+          "ProjectResourceAssignment",
+          "HEAppECreation"
+        ],
+        "type": [
+          "null",
+          "string"
+        ]
+      },
+      "ExtendedProjectModel": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ShortName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "DomainId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "AssignedProjectResources": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProjectResourceAssignmentExtendedModel"
+            }
+          },
+          "AssignedTags": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "JsonElement": { },
+      "KeyValuePairOfstringAndstring": {
+        "required": [
+          "Key",
+          "Value"
+        ],
+        "type": "object",
+        "properties": {
+          "Key": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Value": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "LocationCreate": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "Endpoint": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProviderId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "LocationTypeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "IsShared": {
+            "type": "boolean"
+          },
+          "DefaultServiceIntegrationUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "LocationDetailModel": {
+        "required": [
+          "Name",
+          "Descritpion",
+          "Endpoint",
+          "IsPrivate",
+          "Type",
+          "AllocationUnitCount",
+          "AllocationUnitType",
+          "Values"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Descritpion": {
+            "type": "string"
+          },
+          "Endpoint": {
+            "type": "string"
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "Type": {
+            "type": "string"
+          },
+          "AllocationUnitCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitType": {
+            "type": "string"
+          },
+          "Values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfstringAndstring"
+            }
+          }
+        }
+      },
+      "LocationModel": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Endpoint": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Provider": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProviderModel"
+              }
+            ]
+          },
+          "LocationTypeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "OperationMode": {
+            "$ref": "#/components/schemas/EOperationModeResponse"
+          },
+          "IsShared": {
+            "type": "boolean"
+          },
+          "DefaultServiceIntegrationUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "LocationUpdate": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "Endpoint": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProviderId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "LocationTypeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "IsShared": {
+            "type": "boolean"
+          },
+          "DefaultServiceIntegrationUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "NodeAllocation": {
+        "required": [
+          "LexisResourceName",
+          "CommandTemplates"
+        ],
+        "type": "object",
+        "properties": {
+          "LexisResourceName": {
+            "type": "string"
+          },
+          "CommandTemplates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommandTemplate"
+            }
+          }
+        }
+      },
+      "NodeInfo": {
+        "required": [
+          "NodeId",
+          "NodeType",
+          "NumberOfNodes",
+          "ClusterPerNode",
+          "MaxWallTime",
+          "FileTransferMethodId",
+          "Allocations"
+        ],
+        "type": "object",
+        "properties": {
+          "NodeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "NodeType": {
+            "type": "string"
+          },
+          "NumberOfNodes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ClusterPerNode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "MaxWallTime": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "FileTransferMethodId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Allocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NodeAllocation"
+            }
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProjectCreate": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ShortName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DomainId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ProjectId": { },
+      "ProjectInfoModel": {
+        "type": "object",
+        "properties": {
+          "ProviderId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProviderName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProviderDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Resources": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProjectResourceServiceModel"
+            }
+          }
+        }
+      },
+      "ProjectModel": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectId"
+              }
+            ]
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ShortName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "DomainId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "OperationMode": {
+            "$ref": "#/components/schemas/EOperationModeResponse"
+          },
+          "AssignedProjectResourceIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "AssignedTags": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "ProjectResourceAssignmentCreate": {
+        "type": "object",
+        "properties": {
+          "ProjectResourceId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "LocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitTypeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Specifications": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfstringAndstring"
+            }
+          }
+        }
+      },
+      "ProjectResourceAssignmentExtendedModel": {
+        "type": "object",
+        "properties": {
+          "ProjectResourceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "LocationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitTypeName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Specifications": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfstringAndstring"
+            }
+          },
+          "LocationTypeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ProjectResourceAssignmentModel": {
+        "required": [
+          "LocationName"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "ProjectResourceId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "LocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "LocationTypeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "IsLocationShared": {
+            "type": "boolean"
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitTypeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "OperationMode": {
+            "$ref": "#/components/schemas/EOperationModeResponse"
+          },
+          "Specifications": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfstringAndstring"
+            }
+          }
+        }
+      },
+      "ProjectResourceAssignmentServiceModel": {
+        "type": "object",
+        "properties": {
+          "LocationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "LocationDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ResourceType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitTypeName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Specifications": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfstringAndstring"
+            }
+          }
+        }
+      },
+      "ProjectResourceAssignmentUpdate": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "AllocationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "AllocationUnitTypeId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Specifications": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfstringAndstring"
+            }
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProjectResourceCreate": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PrimaryInvestigatorEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "ProjectResourceDetailModel": {
+        "required": [
+          "Name",
+          "Description",
+          "StartDate",
+          "EndDate",
+          "Locations"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "Locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocationDetailModel"
+            }
+          }
+        }
+      },
+      "ProjectResourceModel": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PrimaryInvestigatorEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "OperationMode": {
+            "$ref": "#/components/schemas/EOperationModeResponse"
+          },
+          "Assignments": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProjectResourceAssignmentModel"
+            }
+          }
+        }
+      },
+      "ProjectResourceServiceModel": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "AssociatedProjects": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AssociatedProjectModel"
+            }
+          },
+          "Assignments": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProjectResourceAssignmentServiceModel"
+            }
+          }
+        }
+      },
+      "ProjectResourceUpdate": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PrimaryInvestigatorEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "ProjectShortName": { },
+      "ProjectTagCreate": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProjectTagModel": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProjectTagUpdate": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProjectUpdate": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ShortName": {
+            "$ref": "#/components/schemas/ProjectShortName"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DomainId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ProjectUserModel": {
+        "required": [
+          "IdpUserId",
+          "Email",
+          "RoleName"
+        ],
+        "type": "object",
+        "properties": {
+          "IdpUserId": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string"
+          },
+          "RoleName": {
+            "type": "string"
+          }
+        }
+      },
+      "ProviderCreate": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "CountryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SupportEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProviderModel": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Country": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SupportEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "OperationMode": {
+            "$ref": "#/components/schemas/EOperationModeResponse"
+          }
+        }
+      },
+      "ProviderUpdate": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsPrivate": {
+            "type": "boolean"
+          },
+          "CountryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SupportEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PublicRequestModel": {
+        "type": "object",
+        "properties": {
+          "RequestId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "RequestorUserName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "RequestorEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProjectShortName": {
+            "$ref": "#/components/schemas/ProjectShortName"
+          },
+          "ProjectResourceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProviderName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "RequestState": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ValidTo": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "RequestType": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "AcceptActionLink": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "RejectActionLink": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RequestCreate": {
+        "required": [
+          "ProjectShortName",
+          "RequestType",
+          "ProjectResourceName",
+          "ProviderId",
+          "ContactEmail"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "$ref": "#/components/schemas/ProjectShortName"
+          },
+          "RequestType": {
+            "$ref": "#/components/schemas/ERequestType"
+          },
+          "ProjectResourceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProviderId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "ContactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RequestModel": {
+        "type": "object",
+        "properties": {
+          "RequestId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "IdpUserId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "UserName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ProjectShortName": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectShortName"
+              }
+            ]
+          },
+          "State": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Type": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "LastModification": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "StatisticsModel": {
+        "required": [
+          "NumberOfProjects",
+          "NumberOfUsers",
+          "NumberOfResources",
+          "WeeklyData"
+        ],
+        "type": "object",
+        "properties": {
+          "NumberOfProjects": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "NumberOfUsers": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "NumberOfResources": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "WeeklyData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeeklyDataModel"
+            }
+          }
+        }
+      },
+      "SystemRoleModel": {
+        "required": [
+          "Name",
+          "Id",
+          "Description",
+          "SystemPermissions"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SystemPermissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TemplateInfoResponse": {
+        "required": [
+          "IsAvailable",
+          "ClusterName",
+          "LocationId",
+          "ClusterId",
+          "Nodes"
+        ],
+        "type": "object",
+        "properties": {
+          "IsAvailable": {
+            "type": "boolean"
+          },
+          "ClusterName": {
+            "type": "string"
+          },
+          "LocationId": {
+            "type": "string"
+          },
+          "ClusterId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "Nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NodeInfo"
+            }
+          }
+        }
+      },
+      "TemplateParameterModel": {
+        "type": "object",
+        "properties": {
+          "Identifier": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UserInfoExtendedModel": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "KeycloakSid": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "UserName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsDeleted": {
+            "type": "boolean"
+          },
+          "SystemRoles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSystemRoleExtendedModel"
+            }
+          }
+        }
+      },
+      "UserInfoModel": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "KeycloakSid": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "UserName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SystemRoles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSystemRoleModel"
+            }
+          }
+        }
+      },
+      "UserModel": {
+        "required": [
+          "IdpUserId",
+          "Email",
+          "UserName",
+          "InProjects",
+          "AdminForProviderId"
+        ],
+        "type": "object",
+        "properties": {
+          "IdpUserId": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string"
+          },
+          "UserName": {
+            "type": "string"
+          },
+          "InProjects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "AdminForProviderId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
+      "UserSystemRoleExtendedModel": {
+        "required": [
+          "ProjectShortName",
+          "UserEmail",
+          "RoleName",
+          "ProjectResources",
+          "SystemPermissionTypes"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "$ref": "#/components/schemas/ProjectShortName"
+          },
+          "UserEmail": {
+            "type": "string"
+          },
+          "RoleName": {
+            "type": "string"
+          },
+          "ProjectResources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectResourceDetailModel"
+            }
+          },
+          "SystemPermissionTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UserSystemRoleModel": {
+        "required": [
+          "IdpUserId",
+          "UserEmail",
+          "RoleName",
+          "ProjectShortName",
+          "SystemPermissionTypes"
+        ],
+        "type": "object",
+        "properties": {
+          "IdpUserId": {
+            "type": "string"
+          },
+          "UserEmail": {
+            "type": "string"
+          },
+          "RoleName": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "$ref": "#/components/schemas/ProjectShortName"
+          },
+          "SystemPermissionTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "WeeklyDataModel": {
+        "required": [
+          "From",
+          "To",
+          "ProjectsCreated",
+          "UsersCreated",
+          "ResourcesCreated"
+        ],
+        "type": "object",
+        "properties": {
+          "From": {
+            "type": "string",
+            "format": "date"
+          },
+          "To": {
+            "type": "string",
+            "format": "date"
+          },
+          "ProjectsCreated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "UsersCreated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "ResourcesCreated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Paste only the JWT access token. The Bearer prefix is applied automatically.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "Service": {
+        "type": "apiKey",
+        "description": "Paste only the service token in format: Service TOKEN/KEY",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "AdministrationManagement"
+    },
+    {
+      "name": "ListEnums"
+    },
+    {
+      "name": "LocationManagement"
+    },
+    {
+      "name": "OtherManagement"
+    },
+    {
+      "name": "ProjectManagement"
+    },
+    {
+      "name": "ProjectResourceAssignmentManagement"
+    },
+    {
+      "name": "ProjectResourceManagement"
+    },
+    {
+      "name": "ProjectTagManagement"
+    },
+    {
+      "name": "ProviderManagement"
+    },
+    {
+      "name": "RequestsManagement"
+    },
+    {
+      "name": "User"
+    },
+    {
+      "name": "UserInfo"
+    },
+    {
+      "name": "Service"
+    },
+    {
+      "name": "Public"
+    }
+  ]
+}

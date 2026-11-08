@@ -1,0 +1,28 @@
+nuget_outdated:
+  image: ${DOTNET_IMAGE}
+  stage: check
+  extends: .rules-feature-or-mr
+  script:
+    - export PATH="$DOTNET_ROOT:$PATH"
+    - dotnet restore ./UserOrganization.slnx -p:Version=0.0.0 -v quiet
+    - dotnet tool install --tool-path . dotnet-outdated-tool
+    - ./dotnet-outdated -n --version-lock Major -o outdated_packages.json
+    - |
+      if [ -f outdated_packages.json ] && grep -q -i '"UpgradeSeverity": "Patch"\|"UpgradeSeverity": "Minor"' outdated_packages.json; then
+        exit 1
+      fi
+  allow_failure: true
+  artifacts:
+    when: on_failure
+    paths:
+      - outdated_packages.json
+
+dotnet_format:
+  image: ${DOTNET_IMAGE}
+  stage: check
+  extends: .rules-feature-or-mr
+  script:
+    - export PATH="/root/.dotnet/tools:$PATH"
+    - dotnet restore ./UserOrganization.slnx -p:Version=0.0.0
+    - dotnet format ./UserOrganization.slnx --verify-no-changes --no-restore
+  allow_failure: true

@@ -1,0 +1,74 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@inject RoleManagementState State
+
+<div class="rm-card">
+    <h2>Permissions</h2>
+
+    @if (State.Permissions.Any())
+    {
+        <div class="rm-permission-tree">
+            @foreach (var group in PermissionGroups)
+            {
+                <details open>
+                    <summary>@group.Key</summary>
+                    <div class="rm-permission-group">
+                        @foreach (var permission in group.Value)
+                        {
+                            <label class="rm-checkbox-item">
+                                <input type="checkbox"
+                                       value="@permission.Name"
+                                       checked="@SelectedPermissions.Contains(permission.Name)"
+                                       @onchange="e => OnPermissionToggle(permission.Name, (bool)(e.Value ?? false))"
+                                       aria-label="@permission.Name" />
+                                <span>@permission.Name</span>
+                                <small class="rm-help-text">@permission.Description</small>
+                            </label>
+                        }
+                    </div>
+                </details>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="rm-empty">No permissions available.</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public HashSet<string> SelectedPermissions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    [Parameter]
+    public EventCallback<HashSet<string>> SelectedPermissionsChanged { get; set; }
+
+    private Dictionary<string, List<PermissionInfo>> PermissionGroups
+    {
+        get
+        {
+            return State.Permissions
+                .GroupBy(p =>
+                {
+                    // Group by resource (first segment after "perm:")
+                    var parts = p.Name.Split(':');
+                    return parts.Length > 1 ? parts[1] : "Other";
+                })
+                .OrderBy(g => g.Key)
+                .ToDictionary(g => g.Key, g => g.OrderBy(p => p.Name).ToList());
+        }
+    }
+
+    private async Task OnPermissionToggle(string permissionName, bool isChecked)
+    {
+        if (isChecked)
+        {
+            SelectedPermissions.Add(permissionName);
+        }
+        else
+        {
+            SelectedPermissions.Remove(permissionName);
+        }
+
+        await SelectedPermissionsChanged.InvokeAsync(SelectedPermissions);
+    }
+}

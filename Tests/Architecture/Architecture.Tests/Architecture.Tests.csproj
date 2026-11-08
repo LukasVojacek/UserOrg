@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <IsTestProject>true</IsTestProject>
+      <TargetFramework>net10.0</TargetFramework>
+      <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+      <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+      <IsPackable>false</IsPackable>
+      <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NetArchTest.Rules" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!--
+    Subjects under test. Only the assemblies whose OWN references/types are asserted are
+    referenced here; host assemblies (API, AppHost, Gateway, Userorg.Adapter) are named as
+    strings in the rules and deliberately NOT referenced, so the boundary stays one-way.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\UserOrg.Shared\UserOrg.Shared.csproj" />
+    <ProjectReference Include="..\..\..\src\Core\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\Core\Application\Application.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Integrations\Heappe\Heappe.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Integrations\Heappe.Contracts\Heappe.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Integrations\HashiCorpVault\HashiCorpVault.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Integrations\HashiCorpVault.Contracts\HashiCorpVault.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Integrations\Waldur.Sync\Waldur.Sync.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Integrations\Waldur.Contracts\Waldur.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Libraries\Forge.Core\Forge.Core.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Libraries\WebsocketStompClient\WebsocketStompClient.csproj" />
+  </ItemGroup>
+
+</Project>

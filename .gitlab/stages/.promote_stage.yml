@@ -1,0 +1,44 @@
+## Promote stage – runs ONLY on a manual PRIMARY release (web run on main, RELEASE=true).
+## Uses skopeo to copy the released images directly between registries – no Docker daemon needed.
+
+.promote_common:
+  stage: promote
+  image:
+    name: quay.io/skopeo/stable
+    entrypoint: [""]
+  variables:
+    EFP_REGISTRY_IMAGE: "gitlab.my-eurohpc.eu:5050/efp/workflows/workflows-images"
+
+promote_api:
+  extends:
+    - .promote_common
+    - .rules-main-release
+  needs:
+    - job: publish_primary_images
+    - job: release_version
+      artifacts: true
+  script:
+    - |
+      source release.env
+      skopeo copy \
+        --src-creds "$CI_REGISTRY_USER:$CI_JOB_TOKEN" \
+        --dest-creds "oauth2:$EFP_GITLAB_TOKEN" \
+        "docker://$CI_REGISTRY/$CI_PROJECT_PATH:$VERSION" \
+        "docker://$EFP_REGISTRY_IMAGE/userorg:$VERSION"
+
+promote_gateway:
+  extends:
+    - .promote_common
+    - .rules-main-release
+  needs:
+    - job: publish_primary_images
+    - job: release_version
+      artifacts: true
+  script:
+    - |
+      source release.env
+      skopeo copy \
+        --src-creds "$CI_REGISTRY_USER:$CI_JOB_TOKEN" \
+        --dest-creds "oauth2:$EFP_GITLAB_TOKEN" \
+        "docker://$CI_REGISTRY/$CI_PROJECT_PATH/userorg.gateway:$VERSION" \
+        "docker://$EFP_REGISTRY_IMAGE/userorg.gateway:$VERSION"

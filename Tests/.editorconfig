@@ -1,0 +1,20 @@
+root = true
+
+# Prevent dotnet-format / analyzers from adding or enforcing accessibility modifiers
+[*.cs]
+dotnet_style_require_accessibility_modifiers = never
+dotnet_diagnostic.IDE0040.severity = none
+dotnet_diagnostic.CA1707.severity = none
+# CA2007 (missing ConfigureAwait): not wanted anywhere in this solution — there is no
+# synchronization context. The root .editorconfig disables it, but `root = true` above stops
+# inheritance, so it has to be repeated here or it stays active (warning) under AnalysisMode=all.
+dotnet_diagnostic.CA2007.severity = none
+# CA1515: flips public test classes to internal, which breaks xUnit test discovery (xUnit1000).
+# Same situation as CA2007 — the root .editorconfig disables it, but `root = true` above cuts
+# inheritance, so it must be repeated here or `dotnet format` silently makes test classes internal.
+dotnet_diagnostic.CA1515.severity = none
+
+[*.vb]
+dotnet_style_require_accessibility_modifiers = never
+dotnet_diagnostic.IDE0040.severity = none
+

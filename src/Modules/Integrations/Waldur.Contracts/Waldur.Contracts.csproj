@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Waldur.Contracts</RootNamespace>
+    <!-- HeappeUri travels as a string on purpose: the contract is JSON-serializable and evolves
+         additively; Uri-typed members complicate that without benefit here. -->
+    <NoWarn>$(NoWarn);CA1054;CA1056</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lukdrasil.Result" />
+    <PackageReference Include="Lukdrasil.Error" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\UserOrg.Shared.Hashing\UserOrg.Shared.Hashing.csproj" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+</Project>

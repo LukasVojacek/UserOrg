@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>UserOrg.Tools.WaldurAcceptance</RootNamespace>
+    <AssemblyName>waldur-acceptance</AssemblyName>
+    <!-- Deliberately references NO product project. Raw parameterized SQL only, so this tool
+         survives the B14 cutover that deletes the old Waldur code. -->
+    <!-- CA1303: this is a console tool; report strings are intentional literals, not localized.
+         CA2100: the only dynamic SQL comes from the constant ProjectionSpecs, never user input. -->
+    <NoWarn>$(NoWarn);CA1303;CA2100</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,35 @@
+userorg:
+  image: ${DOTNET_IMAGE}
+  stage: build
+  extends: .rules-build
+  script:
+    - dotnet restore ./UserOrganization.slnx -p:Version=0.0.0-dev
+    - dotnet build ./UserOrganization.slnx -c 'Release' -p:Version=0.0.0-dev -clp:ErrorsOnly -v m
+  artifacts:
+    paths:
+      # Build-time generated OpenAPI documents (repo root), consumed by lint_openapi / openapi_diff.
+      - API_user.json
+      - API_administration.json
+      - API_service.json
+      - src/**/bin/Release/**
+      - artifacts/obj/**
+    expire_in: 1 hour
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - ~/.nuget/packages
+
+
+migration_sql:
+  stage: build
+  image: ${DOTNET_IMAGE}
+  extends: .rules-build
+  needs:
+    - job: userorg
+      artifacts: true
+  script:
+    - bash .gitlab/scripts/generate-migration-sql.sh
+  artifacts:
+    paths:
+      - migrations/sql/migration.sql
+    expire_in: 1 month

@@ -1,0 +1,14 @@
+# First-stage gate: the MR title becomes the squash commit on main (ff + squash-always) and
+# the string semantic-release parses. Reject non-conventional titles before build minutes are
+# spent. Blocking (no allow_failure); merge is stopped by only_allow_merge_if_pipeline_succeeds.
+lint_mr_title:
+  image: ${NODE_JS_IMAGE}
+  stage: lint
+  needs: []
+  rules:
+    # $CI_MERGE_REQUEST_TITLE only exists on MR-event pipelines.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+    - when: never
+  script:
+    - echo "$CI_MERGE_REQUEST_TITLE" | npx --yes --package @commitlint/cli --package @commitlint/config-conventional commitlint

@@ -1,0 +1,33 @@
+{
+  "Guid": "0a0a0000-0000-0000-0000-000000000120",
+  "Priority": 120,
+  "Request": {
+    "Methods": [ "GET" ],
+    "Path": {
+      "Matchers": [
+        { "Name": "WildcardMatcher", "Pattern": "*/heappe/Management/Clusters", "IgnoreCase": true }
+      ]
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Headers": { "Content-Type": "application/json" },
+    "BodyAsJson": [
+      {
+        "Id": 1,
+        "Name": "mock",
+        "Description": null,
+        "MasterNodeName": "localhost 127.0.0.1",
+        "SchedulerType": 1,
+        "TimeZone": "UTC",
+        "Port": 22,
+        "ConnectionProtocol": 1,
+        "UpdateJobStateByServiceAccount": false,
+        "DomainName": null,
+        "ProxyConnection": null,
+        "FileTransferMethodIds": [ 1 ],
+        "NodeTypes": []
+      }
+    ]
+  }
+}

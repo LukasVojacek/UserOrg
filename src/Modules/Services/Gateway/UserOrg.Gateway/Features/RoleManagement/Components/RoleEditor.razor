@@ -1,0 +1,248 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@using System.ComponentModel.DataAnnotations
+@inject RoleManagementState State
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IRoleManagementService RoleService
+@implements IDisposable
+
+<div class="rm-card">
+    <h2>@(IsEditMode ? "Edit Role" : "Create Role")</h2>
+
+    @if (IsEditMode && selectedRole is null)
+    {
+        <p class="rm-info">Loading role details...</p>
+    }
+    else
+    {
+        <EditForm Model="@formModel" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="rm-alert" />
+
+            <div class="rm-form-group">
+                <label for="roleName">Role Name</label>
+                <InputText id="roleName"
+                           class="rm-input"
+                           @bind-Value="formModel.Name"
+                           disabled="@IsEditMode"
+                           aria-required="true" />
+                <ValidationMessage For="@(() => formModel.Name)" />
+            </div>
+
+            <div class="rm-form-group">
+                <label for="roleDescription">Description</label>
+                <InputTextArea id="roleDescription"
+                               class="rm-textarea"
+                               @bind-Value="formModel.Description"
+                               rows="3"
+                               aria-required="true" />
+                <ValidationMessage For="@(() => formModel.Description)" />
+            </div>
+
+            <div class="rm-form-group">
+                <label for="roleCategory">Category</label>
+                <InputText id="roleCategory"
+                           class="rm-input"
+                           @bind-Value="formModel.Category"
+                           aria-required="true" />
+                <ValidationMessage For="@(() => formModel.Category)" />
+            </div>
+
+            <div class="rm-form-group">
+                <label for="roleLevel">Level</label>
+                <InputNumber id="roleLevel"
+                             class="rm-input"
+                             @bind-Value="formModel.Level"
+                             aria-required="true" />
+                <ValidationMessage For="@(() => formModel.Level)" />
+            </div>
+
+            <div class="rm-form-group">
+                <label>Permissions</label>
+                <div class="rm-checkbox-list">
+                    @foreach (var permission in State.Permissions)
+                    {
+                        <label class="rm-checkbox-item">
+                            <input type="checkbox"
+                                   value="@permission.Name"
+                                   checked="@formModel.SelectedPermissions.Contains(permission.Name)"
+                                   @onchange="e => TogglePermission(permission.Name, (bool)(e.Value ?? false))" />
+                            <span>@permission.Name</span>
+                            <small class="rm-help-text">@permission.Description</small>
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="rm-form-actions">
+                <button type="submit" class="rm-button" disabled="@State.IsBusy">
+                    @(State.IsBusy ? "Saving..." : IsEditMode ? "Update Role" : "Create Role")
+                </button>
+                @if (IsEditMode)
+                {
+                    <button type="button" class="rm-button secondary" @onclick="async () => await ClearSelection()">
+                        Cancel
+                    </button>
+                }
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? SelectedRoleName { get; set; }
+
+    [Parameter]
+    public EventCallback OnRoleUpdated { get; set; }
+
+    private RoleDetail? selectedRole;
+    private RoleFormModel formModel = new();
+    private bool IsEditMode => !string.IsNullOrWhiteSpace(SelectedRoleName);
+
+    protected override void OnInitialized()
+    {
+        State.OnChange += StateHasChanged;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsEditMode && SelectedRoleName != selectedRole?.Name)
+        {
+            await LoadRoleAsync();
+        }
+        else if (!IsEditMode)
+        {
+            ResetForm();
+        }
+    }
+
+    private async Task LoadRoleAsync()
+    {
+        if (string.IsNullOrWhiteSpace(SelectedRoleName))
+            return;
+
+        var result = await RoleService.GetRoleAsync(SelectedRoleName, CancellationToken.None);
+        if (result.IsSuccess)
+        {
+            selectedRole = result.Value;
+            formModel = new RoleFormModel
+            {
+                Name = selectedRole.Name,
+                Description = selectedRole.Description ?? string.Empty,
+                Category = selectedRole.Category,
+                Level = selectedRole.Level,
+                SelectedPermissions = new HashSet<string>(selectedRole.Permissions, StringComparer.OrdinalIgnoreCase)
+            };
+        }
+    }
+
+    private void TogglePermission(string permissionName, bool isChecked)
+    {
+        if (isChecked)
+        {
+            formModel.SelectedPermissions.Add(permissionName);
+        }
+        else
+        {
+            formModel.SelectedPermissions.Remove(permissionName);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (IsEditMode)
+        {
+            // Track if any updates succeeded
+            bool anySuccess = false;
+            
+            // Update description if it changed
+            if (selectedRole != null && formModel.Description != (selectedRole.Description ?? string.Empty))
+            {
+                var descResult = await State.UpdateRoleDescriptionAsync(formModel.Name, formModel.Description);
+                anySuccess = descResult.IsSuccess || anySuccess;
+            }
+            
+            // Update level if it changed
+            if (selectedRole != null && formModel.Level != selectedRole.Level)
+            {
+                var levelResult = await State.UpdateRoleLevelAsync(formModel.Name, formModel.Level);
+                anySuccess = levelResult.IsSuccess || anySuccess;
+            }
+            
+            // Update category if it changed
+            if (selectedRole != null && formModel.Category != selectedRole.Category)
+            {
+                var categoryResult = await State.UpdateRoleCategoryAsync(formModel.Name, formModel.Category);
+                anySuccess = categoryResult.IsSuccess || anySuccess;
+            }
+            
+            // Update permissions if they changed
+            if (selectedRole != null)
+            {
+                var currentPermissions = new HashSet<string>(selectedRole.Permissions, StringComparer.OrdinalIgnoreCase);
+                if (!currentPermissions.SetEquals(formModel.SelectedPermissions))
+                {
+                    var permResult = await State.UpdateRolePermissionsAsync(formModel.Name, formModel.SelectedPermissions.ToList());
+                    anySuccess = permResult.IsSuccess || anySuccess;
+                }
+            }
+            
+            if (anySuccess)
+            {
+                // Reload the role data to reflect changes
+                await LoadRoleAsync();
+            }
+        }
+        else
+        {
+            var request = new CreateRoleRequest
+            {
+                Name = formModel.Name,
+                Description = formModel.Description,
+                Category = formModel.Category,
+                Level = formModel.Level,
+                Permissions = formModel.SelectedPermissions.ToList()
+            };
+            await State.CreateRoleAsync(request);
+            ResetForm();
+        }
+
+        await OnRoleUpdated.InvokeAsync();
+    }
+
+    private void ResetForm()
+    {
+        formModel = new RoleFormModel();
+        selectedRole = null;
+    }
+
+    private async Task ClearSelection()
+    {
+        ResetForm();
+        await OnRoleUpdated.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        State.OnChange -= StateHasChanged;
+    }
+
+    private sealed class RoleFormModel
+    {
+        [Required(ErrorMessage = "Role name is required.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Role name must be between 2 and 100 characters.")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Description is required.")]
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
+        public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Category is required.")]
+        public string Category { get; set; } = "Default";
+
+        [Range(0, 100, ErrorMessage = "Level must be between 0 and 100.")]
+        public int Level { get; set; } = 0;
+
+        public HashSet<string> SelectedPermissions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+}

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADR-0026 — Deployment runbook (DB migrace)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f6fa; color: #222; padding: 32px; line-height: 1.5; }
+  h1 { font-size: 1.55rem; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 24px; }
+  section { background: #fff; border-radius: 10px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 20px; }
+  section h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb; display:flex; align-items:center; gap:10px; }
+  .phase-num { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:#2563eb; color:#fff; font-size:0.85rem; font-weight:700; flex-shrink:0; }
+  .phase-num.manual { background:#1e40af; }
+  .phase-num.auto { background:#7c3aed; }
+  h3 { font-size:0.92rem; font-weight:600; margin:16px 0 6px; }
+  p, li { font-size: 0.9rem; }
+  ul, ol { padding-left: 22px; margin: 6px 0; }
+  li { margin-bottom: 4px; }
+  code { background:#f3f4f6; padding:1px 5px; border-radius:4px; font-size:0.85em; }
+  pre { background:#1e293b; color:#e2e8f0; padding:14px 16px; border-radius:8px; overflow-x:auto; font-size:0.82rem; margin:8px 0; line-height:1.45; }
+  pre .c { color:#94a3b8; }
+  pre .k { color:#7dd3fc; }
+  table { width:100%; border-collapse:collapse; font-size:0.86rem; margin:8px 0; }
+  th { text-align:left; padding:7px 10px; background:#f9fafb; border-bottom:2px solid #e5e7eb; font-weight:600; }
+  td { padding:7px 10px; border-bottom:1px solid #f0f0f0; vertical-align:top; }
+  .chk { background:#ecfdf5; border-left:3px solid #10b981; padding:9px 13px; border-radius:4px; font-size:0.85rem; color:#065f46; margin:8px 0; }
+  .warn { background:#fffbeb; border-left:3px solid #f59e0b; padding:9px 13px; border-radius:4px; font-size:0.85rem; color:#78350f; margin:8px 0; }
+  .danger { background:#fef2f2; border-left:3px solid #dc2626; padding:9px 13px; border-radius:4px; font-size:0.85rem; color:#7f1d1d; margin:8px 0; }
+  .pill { display:inline-block; padding:2px 9px; border-radius:12px; font-size:0.72rem; font-weight:600; }
+  .manual { background:#dbeafe; color:#1e40af; }
+  .auto { background:#ede9fe; color:#6d28d9; }
+  .flow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; font-size:0.82rem; }
+  .flow .step { background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:6px 11px; font-weight:600; }
+  .flow .bracket { background:#eff6ff; border:1px solid #93c5fd; }
+  .flow .arr { color:#94a3b8; font-weight:700; }
+  .baseline { background:#f8fafc; border:1px dashed #cbd5e1; }
+</style>
+</head>
+<body>
+
+<h1>Deployment runbook — ADR-0026: ProjectResource per-provider</h1>
+<p class="subtitle">DB migrace · baseline = stav větve <code>main</code> → cíl = <code>feat/refactor-core</code> · data fix v ručním bracketu mezi M1 a M2 · 2026-06-27</p>
+
+<!-- Kontext -->
+<section>
+  <h2>Princip nasazení</h2>
+  <p>
+    DB odpovídá schématu <code>main</code> (<code>__EFMigrationsHistory</code> končí na
+    <code>20260416054631_AddUserNameIndexToUserTable</code>). Pending jsou <strong>3 EF migrace</strong>, ale
+    <strong>ne všechny se nasazují stejně</strong>:
+  </p>
+  <table>
+    <thead><tr><th>Migrace / skript</th><th>Nasazení</th><th>Proč</th></tr></thead>
+    <tbody>
+      <tr><td><code>…143515_AddProjectResourceProviderId</code> (M1)</td><td><span class="pill manual">ruční, v bracketu</span></td><td rowspan="3" style="vertical-align:middle">Data fix <strong>musí běžet mezi M1 a M2</strong> (backfill ProviderId po M1, unique index až nad čistými daty). Globální auto-skript by M1+M2 spojil bez mezery → bracket se aplikuje ručně, jednotlivými <code>dotnet ef</code> skripty.</td></tr>
+      <tr><td><code>sql/0026-…-split.sql</code> (data fix)</td><td><span class="pill manual">ruční, v bracketu</span></td></tr>
+      <tr><td><code>…143547_AddProjectResourceProviderIdNameUniqueIndex</code> (M2)</td><td><span class="pill manual">ruční, v bracketu</span></td></tr>
+      <tr><td><code>…145647_AddRequestAndAssignedLocationSlug</code> (slugy, ADR-0024)</td><td><span class="pill auto">normální cesta</span></td><td><strong>Nesouvisí s data fixem</strong> — nestojí mezi M1/M2. Jde běžným globálním CI/CD skriptem. Sloupce potřebuje v2 (legacy je jen nese, nečte).</td></tr>
+    </tbody>
+  </table>
+  <div class="flow">
+    <span class="step baseline">main DB</span>
+    <span class="arr">→</span>
+    <span class="step bracket">① M1 <span class="pill manual">ruční</span></span>
+    <span class="arr">→</span>
+    <span class="step bracket">② data fix <span class="pill manual">ruční</span></span>
+    <span class="arr">→</span>
+    <span class="step bracket">③ M2 <span class="pill manual">ruční</span></span>
+    <span class="arr">→</span>
+    <span class="step">④ globální skript <span class="pill auto">slug + reconcile</span></span>
+  </div>
+  <div class="danger">
+    ⛔ <strong>Auto-migrace při startu</strong> (<code>DatabaseMigrationStartupService → MigrateAsync</code>) by aplikovala
+    M1+M2 najednou a přeskočila tak data fix. Proto: DB změny nasaď <strong>před startem nové verze appky</strong>
+    (nebo pro tento release auto-migraci vypni). Ruční skripty zapíší history řádky → následná auto-migrace je no-op.
+  </div>
+</section>
+
+<!-- Phase 0 -->
+<section>
+  <h2><span class="phase-num">0</span> Příprava</h2>
+
+  <h3>0.1 Ověř baseline + zajisti, že appka neauto-migruje</h3>
+  <pre><span class="c">-- poslední migrace = AddUserNameIndexToUserTable; žádné 2026062714…</span>
+SELECT TOP 3 MigrationId FROM __EFMigrationsHistory ORDER BY MigrationId DESC;</pre>
+  <div class="chk">✓ Vrchol = <code>20260416054631_AddUserNameIndexToUserTable</code>. Nová verze appky (s auto-migrací) ještě <strong>neběží</strong> proti této DB.</div>
+
+  <h3>0.2 Záloha DB (povinné — split nelze automaticky vrátit)</h3>
+  <pre><span class="k">BACKUP DATABASE</span> [UserOrgDBContext]
+  TO DISK = N'…\UserOrgDBContext_pre-ADR0026.bak'
+  WITH INIT, COMPRESSION, STATS = 10;</pre>
+  <div class="danger">⛔ Bez potvrzené zálohy nepokračuj.</div>
+
+  <h3>0.3 Migrační skripty (commitnuté, vygenerované přes <code>dotnet ef</code>)</h3>
+  <p>Kompletní sada idempotentních skriptů je v <code>docs/ddd-migration/sql/</code> — není třeba nic generovat:</p>
+  <table>
+    <thead><tr><th>Fáze</th><th>Soubor</th></tr></thead>
+    <tbody>
+      <tr><td>1 (M1)</td><td><code>0026-m1-add-projectresource-providerid.sql</code></td></tr>
+      <tr><td>2 (data)</td><td><code>0026-projectresource-per-provider-split.sql</code></td></tr>
+      <tr><td>3 (M2)</td><td><code>0026-m2-add-projectresource-providerid-name-unique-index.sql</code></td></tr>
+      <tr><td>4 (slug)</td><td><code>0026-slug-add-request-assignedlocation.sql</code></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.82rem;color:#666">Regenerace (kdyby bylo potřeba) — z <code>src/Core/Infrastructure.DataAccess</code>:
+  <code>dotnet ef migrations script &lt;fromId&gt; &lt;toId&gt; --idempotent --context DatabaseContext -o &lt;file&gt;</code>.
+  Volitelně globální reconcile: <code>dotnet ef migrations script --idempotent --context DatabaseContext -o artifacts/full-migration.sql</code>.</p>
+
+  <h3>0.4 Pre-flight kontrola dat</h3>
+  <pre><span class="c">-- musí vrátit přesně 3 vadné resources a 0 duplicitních názvů</span>
+SELECT pr.Name, COUNT(DISTINCT l.ProviderId) AS Providers
+FROM ProjectResource pr
+JOIN AssignedLocation al ON al.ProjectResourceId = pr.Id
+JOIN Location l ON l.Id = al.LocationId
+WHERE pr.IsDeleted = 0
+GROUP BY pr.Name HAVING COUNT(DISTINCT l.ProviderId) > 1;
+<span class="c">-- očekávané: OPEN-33-82, VLQ-FI, VLQ-PL-P0001</span></pre>
+  <div class="warn">Objeví-li se <strong>4.</strong> řádek — <strong>zastav</strong> a přehodnoť split skript.</div>
+</section>
+
+<!-- Phase 1 -->
+<section>
+  <h2><span class="phase-num manual">1</span> M1 — ProviderId + FK <span class="pill manual">ruční</span></h2>
+  <pre><span class="k">sqlcmd</span> -S &lt;server&gt; -d UserOrgDBContext -U &lt;user&gt; -P &lt;pwd&gt; -C -b \
+  -i docs/ddd-migration/sql/0026-m1-add-projectresource-providerid.sql</pre>
+  <pre><span class="c">-- verifikace</span>
+SELECT COL_LENGTH('dbo.ProjectResource','ProviderId') AS HasColumn;          <span class="c">-- &lt;&gt; NULL</span>
+SELECT MigrationId FROM __EFMigrationsHistory WHERE MigrationId LIKE '%AddProjectResourceProviderId';</pre>
+  <div class="chk">✓ Sloupec + FK existují, history řádek <code>…143515</code> přidán. Všechny <code>ProviderId</code> zatím NULL — správně. <strong>M2 ještě NEspouštěj.</strong></div>
+</section>
+
+<!-- Phase 2 -->
+<section>
+  <h2><span class="phase-num manual">2</span> Data fix — split + backfill <span class="pill manual">ruční</span></h2>
+  <pre><span class="k">sqlcmd</span> -S &lt;server&gt; -d UserOrgDBContext -U &lt;user&gt; -P &lt;pwd&gt; -C -b \
+  -i docs/ddd-migration/sql/0026-projectresource-per-provider-split.sql</pre>
+  <p>Jedna transakce s <strong>verify-before-commit</strong>: backfill <code>ProviderId</code> u 74 čistých resources, split 3 vadných (3 → 6), repoint alokací, duplikace project-assignments.</p>
+  <div class="chk">✓ Výstup: <code>StillSpanningMultiProvider = 0</code>, <code>Invariant5Violations = 0</code>, <code>ProviderNameDupes = 0</code>, transakce <strong>COMMITne</strong>. Jinak self-ROLLBACK (chyba 50026).</div>
+  <h3>2.1 Ručně dořeš 2 requesty</h3>
+  <p>Skript vypíše requesty na rozdělené resources (<code>OPEN-33-82</code>, <code>VLQ-FI</code>):</p>
+  <pre><span class="k">UPDATE</span> dbo.Request <span class="k">SET</span> ProjectResourceId = &lt;new-split-id&gt; <span class="k">WHERE</span> Id = &lt;request-id&gt;;</pre>
+</section>
+
+<!-- Phase 3 -->
+<section>
+  <h2><span class="phase-num manual">3</span> M2 — filtr. unique index <span class="pill manual">ruční</span></h2>
+  <p>Teprve teď, nad čistými daty. (Index by se sice díky filtru postavil i dřív, ale data fix patří před něj.)</p>
+  <pre><span class="k">sqlcmd</span> -S &lt;server&gt; -d UserOrgDBContext -U &lt;user&gt; -P &lt;pwd&gt; -C -b \
+  -i docs/ddd-migration/sql/0026-m2-add-projectresource-providerid-name-unique-index.sql</pre>
+  <pre><span class="c">-- verifikace</span>
+SELECT name, is_unique, filter_definition FROM sys.indexes WHERE name='IX_ProjectResource_ProviderId_Name';</pre>
+  <div class="chk">✓ Unique index existuje (<code>is_unique=1</code>), history řádek <code>…143547</code> přidán. Že se postavil = důkaz čistoty dat.</div>
+</section>
+
+<!-- Phase 4 -->
+<section>
+  <h2><span class="phase-num auto">4</span> Globální skript — slug + reconcile <span class="pill auto">normální cesta</span></h2>
+  <p>Aplikuj <strong>slug migraci</strong> (nezávislá na bracketu, normální cesta). Volitelně pak globální reconcile skript pro potvrzení shody s historií větve (pro M1/M2/slug je no-op — už mají history řádky).</p>
+  <pre><span class="c"># slug migrace</span>
+<span class="k">sqlcmd</span> -S &lt;server&gt; -d UserOrgDBContext -U &lt;user&gt; -P &lt;pwd&gt; -C -b \
+  -i docs/ddd-migration/sql/0026-slug-add-request-assignedlocation.sql
+
+<span class="c"># volitelně: globální reconcile (no-op, potvrdí konzistenci)</span>
+<span class="k">sqlcmd</span> -S &lt;server&gt; -d UserOrgDBContext -U &lt;user&gt; -P &lt;pwd&gt; -C -b -i artifacts/full-migration.sql</pre>
+  <pre><span class="c">-- verifikace: slug sloupce + 3 history řádky 0026/slug</span>
+SELECT COL_LENGTH('dbo.Request','Slug') AS Req, COL_LENGTH('dbo.AssignedLocation','Slug') AS Alloc;
+SELECT MigrationId FROM __EFMigrationsHistory WHERE MigrationId LIKE '202606271%';  <span class="c">-- 3 řádky</span></pre>
+  <div class="chk">✓ Slug sloupce existují, 3 history řádky (M1, M2, slug). Teď lze bezpečně nasadit novou verzi appky (auto-migrace = no-op).</div>
+</section>
+
+<!-- Phase 5 -->
+<section>
+  <h2><span class="phase-num">5</span> Finální verifikace</h2>
+  <pre><span class="c">-- A) žádný resource přes &gt;1 providera</span>
+SELECT COUNT(*) AS StillShared FROM (
+  SELECT pr.Id FROM ProjectResource pr
+  JOIN AssignedLocation al ON al.ProjectResourceId=pr.Id
+  JOIN Location l ON l.Id=al.LocationId
+  WHERE pr.IsDeleted=0 GROUP BY pr.Id HAVING COUNT(DISTINCT l.ProviderId)>1) t;   <span class="c">-- 0</span>
+
+<span class="c">-- B) invariant #5</span>
+SELECT COUNT(*) AS Inv5 FROM AssignedLocation al
+JOIN Location l ON l.Id=al.LocationId
+JOIN ProjectResource pr ON pr.Id=al.ProjectResourceId
+WHERE pr.IsDeleted=0 AND pr.ProviderId IS NOT NULL AND pr.ProviderId&lt;&gt;l.ProviderId;  <span class="c">-- 0</span></pre>
+  <ul>
+    <li>A = 0, B = 0; smoke test v2 resource + request endpointů přes Gateway</li>
+    <li>Resources s 0 alokacemi → <code>ProviderId = NULL</code> (ADR-0026 edge); v1 řádky → <code>Slug = NULL</code> (ADR-0024)</li>
+  </ul>
+</section>
+
+<!-- Rollback -->
+<section>
+  <h2>Rollback</h2>
+  <table>
+    <thead><tr><th>Selhání ve fázi</th><th>Akce</th></tr></thead>
+    <tbody>
+      <tr><td>1 (M1)</td><td><code>Down()</code> migrace #1 zruší FK + ProviderId sloupec. Data nedotčena.</td></tr>
+      <tr><td>2 (data fix verify)</td><td>Skript sám ROLLBACKne transakci — nic se nezměnilo. Oprav příčinu, spusť znovu.</td></tr>
+      <tr><td>Po commitnutém splitu</td><td><strong>Žádný čistý un-split</strong> → <strong>restore ze zálohy 0.2</strong>.</td></tr>
+      <tr><td>3 (M2)</td><td><code>Down()</code> migrace #2 zruší unique index, obnoví prostý FK index.</td></tr>
+    </tbody>
+  </table>
+  <div class="danger">⛔ Jakmile proběhne fáze 2 (split), rollback = restore zálohy.</div>
+</section>
+
+<p style="font-size:0.8rem;color:#999;text-align:right">ADR-0026 deployment runbook · feat/refactor-core · 2026-06-27</p>
+</body>
+</html>

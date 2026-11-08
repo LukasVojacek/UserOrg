@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <Compile Remove="Services\**" />
+    <Content Remove="Services\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Embed RBAC seed file into the Docker image at /app/rbac/seed.json -->
+    <Content Include="..\..\..\..\..\roleManagmentRBAC.json" Link="rbac\seed.json" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="Never" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="Duende.AspNetCore.Authentication.OAuth2Introspection" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" />
+    <PackageReference Include="SharpZipLib" />
+    <PackageReference Include="Yarp.ReverseProxy" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\UserOrg.ServiceDefaults\UserOrg.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\..\Integrations\HashiCorpVault\HashiCorpVault.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\Forge.Core\Forge.Core.csproj" />
+  </ItemGroup>
+
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="UserOrg.Gateway.Tests" />
+	</ItemGroup>
+  <PropertyGroup>
+    <!-- Ensure Razor files are compiled into the project assembly so test projects can render components -->
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <RazorCompileOnPublish>true</RazorCompileOnPublish>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ContainerImageTag>$(Version)</ContainerImageTag>
+  </PropertyGroup>
+</Project>

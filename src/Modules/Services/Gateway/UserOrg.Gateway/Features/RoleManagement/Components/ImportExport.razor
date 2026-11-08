@@ -1,0 +1,222 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@using Microsoft.AspNetCore.Components.Forms
+@inject IRoleManagementService RoleManagementService
+@inject ILogger<ImportExport> Logger
+@inject NavigationManager NavigationManager
+
+<div class="rm-card">
+    <div class="rm-card-header">
+        <h2>Export Configuration</h2>
+        <p class="rm-help-text">Download all roles and permissions as JSON</p>
+    </div>
+
+    <div class="rm-form-actions">
+        <button class="rm-button" @onclick="HandleExportAsync" disabled="@isExporting">
+            @if (isExporting)
+            {
+                <text>Exporting...</text>
+            }
+            else
+            {
+                <text>Export Roles & Permissions</text>
+            }
+        </button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(exportMessage))
+    {
+        <div class="@(exportSuccess ? "rm-success" : "rm-alert")">
+            @exportMessage
+        </div>
+    }
+</div>
+
+<div class="rm-card">
+    <div class="rm-card-header">
+        <h2>Import Configuration</h2>
+        <p class="rm-help-text">Upload a JSON file to import roles and permissions</p>
+    </div>
+
+    <div class="rm-form-group">
+        <label>
+            <InputFile OnChange="HandleFileSelected" accept=".json" disabled="@isImporting" />
+        </label>
+        @if (selectedFile is not null)
+        {
+            <p class="rm-help-text">Selected: @selectedFile.Name (@(selectedFile.Size / 1024)KB)</p>
+        }
+    </div>
+
+    <div class="rm-form-group">
+        <label>
+            <input type="checkbox" @bind="overwriteExisting" disabled="@isImporting" />
+            Overwrite existing roles and permissions
+        </label>
+        <p class="rm-help-text">If checked, existing items will be updated. Otherwise, they will be skipped.</p>
+    </div>
+
+    <div class="rm-form-actions">
+        <button class="rm-button" @onclick="HandleImportAsync" disabled="@(selectedFile is null || isImporting)">
+            @if (isImporting)
+            {
+                <text>Importing...</text>
+            }
+            else
+            {
+                <text>Import Roles & Permissions</text>
+            }
+        </button>
+        @if (selectedFile is not null && !isImporting)
+        {
+            <button class="rm-button secondary" @onclick="ClearFileSelection">
+                Clear
+            </button>
+        }
+    </div>
+
+    @if (importSummary is not null)
+    {
+        <div class="@(importSummary.Success ? "rm-success" : "rm-alert")">
+            <h3>Import Results</h3>
+            <p>
+                <strong>Created:</strong> @importSummary.CreatedCount<br/>
+                <strong>Updated:</strong> @importSummary.UpdatedCount<br/>
+                <strong>Errors:</strong> @importSummary.ErrorCount
+            </p>
+            @if (importSummary.Errors is not null && importSummary.Errors.Any())
+            {
+                <details>
+                    <summary style="cursor: pointer; font-weight: 600;">Show Errors</summary>
+                    <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                        @foreach (var error in importSummary.Errors)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>
+                </details>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private bool isExporting;
+    private bool isImporting;
+    private string? exportMessage;
+    private bool exportSuccess;
+    private IBrowserFile? selectedFile;
+    private bool overwriteExisting;
+    private ImportExportSummary? importSummary;
+
+    private async Task HandleExportAsync()
+    {
+        isExporting = true;
+        exportMessage = null;
+        exportSuccess = false;
+
+        try
+        {
+            using var memoryStream = new MemoryStream();
+            var result = await RoleManagementService.ExportRolesAsync(memoryStream, CancellationToken.None);
+
+            if (result.IsSuccess)
+            {
+                memoryStream.Position = 0;
+                var fileName = $"role-config-export-{DateTime.UtcNow:yyyyMMddHHmmss}.json";
+                var fileBytes = memoryStream.ToArray();
+                
+                // Trigger browser download using JavaScript interop
+                await JS.InvokeVoidAsync("downloadFile", fileName, Convert.ToBase64String(fileBytes));
+                
+                exportMessage = "Configuration exported successfully!";
+                exportSuccess = true;
+                Logger.LogInformation("Role configuration exported successfully");
+            }
+            else
+            {
+                exportMessage = $"Export failed: {result.Error.Description}";
+                exportSuccess = false;
+                Logger.LogError("Export failed: {Error}", result.Error.Description);
+            }
+        }
+        catch (Exception ex)
+        {
+            exportMessage = $"Export failed: {ex.Message}";
+            exportSuccess = false;
+            Logger.LogError(ex, "Export failed with exception");
+        }
+        finally
+        {
+            isExporting = false;
+        }
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        importSummary = null;
+    }
+
+    private void ClearFileSelection()
+    {
+        selectedFile = null;
+        importSummary = null;
+    }
+
+    private async Task HandleImportAsync()
+    {
+        if (selectedFile is null)
+            return;
+
+        isImporting = true;
+        importSummary = null;
+
+        try
+        {
+            const long maxFileSize = 15 * 1024 * 1024; // 15 MB
+            using var stream = selectedFile.OpenReadStream(maxFileSize);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            var result = await RoleManagementService.ImportRolesAsync(memoryStream, overwriteExisting, CancellationToken.None);
+
+            if (result.IsSuccess)
+            {
+                importSummary = result.Value;
+                Logger.LogInformation("Configuration imported: {Created} created, {Updated} updated, {Errors} errors", 
+                    importSummary.CreatedCount, importSummary.UpdatedCount, importSummary.ErrorCount);
+                
+                // If changes were made, refresh the page to reload data
+                if (importSummary.CreatedCount > 0 || importSummary.UpdatedCount > 0)
+                {
+                    Logger.LogInformation("Refreshing page after successful import with changes");
+                    NavigationManager.Refresh();
+                }
+            }
+            else
+            {
+                importSummary = new ImportExportSummary(
+                    Success: false,
+                    ErrorCount: 1,
+                    Errors: new[] { result.Error.Description });
+                Logger.LogError("Import failed: {Error}", result.Error.Description);
+            }
+        }
+        catch (Exception ex)
+        {
+            importSummary = new ImportExportSummary(
+                Success: false,
+                ErrorCount: 1,
+                Errors: new[] { $"Import failed: {ex.Message}" });
+            Logger.LogError(ex, "Import failed with exception");
+        }
+        finally
+        {
+            isImporting = false;
+        }
+    }
+
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
+}

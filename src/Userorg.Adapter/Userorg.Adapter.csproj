@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <PackageReference Include="AsyncAwaitBestPractices" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+        <PackageReference Include="Lukdrasil.Error" />
+        <PackageReference Include="Lukdrasil.Result" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Core\Application\Application.csproj" />
+      <ProjectReference Include="..\Modules\Core\Core.csproj" />
+      <ProjectReference Include="..\Modules\Services\Ddi\UserOrg.Ddi\UserOrg.Ddi.csproj" />
+      <ProjectReference Include="..\Modules\Integrations\HashiCorpVault\HashiCorpVault.csproj" />
+      <ProjectReference Include="..\Modules\Integrations\Heappe\Heappe.csproj" />
+      <ProjectReference Include="..\Modules\Integrations\RemI\RemI.csproj" />
+      <ProjectReference Include="..\Modules\Integrations\Waldur.Contracts\Waldur.Contracts.csproj" />
+      <ProjectReference Include="..\Modules\Integrations\Waldur.Sync\Waldur.Sync.csproj" />
+      <ProjectReference Include="..\UserOrg.Shared\UserOrg.Shared.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <InternalsVisibleTo Include="Waldur.Adapter.Tests" />
+      <InternalsVisibleTo Include="Heappe.Adapter.Tests" />
+      <InternalsVisibleTo Include="Email.Adapter.Tests" />
+      <InternalsVisibleTo Include="RemI.Adapter.Tests" />
+    </ItemGroup>
+
+</Project>

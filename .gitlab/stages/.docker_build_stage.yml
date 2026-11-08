@@ -1,0 +1,68 @@
+# Shared publisher: builds + pushes BOTH images (API + Gateway) tagged $IMG_VERSION via the .NET
+# SDK container target, which pushes straight to the registry (no Docker daemon / dind needed).
+.publish_images:
+  stage: docker
+  image: $DOTNET_IMAGE
+  script:
+    - bash .gitlab/scripts/publish-images.sh
+
+# RC images: auto on main merge, BUT only when something that ends up in an image changed — so a
+# cosmetic merge (docs/CI/markdown) does not build a pointless rc image. Tagged
+# <primary-next>-rc.<count>, never promoted. PRIMARY_NEXT + RC_COUNT come from version-preview's
+# dotenv (RC_COUNT = commits since the last primary tag; resets each release, gaps on image-less merges).
+#
+# `changes` paths (what is actually baked into the API/Gateway images, verified against the repo):
+#   - src/**            all production code (and its build inputs)
+#   - roleManagmentRBAC.json  baked into the Gateway image via UserOrg.Gateway.csproj Content
+#   - Directory.*.props / global.json / *.slnx  build configuration
+# Deliberately excluded: Dockerfile.* and Seeds/ (base-image only, manual rebuild), the generated
+# API_*.json specs (output, not input), aspire.config.json/.mcp.json (not image content).
+publish_rc_images:
+  extends:
+    - .publish_images
+  needs:
+    - job: unit_tests
+      artifacts: false
+    - job: version-preview
+      artifacts: true
+  before_script:
+    - export IMG_VERSION="${PRIMARY_NEXT}-rc.${RC_COUNT}"
+    - export APP_BASE_IMAGE="$CI_REGISTRY_IMAGE/dotnet-prod-base:latest"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+      changes:
+        - "src/**/*"
+        - "roleManagmentRBAC.json"
+        - "Directory.Build.props"
+        - "Directory.Packages.props"
+        - "global.json"
+        - "UserOrganization.slnx"
+      when: on_success
+    - when: never
+
+# Manual preview image on feature branches + MR — tagged <primary-next>-preview.<pipeline-iid>, never
+# promoted. Best-effort: it gates nothing, so a build/registry hiccup must not red the pipeline.
+build_preview_image:
+  extends:
+    - .publish_images
+    - .rules-preview-manual
+  needs:
+    - job: version-preview
+      artifacts: true
+  allow_failure: true
+  before_script:
+    - export IMG_VERSION="${PRIMARY_NEXT}-preview.${CI_PIPELINE_IID}"
+    - export APP_BASE_IMAGE="$CI_REGISTRY_IMAGE/dotnet-preview-base:latest"
+
+# Primary release images: manual (web run on main, RELEASE=true) after release_version — tagged X.Y.Z.
+# VERSION is inherited from release_version's dotenv artifact.
+publish_primary_images:
+  extends:
+    - .publish_images
+    - .rules-main-release
+  needs:
+    - job: release_version
+      artifacts: true
+  before_script:
+    - export IMG_VERSION="${VERSION}"
+    - export APP_BASE_IMAGE="$CI_REGISTRY_IMAGE/dotnet-prod-base:latest"

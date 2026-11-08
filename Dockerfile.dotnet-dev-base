@@ -1,0 +1,71 @@
+# Development base image for .NET 10 SDK with debug, CI tools and Seeds
+# Combines SDK, diagnostic/global dotnet tools, and common debugging utilities
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS dev-base
+ARG VERSION=0.0.0-dev
+
+LABEL maintainer="devops@your-org.example" \
+      org.opencontainers.image.title="userorg/dotnet-dev-base" \
+      org.opencontainers.image.description="Development .NET 10 SDK base with debug and CI tooling, includes /opt/seeds"
+
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    PATH="/root/.dotnet/tools:${PATH}" \
+    VERSION=${VERSION}
+
+USER root
+
+# Install OS packages and create non-root user
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg2 \
+        dirmngr \
+        git \
+        build-essential \
+        tzdata \
+        procps \
+        less \
+        jq \
+        wget \
+        netcat-openbsd \
+        iproute2 \
+        dnsutils \
+        iputils-ping \
+        telnet \
+        tcpdump \
+        strace \
+        lsof \
+        openssl \
+        unzip \
+        chromium \
+        fonts-liberation \
+        libnss3; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/* /tmp/*; \
+    groupadd -g 1000 app || true; \
+    id -u app >/dev/null 2>&1 || useradd -m -u 1000 app || true
+
+# Install dotnet global tools used by CI and diagnostics
+RUN dotnet tool install --global dotnet-ef --version 10.0.3 \
+    && dotnet tool install --global dotnet-outdated-tool \
+    && dotnet tool install --global dotnet-format \
+    && dotnet tool install --global dotnet-reportgenerator-globaltool \
+    && dotnet tool install --global CodeCoverageExtractor \
+    && dotnet tool install --global dotnet-trace \
+    && dotnet tool install --global dotnet-dump \
+    && dotnet tool install --global dotnet-counters \
+    && dotnet tool install --global dotnet-gcdump \
+    && /bin/bash -lc "dotnet --info" || true
+
+# Add repository Seeds to /opt/seeds so images built from this base include seed assets
+COPY Seeds /opt/seeds
+RUN chown -R root:root /opt/seeds || true
+
+WORKDIR /src
+
+USER app
+
+# Default to interactive shell for CI/development tasks
+CMD ["bash"]

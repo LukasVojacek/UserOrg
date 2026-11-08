@@ -1,0 +1,24 @@
+{
+  "Guid": "0a0a0000-0000-0000-0000-000000000200",
+  "Priority": 200,
+  "Request": {
+    "Methods": [ "POST" ],
+    "Path": {
+      "Matchers": [
+        { "Name": "WildcardMatcher", "Pattern": "*/heappe/Management/GenerateSecureShellKey", "IgnoreCase": true }
+      ]
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Headers": { "Content-Type": "application/json" },
+    "BodyAsJson": [
+      {
+        "Username": "mock-user",
+        "KeyType": 1,
+        "PublicKeyOpenSSH": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMockMockMockMockMockMockMockMockMockMockMock mock@wiremock",
+        "PublicKeyPEM": "-----BEGIN PUBLIC KEY-----\nMOCK\n-----END PUBLIC KEY-----"
+      }
+    ]
+  }
+}

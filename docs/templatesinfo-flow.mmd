@@ -1,0 +1,72 @@
+flowchart TD
+    A["GET /TemplatesInfo/{projectShortName}<br/>ProjectEndpoint.cs:347"] -->|"TryGetOriginalAuthToken"| B{Token nalezen?}
+    B -->|"ne"| BX["throw BearerTokenNotFoundException<br/>(NE prazdne pole)"]
+    B -->|"ano"| C["ProjectService.ProjectTemplateInfo<br/>ProjectService.cs:529"]
+
+    C --> D["HybridCache.GetOrCreateAsync<br/>tag: TemplatesInfo(shortName)<br/>TTL 5 min"]
+    D -->|"cache HIT"| DX["vrati nacachovany snapshot<br/>(nikdy prazdny — prazdny build<br/>se NECACHUJE)"]
+    D -->|"cache MISS"| E["BuildProjectTemplateInfoAsync<br/>ProjectService.cs:553"]
+
+    E --> G1{"ShortName prazdny?"}
+    G1 -->|"ano"| R1["return [] (1) — NECACHUJE se"]
+    G1 -->|"ne"| F["ProjectRepository.GetByShortNameAsync"]
+
+    F --> G2{"project == null?<br/>(orphaned Keycloak role)"}
+    G2 -->|"ano"| R2["log Warning + return [] (2) — NECACHUJE se"]
+    G2 -->|"ne"| H["GetProjectDetailAsync ->\nProjectRepository.GetHeappeLinks<br/>ProjectRepository.cs:394 (DB)"]
+
+    H --> G3{"projectDetails.Count == 0?"}
+    G3 -->|"ano"| R3["log Warning 'no HEAppE links'<br/>-> pokracuje, ale vysledek [] (3)<br/>— prazdny build se NECACHUJE"]
+    G3 -->|"ne"| I["DistinctBy(ResourceName, LocationName)"]
+
+    I --> J["Filtr aktivniho data:<br/>StartDate <= dnes <= EndDate"]
+    J --> G4{"links.Count == 0?<br/>(vse mimo datove okno)"}
+    G4 -->|"ano"| R4["log Warning 'outside date window'<br/>-> zadne HEAppE volani -> [] (4)<br/>— prazdny build se NECACHUJE"]
+    G4 -->|"ne"| K["GroupBy (HEAppE URL, ResourceName)"]
+
+    K --> L["ProcessUrlGroupAsync (paralelne)<br/>ProjectService.cs:647"]
+    L --> M["heappeService.GetListAvailableClusters<br/>(EXTERNI adapter)"]
+
+    M --> N1["GetCachedAvailableClustersAsync<br/>cache tag: HeappeClusters(url)"]
+    N1 --> EXT1["heappeVersionResolver.GetVersion -> HEAppE"]
+    EXT1 --> EXT2{"verze >= 6.1.1?"}
+    EXT2 -->|"ano"| EXT3["GetClusters (service token) -> HEAppE"]
+    EXT2 -->|"ne"| EXT4["GetListAvailableClusters<br/>(ForceRefresh) -> HEAppE"]
+    EXT3 --> EXT5["GetActiveCommandTemplatesAsync -> HEAppE"]
+    EXT4 --> EXT5
+    EXT3 --> EXT7{"snapshot bez clusteru<br/>s alokacemi? (mid-rebuild)"}
+    EXT4 --> EXT7
+    EXT7 -->|"ano"| EXT8["throw HeappeClustersUnavailable<br/>-> NECACHUJE se, degraded=true (R5)"]
+
+    EXT5 --> EXT9{"listAvailableClusters<br/>IsSuccess? (guard PRED prunenim)"}
+    EXT9 -->|"ne (failure)"| EXT8
+    EXT9 -->|"ano"| EXT6["PruneDisallowedCommandTemplates<br/>(orez dle resourceName + povolenych sablon)"]
+
+    M --> G5{"response null / !IsSuccess /<br/>TaskCanceled / Exception?"}
+    G5 -->|"ano"| R5["degraded=true -> NECACHUJE se;<br/>vraci se OKAMZITE, bez retry (ADR 0073)"]
+    G5 -->|"ne"| O["heappeClusters = response.Value ?? []"]
+
+    R5 --> G6{"AllDegraded? (selhaly VSECHNY dotazy)"}
+    G6 -->|"ano (uplny vypadek)"| R10["throw HeappeUnavailableException<br/>-> HTTP 503 Service Unavailable<br/>(NE prazdne 200) (10)"]
+    G6 -->|"ne (castecny)"| R5b["vrati dostupny snapshot 200<br/>data OK instanci + IsAvailable=false<br/>u selhanych (5)"]
+
+    O --> P{"cluster.Name == link.LocationName?<br/>(case-insensitive)"}
+    P -->|"zadny match"| R6["log Warning 'none matched LocationName'<br/>-> zaznam s Nodes=[] (6)"]
+    P -->|"match"| Q["BuildTemplateResponses<br/>ProjectService.cs:745"]
+
+    Q --> S1{"cluster.NodeTypes prazdne?"}
+    S1 -->|"ano"| R7["skip cluster (7)"]
+    S1 -->|"ne"| S2{"NodeType.Projects.AccountingString<br/>== ResourceName & aktivni datum?"}
+    S2 -->|"zadny"| R8["log Warning 'no node type matching<br/>AccountingString' -> skip (8)"]
+    S2 -->|"ano"| S3{"CommandTemplates po filtru<br/>(datum + link.EndDate >= dnes)?"}
+    S3 -->|"prazdne"| R9["log Warning 'no command templates' (9)"]
+    S3 -->|"ano"| T["OK TemplateInfoResponse s Nodes"]
+
+    classDef empty fill:#ffd6d6,stroke:#c0392b,color:#000;
+    classDef ok fill:#d6f5d6,stroke:#27ae60,color:#000;
+    classDef ext fill:#d6e4ff,stroke:#2c5fb8,color:#000;
+    classDef fail fill:#f5b7b1,stroke:#922b21,color:#000;
+    class R1,R2,R3,R4,R5,R5b,R6,R7,R8,R9,DX empty;
+    class T ok;
+    class EXT1,EXT3,EXT4,EXT5,EXT6,EXT7,EXT8 ext;
+    class R10 fail;

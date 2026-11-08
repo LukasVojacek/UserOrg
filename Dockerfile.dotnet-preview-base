@@ -1,0 +1,63 @@
+# Preview / debug runtime base = production base + remote-debug + diagnostics.
+#
+# Used ONLY as the ContainerBaseImage for the manual `build_preview_image` app image. The rc and
+# primary-release images build on the minimal dotnet-prod-base instead — debug tooling lives only
+# where you explicitly attach a debugger.
+#
+# Lineage: FROM the prod base so a preview container is byte-identical to production plus a debug
+# layer ("debug what you ship"). CI passes the freshly-published prod base via --build-arg PROD_BASE;
+# the default below only makes the Dockerfile buildable standalone (without Seeds/runtime extras).
+
+# Global ARG (must be declared before the first FROM to be in scope for the stage-2 FROM). An ARG
+# placed between stages belongs to the preceding stage and is invisible to a later FROM — which makes
+# `--build-arg PROD_BASE` silently resolve to a blank base name. CI overrides this with the
+# freshly-published prod base; the default only makes the Dockerfile buildable standalone.
+ARG PROD_BASE=mcr.microsoft.com/dotnet/aspnet:10.0
+
+# Stage 1 — pull the .NET diagnostics CLIs from an SDK image. The prod base is aspnet (runtime only,
+# no `dotnet tool`), so the tools are installed here and COPYied in. `--tool-path` produces a
+# relocatable, framework-dependent install that runs on the aspnet runtime inherited below.
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS tools
+RUN set -eux; \
+    dotnet tool install dotnet-trace    --tool-path /dotnet-tools; \
+    dotnet tool install dotnet-dump     --tool-path /dotnet-tools; \
+    dotnet tool install dotnet-counters --tool-path /dotnet-tools; \
+    dotnet tool install dotnet-gcdump   --tool-path /dotnet-tools
+
+# Stage 2 — debug layer on top of the production runtime base (PROD_BASE is the global ARG above).
+FROM ${PROD_BASE} AS preview-base
+
+LABEL org.opencontainers.image.title="userorg/dotnet-preview-base" \
+      org.opencontainers.image.description="Production runtime base + vsdbg remote debugger and .NET diagnostics for preview images."
+
+USER root
+
+# Network/process debugging tools + unzip (required by the vsdbg installer). curl, chromium and the
+# minimal runtime packages are already present from the prod base.
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        unzip \
+        telnet \
+        dnsutils \
+        iputils-ping \
+        netcat-openbsd \
+        tcpdump \
+        lsof \
+        procps \
+        strace; \
+    rm -rf /var/lib/apt/lists/*
+
+# Microsoft remote debugger (vsdbg) — self-contained installer, needs no SDK. Installed to a shared
+# path and made world-exec so the non-root `app` user can run it. VS / VS Code / Rider attach via
+# debuggerPath /vsdbg/vsdbg (the target container must be deployed with the SYS_PTRACE capability).
+RUN curl -sSL https://aka.ms/getvsdbgsh | /bin/sh /dev/stdin -v latest -l /vsdbg \
+    && chmod -R a+rx /vsdbg
+
+# .NET diagnostics CLIs from stage 1 (dotnet-trace / dump / counters / gcdump).
+COPY --from=tools /dotnet-tools /usr/local/dotnet-tools
+ENV PATH="/usr/local/dotnet-tools:${PATH}"
+
+WORKDIR /app
+# Root — same as the prod base this is built FROM (target runtime does not enforce runAsNonRoot).
+USER root

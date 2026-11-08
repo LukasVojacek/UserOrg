@@ -1,0 +1,3 @@
+﻿namespace UserOrganizationManagement.Infrastructure.DataAccess.Configurations;
+
+public record AssignedSystemPermissionTypeToSystemRole(int SystemPermissionTypeId, int SystemRoleId);

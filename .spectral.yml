@@ -1,0 +1,13 @@
+extends: spectral:oas
+
+rules:
+  # Override inherited OAS rules severity.
+  info-description: error
+  info-contact: error
+  info-license: error
+  operation-description: error
+  operation-operationId: error
+  operation-tags: error
+  oas2-parameter-description: error
+  oas3-parameter-description: error
+  path-params: error

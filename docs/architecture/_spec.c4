@@ -1,0 +1,22 @@
+specification {
+  element system    { notation 'Software system' }
+  element person    { notation 'Person' style { shape person } }
+  element container { notation 'Container' }
+  element database  { notation 'Database' style { shape storage } }
+  element component { notation 'Component' }
+  element codeunit  { notation 'Public interface' style { color muted } }
+  element external  { notation 'External system' style { color gray } }
+
+  relationship rest      { technology 'REST' }
+  relationship sql       { technology 'SQL' }
+  relationship websocket { technology 'WebSocket/STOMP'
+                           line dotted }
+  relationship uses
+
+  tag feature-project-mgmt
+  tag feature-resource-mgmt
+  tag feature-hpc
+  tag feature-cloud-sync
+  tag feature-security
+  tag unresolved
+}

@@ -1,0 +1,166 @@
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - local: ".gitlab/stages/.lint_stage.yml"
+  - local: ".gitlab/stages/.base_images_stage.yml"
+  - local: ".gitlab/stages/.build_stage.yml"
+  - local: ".gitlab/stages/.check_stage.yml"
+  - local: ".gitlab/stages/.security_stage.yml"
+  - local: '.gitlab/stages/.test_stage.yml'
+  - local: ".gitlab/stages/.release_stage.yml"
+  - local: ".gitlab/stages/.docker_build_stage.yml"
+  - local: ".gitlab/stages/.promote_stage.yml"
+
+stages:
+  - lint
+  - base_images
+  - build
+  - check
+  - security
+  - test
+  - release
+  - docker
+  - promote
+
+variables:
+  ## IMAGES
+  DOTNET_IMAGE: "$CI_REGISTRY_IMAGE/dotnet-dev-base:latest"
+  DOTNET_PROD_IMAGE: "$CI_REGISTRY_IMAGE/dotnet-prod-base:latest"
+  NODE_JS_IMAGE: "$CI_REGISTRY_IMAGE/semantic-release-base:latest"
+  DOCKER_IMAGE: docker:28.0.0-alpine3.21
+  DOCKER_DIND_SERVICE: docker:28.0.0-dind-alpine3.21
+
+  ## RELEASE GATE
+  # Set to "true" only via a manual "Run pipeline" on main to cut a PRIMARY release:
+  # semantic-release git tag + GitLab Release, images tagged X.Y.Z, and promote to the EFP
+  # registry. Every other merge to main publishes an rc image tagged <next>-rc.<count>
+  # (see version-preview) and NEVER tags or promotes.
+  RELEASE:
+    value: "false"
+    options:
+      - "false"
+      - "true"
+    description: "Set to **true** on a manual 'Run pipeline' on main (or on a support/vX.Y.x branch, for a Type B hotfix) to cut a PRIMARY release (git tag + GitLab Release + promote to EFP, images X.Y.Z). Leave **false** otherwise."
+
+workflow:
+  rules:
+    # Avoid duplicate pipelines: once a feature branch has an open MR, GitLab would otherwise run
+    # BOTH a branch pipeline and an MR pipeline for the same commit. Skip the branch pipeline in
+    # that case — the MR pipeline covers it. main is never an MR source branch so it is unaffected.
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    # Nightly schedule: continuous dependency-vulnerability + secret posture on main HEAD.
+    # Configure in CI/CD → Schedules (target branch: main). Only the security jobs carry a
+    # schedule rule, so the scheduled pipeline stays lean.
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    # Manual primary release: "Run pipeline" on main with RELEASE=true (no empty web pipelines).
+    - if: '$CI_PIPELINE_SOURCE == "web" && $RELEASE == "true"'
+      when: always
+    - when: never
+
+default:
+  interruptible: true
+  tags:
+    - lexis
+
+# ── Rule anchors ──────────────────────────────────────────────────────────────
+
+# Feature/fix/hotfix push + MR (quality jobs that need build artifacts).
+.rules-feature-or-mr:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+    - when: never
+
+# Feature/fix/hotfix push + MR + nightly schedule (security posture jobs). NOT post-merge main:
+# the same commit was already scanned on the MR; continuous coverage of main comes from the
+# nightly schedule instead.
+.rules-quality-or-schedule:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: on_success
+    - when: never
+
+# Build + migrations on feature/MR, on main (auto post-merge and manual release) and on a
+# support/vX.Y.x maintenance branch (Type B hotfix push + its manual release run).
+.rules-build:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH =~ /^support\/v[0-9]+\.[0-9]+\.([0-9]+|x)$/ && ($CI_PIPELINE_SOURCE == "push" || ($CI_PIPELINE_SOURCE == "web" && $RELEASE == "true"))'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "web" && $RELEASE == "true"'
+      when: on_success
+    - when: never
+
+# Auto on main push (post-merge rc image + version projection).
+.rules-main-auto:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - when: never
+
+# Manual PRIMARY release: "Run pipeline" with RELEASE=true, either on main (normal release) or on
+# a support/vX.Y.x maintenance branch (Type B hotfix — patch of an older line, see docs).
+.rules-main-release:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "web" && $RELEASE == "true"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH =~ /^support\/v[0-9]+\.[0-9]+\.([0-9]+|x)$/ && $CI_PIPELINE_SOURCE == "web" && $RELEASE == "true"'
+      when: on_success
+    - when: never
+
+# Manual base-image rebuild, available in every pipeline except the nightly schedule
+# (which stays lean, security-only). All four base images are consumed by pipeline jobs,
+# so all four rebuild jobs stay.
+.rules-base-image-manual:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - when: manual
+
+# Manual preview image on feature branches + MR (rc-tagged, non-promotable).
+.rules-preview-manual:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: manual
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - when: never
+
+# Security/quality jobs that are too expensive for MRs targeting non-main branches.
+# Feature branch pushes run as usual; MR pipelines only when the target is main.
+.rules-mr-to-main-or-feature:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^support\/v[0-9]+\.[0-9]+\.([0-9]+|x)$/)'
+      when: on_success
+    - when: never
+
+# Same as above but also runs on nightly schedule (mirrors .rules-quality-or-schedule).
+.rules-mr-to-main-or-schedule:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: on_success
+    # feat/refactor-core is a long-lived integration branch, so an MR into it is the last point where
+    # a vulnerable dependency can still be blocked. Without it here the push rule above catches the
+    # problem only AFTER the merge, once it has already reddened the integration branch. Remove this
+    # target once the refactor lands on main and the branch is retired.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^support\/v[0-9]+\.[0-9]+\.([0-9]+|x)$/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "feat/refactor-core")'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: on_success
+    - when: never

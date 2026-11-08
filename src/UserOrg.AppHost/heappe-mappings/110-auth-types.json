@@ -1,0 +1,20 @@
+{
+  "Guid": "0a0a0000-0000-0000-0000-000000000110",
+  "Priority": 110,
+  "Request": {
+    "Methods": [ "GET" ],
+    "Path": {
+      "Matchers": [
+        { "Name": "WildcardMatcher", "Pattern": "*/heappe/Dictionary/GetClusterAuthenticationCredentialsAuthTypes", "IgnoreCase": true }
+      ]
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Headers": { "Content-Type": "application/json" },
+    "BodyAsJson": [
+      { "Id": 2, "Name": "SshCertificate" },
+      { "Id": 3, "Name": "PrivateKey" }
+    ]
+  }
+}

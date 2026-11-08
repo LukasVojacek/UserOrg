@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://aspire.dev.localhost:8443;",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21127",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22137",
+        "DASHBOARD__TELEMETRYLIMITS__MAXLOGCOUNT": "50000",
+        "DASHBOARD__TELEMETRYLIMITS__MAXTRACECOUNT": "50000",
+        "DASHBOARD__TELEMETRYLIMITS__MAXMETRICSCOUNT": "50000"
+      }
+    }
+  }
+}

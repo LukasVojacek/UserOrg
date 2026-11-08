@@ -1,0 +1,24 @@
+{
+  "Guid": "0a0a0000-0000-0000-0000-000000000160",
+  "Priority": 160,
+  "Request": {
+    "Methods": [ "POST" ],
+    "Path": {
+      "Matchers": [
+        { "Name": "WildcardMatcher", "Pattern": "*/heappe/Management/ProjectAssignmentToCluster", "IgnoreCase": true }
+      ]
+    }
+  },
+  "Response": {
+    "StatusCode": 200,
+    "Headers": { "Content-Type": "application/json" },
+    "BodyAsJson": {
+      "ClusterId": 1,
+      "ProjectId": 42,
+      "ScratchStoragePath": "/scratch",
+      "ProjectStoragePath": "/project",
+      "CreatedAt": "2026-01-01T00:00:00Z",
+      "ModifiedAt": null
+    }
+  }
+}

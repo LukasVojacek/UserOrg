@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>14</LangVersion>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="UserOrg.Ddi.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\UserOrg.Shared\UserOrg.Shared.csproj" />
+    <ProjectReference Include="..\..\..\Core.DataAccess\Core.DataAccess.csproj" />
+    <ProjectReference Include="..\..\..\Integrations\HashiCorpVault.Contracts\HashiCorpVault.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\Forge.Core\Forge.Core.csproj" />
+  </ItemGroup>
+</Project>

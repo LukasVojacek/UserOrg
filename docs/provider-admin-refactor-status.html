@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stav refaktoru Core → Modulární Core</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f6fa; color: #222; padding: 32px; }
+  h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 32px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .card .num { font-size: 2rem; font-weight: 700; line-height: 1; }
+  .card .label { font-size: 0.8rem; color: #666; margin-top: 4px; }
+  .green { color: #16a34a; }
+  .orange { color: #d97706; }
+  .blue { color: #2563eb; }
+  .gray { color: #6b7280; }
+  section { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 24px; }
+  section h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { text-align: left; padding: 8px 10px; background: #f9fafb; color: #555; font-weight: 600; border-bottom: 2px solid #e5e7eb; }
+  td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+  .done     { background: #dcfce7; color: #15803d; }
+  .partial  { background: #fef9c3; color: #92400e; }
+  .todo     { background: #fee2e2; color: #b91c1c; }
+  .deferred { background: #e0e7ff; color: #3730a3; }
+  .progress-wrap { background: #e5e7eb; border-radius: 99px; height: 10px; margin-top: 6px; }
+  .progress-bar  { height: 10px; border-radius: 99px; }
+  .note { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 10px 14px; border-radius: 4px; font-size: 0.85rem; color: #78350f; margin-top: 16px; }
+  .aggregate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .agg-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px; }
+  .agg-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
+  .agg-card ul { font-size: 0.8rem; color: #555; padding-left: 16px; }
+  .agg-card ul li { margin-bottom: 2px; }
+  .agg-status { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .tag { display: inline-block; background: #f3f4f6; color: #374151; border-radius: 4px; padding: 1px 6px; font-size: 0.72rem; }
+</style>
+</head>
+<body>
+
+<h1>Stav refaktoru: Legacy Core → Modulární Core</h1>
+<p class="subtitle">Sestaven: 2026-06-28 &nbsp;·&nbsp; Větev: <code>feat/refactor-core</code> &nbsp;·&nbsp; Projekt: UserOrg</p>
+
+<!-- KPI přehled -->
+<div class="grid">
+  <div class="card">
+    <div class="num green">~83 %</div>
+    <div class="label">Endpoints přeneseno do v2</div>
+    <div class="progress-wrap" style="margin-top:10px"><div class="progress-bar" style="width:83%;background:#16a34a"></div></div>
+  </div>
+  <div class="card">
+    <div class="num green">4 / 4</div>
+    <div class="label">Aggregate roots modelovány v Core.Domain</div>
+  </div>
+  <div class="card">
+    <div class="num orange">~18</div>
+    <div class="label">Endpoints zbývá migrovat (write path + admin)</div>
+  </div>
+  <div class="card">
+    <div class="num blue">Duální stack</div>
+    <div class="label">Legacy <code>/api/</code> a nové <code>/v2/</code> běží paralelně</div>
+  </div>
+</div>
+
+<!-- Aggregate přehled -->
+<section>
+  <h2>Aggregate roots — stav doménového modelu</h2>
+  <div class="aggregate-grid">
+
+    <div class="agg-card">
+      <div class="agg-status">
+        <strong>User</strong>
+        <span class="badge done">✓ Plně přeneseno</span>
+      </div>
+      <div style="font-size:0.8rem;color:#555;margin-bottom:6px">Přirozený identifikátor: <span class="tag">Email</span></div>
+      <ul>
+        <li>GetUserInfo, GetExtendedUserInfo</li>
+        <li>GetUsers, GetUserPreferences, UpdateUserPreferences</li>
+        <li>Child entity: UserPermission, UserPreference</li>
+      </ul>
+    </div>
+
+    <div class="agg-card">
+      <div class="agg-status">
+        <strong>Project</strong>
+        <span class="badge done">✓ Plně přeneseno</span>
+      </div>
+      <div style="font-size:0.8rem;color:#555;margin-bottom:6px">Přirozený identifikátor: <span class="tag">ProjectShortName</span></div>
+      <ul>
+        <li>Reads: GetProjects, GetProject, Extended, Users, Templates, ValidRoles</li>
+        <li>Writes: Create, Update, Delete</li>
+        <li>Tags: Create &amp; assign, Assign, Unassign</li>
+        <li>Users: Assign, Unassign, ChangeRole</li>
+        <li>⚠ Assign/Unassign resource — odloženo (viz níže)</li>
+      </ul>
+    </div>
+
+    <div class="agg-card">
+      <div class="agg-status">
+        <strong>Provider</strong>
+        <span class="badge done">✓ Plně přeneseno</span>
+      </div>
+      <div style="font-size:0.8rem;color:#555;margin-bottom:6px">Přirozený identifikátor: <span class="tag">ProviderName</span></div>
+      <ul>
+        <li>Reads: GetProviders, GetProvider</li>
+        <li>Writes: Create, Update, Deactivate, Reactivate (v2-only)</li>
+        <li>Locations: Add, Update, Remove</li>
+        <li>Resources: GetResources, GetResource (read-only)</li>
+      </ul>
+    </div>
+
+    <div class="agg-card">
+      <div class="agg-status">
+        <strong>Request</strong>
+        <span class="badge partial">~ Částečně přeneseno</span>
+      </div>
+      <div style="font-size:0.8rem;color:#555;margin-bottom:6px">Přirozený identifikátor: <span class="tag">RequestSlug</span> (GUID-free)</div>
+      <ul>
+        <li>Reads: GetRequests, GetSentRequests, GetPublicRequestInfo</li>
+        <li>Writes (self-onboarding): Create, Accept, Reject, HandleActionLink</li>
+        <li>⚠ Resource-assignment flow — záměrně odloženo (ADR-0009)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- Tabulka endpointů -->
+<section>
+  <h2>Detailní stav endpointů</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Oblast</th>
+        <th>Legacy endpoint (v1)</th>
+        <th>Nový endpoint (v2)</th>
+        <th>Stav</th>
+        <th>Poznámka</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr><td colspan="5" style="background:#f0fdf4;font-weight:600;color:#166534;padding:6px 10px">Čtení (GET)</td></tr>
+      <tr><td>Projekty</td><td><code>GET /api/Project</code></td><td><code>GET /v2/projects</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Projekt detail</td><td><code>GET /api/Project/{id}</code></td><td><code>GET /v2/projects/{shortName}</code></td><td><span class="badge done">✓ Hotovo</span></td><td>GUID → ShortName</td></tr>
+      <tr><td>Projekt extended</td><td><code>GET /api/Project/ExtendedProjectInfo</code></td><td><code>GET /v2/projects/{shortName}/extended</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Projekt uživatelé</td><td><code>GET /api/Project/{id}/Users</code></td><td><code>GET /v2/projects/{shortName}/users</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Projekt šablony</td><td><code>GET /api/Project/{id}/TemplatesInfo</code></td><td><code>GET /v2/projects/{shortName}/templates</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Projekt role</td><td><code>GET /api/Project/{id}/ValidRoles</code></td><td><code>GET /v2/projects/{shortName}/valid-roles</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Provideři</td><td><code>GET /api/Provider</code></td><td><code>GET /v2/providers</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Provider detail</td><td><code>GET /api/Provider/{id}</code></td><td><code>GET /v2/providers/{name}</code></td><td><span class="badge done">✓ Hotovo</span></td><td>GUID → Name</td></tr>
+      <tr><td>Lokace</td><td><code>GET /api/Location</code></td><td><code>GET /v2/locations</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Zdroje</td><td><code>GET /api/ProjectResource</code></td><td><code>GET /v2/providers/{name}/resources</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Zanořeno pod provider</td></tr>
+      <tr><td>Požadavky</td><td><code>GET /api/Requests</code></td><td><code>GET /v2/requests</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Odeslané požadavky</td><td><code>GET /api/Requests/SentRequests</code></td><td><code>GET /v2/requests/sent</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Veřejný info požadavek</td><td><code>GET /api/Public/RequestInfo/{id}</code></td><td><code>GET /v2/public/requests/by-link/{slug}</code></td><td><span class="badge done">✓ Hotovo</span></td><td>GUID → Slug</td></tr>
+      <tr><td>UserInfo</td><td><code>GET /api/UserInfo</code></td><td><code>GET /v2/userinfo</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>UserInfo extended</td><td><code>GET /api/UserInfo/Extended</code></td><td><code>GET /v2/userinfo/extended</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Uživatelé (admin)</td><td><code>GET /api/Administration/User</code></td><td><code>GET /v2/users</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Admin audience, stránkování</td></tr>
+      <tr><td>Preference uživatele</td><td><code>GET /api/User/Preferences</code></td><td><code>GET /v2/users/me/preferences</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Tagy</td><td><code>GET /api/ProjectTag</code></td><td><code>GET /v2/project-tags</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Číselníky (enums)</td><td><code>GET /api/Enums/*</code></td><td><code>GET /v2/{location-types, operation-modes, project-domain-types, request-states, request-types}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Státy</td><td><code>GET /api/Other/Country</code></td><td><code>GET /v2/countries</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Statistiky &amp; verze</td><td><code>GET /api/Other/*</code></td><td><code>GET /v2/statistics, /v2/version</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+
+      <tr><td colspan="5" style="background:#f0fdf4;font-weight:600;color:#166534;padding:6px 10px">Zápis — Uživatel</td></tr>
+      <tr><td>Aktualizovat preference</td><td><code>PUT /api/User/Preferences</code></td><td><code>PUT /v2/users/me/preferences</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+
+      <tr><td colspan="5" style="background:#f0fdf4;font-weight:600;color:#166534;padding:6px 10px">Zápis — Projekt</td></tr>
+      <tr><td>Vytvořit projekt</td><td><code>POST /api/Project</code></td><td><code>POST /v2/projects</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Domain type by name</td></tr>
+      <tr><td>Upravit projekt</td><td><code>PUT /api/Project</code></td><td><code>PUT /v2/projects/{shortName}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Smazat projekt</td><td><code>DELETE /api/Project/{id}</code></td><td><code>DELETE /v2/projects/{shortName}</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Soft-delete, kaskáda rolí</td></tr>
+      <tr><td>Přiřadit uživatele</td><td><code>PUT /api/Project/{id}/User/{userId}</code></td><td><code>PUT /v2/projects/{shortName}/users/{idpId}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Odebrat uživatele</td><td><code>DELETE /api/Project/{id}/User/{userId}</code></td><td><code>DELETE /v2/projects/{shortName}/users/{idpId}</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Owner nelze odebrat (409)</td></tr>
+      <tr><td>Změnit roli</td><td><code>PUT /api/Project/{id}/User/{userId}/Assign/{roleId}</code></td><td><code>PUT /v2/projects/{shortName}/users/{idpId}/role</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Role v body, hierarchie v Core</td></tr>
+      <tr><td>Vytvořit a přiřadit tag</td><td><code>POST /api/ProjectTag</code></td><td><code>POST /v2/projects/{shortName}/tags</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Sjednoceno create+assign</td></tr>
+      <tr><td>Přiřadit tag (existující)</td><td><code>PUT /api/Project/{id}/ProjectTag/{tagId}</code></td><td><code>PUT /v2/projects/{shortName}/tags/{tagName}</code></td><td><span class="badge done">✓ Hotovo</span></td><td>GUID → Name</td></tr>
+      <tr><td>Odebrat tag</td><td><code>DELETE /api/Project/{id}/ProjectTag/{tagId}</code></td><td><code>DELETE /v2/projects/{shortName}/tags/{tagName}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Přiřadit zdroj k projektu</td><td><code>PUT /api/Project/{id}/ProjectResource/{name}</code></td><td>—</td><td><span class="badge todo">✗ Nemigrováno</span></td><td>Odloženo (Admin-only)</td></tr>
+      <tr><td>Odebrat zdroj z projektu</td><td><code>DELETE /api/Project/{id}/ProjectResource/{name}</code></td><td>—</td><td><span class="badge todo">✗ Nemigrováno</span></td><td>Odloženo (Admin-only)</td></tr>
+
+      <tr><td colspan="5" style="background:#f0fdf4;font-weight:600;color:#166534;padding:6px 10px">Zápis — Provider &amp; Lokace</td></tr>
+      <tr><td>Vytvořit provider</td><td><code>POST /api/Provider</code></td><td><code>POST /v2/providers</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Upravit provider</td><td><code>PUT /api/Provider</code></td><td><code>PUT /v2/providers/{name}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Deaktivovat provider</td><td><code>DELETE /api/Provider/{id}</code></td><td><code>DELETE /v2/providers/{name}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Reaktivovat provider</td><td>—</td><td><code>POST /v2/providers/{name}/reactivate</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Nová v2 funkce</td></tr>
+      <tr><td>Přidat lokaci</td><td><code>POST /api/Location</code></td><td><code>POST /v2/providers/{name}/locations</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Upravit lokaci</td><td><code>PUT /api/Location</code></td><td><code>PUT /v2/providers/{name}/locations/{locName}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Odebrat lokaci</td><td><code>DELETE /api/Location/{id}</code></td><td><code>DELETE /v2/providers/{name}/locations/{locName}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Přiřadit alokaci zdrojů</td><td>—</td><td><code>POST /v2/providers/{name}/locations/{locName}/assignments</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Nová v2 funkce, ProviderAdmin audience</td></tr>
+      <tr><td>Upravit alokaci zdrojů</td><td>—</td><td><code>PUT /v2/providers/{name}/locations/{locName}/assignments/{slug}</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Slug-based (GUID-free)</td></tr>
+      <tr><td>Odebrat alokaci zdrojů</td><td>—</td><td><code>DELETE /v2/providers/{name}/locations/{locName}/assignments/{slug}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+
+      <tr><td colspan="5" style="background:#f0fdf4;font-weight:600;color:#166534;padding:6px 10px">Zápis — Požadavky</td></tr>
+      <tr><td>Vytvořit požadavek (onboarding)</td><td><code>POST /api/Requests</code></td><td><code>POST /v2/requests</code></td><td><span class="badge done">✓ Hotovo</span></td><td>Jen self-onboarding</td></tr>
+      <tr><td>Přijmout požadavek</td><td><code>PUT /api/Requests/{id}/Accept</code></td><td><code>PUT /v2/requests/{slug}/accept</code></td><td><span class="badge done">✓ Hotovo</span></td><td>GUID → Slug</td></tr>
+      <tr><td>Odmítnout požadavek</td><td><code>PUT /api/Requests/{id}/Reject</code></td><td><code>PUT /v2/requests/{slug}/reject</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Action link (anonymní)</td><td><code>POST /api/Public/Handle/{link}</code></td><td><code>POST /v2/public/action-links/{link}</code></td><td><span class="badge done">✓ Hotovo</span></td><td></td></tr>
+      <tr><td>Resource-assignment požadavky</td><td><code>POST/PUT /api/Requests (type=ResourceAssignment)</code></td><td>—</td><td><span class="badge deferred">⏸ Odloženo</span></td><td>ADR-0009, čeká na resource write path</td></tr>
+
+      <tr><td colspan="5" style="background:#fef9c3;font-weight:600;color:#78350f;padding:6px 10px">Admin endpoints</td></tr>
+      <tr><td>Admin — projekty, tagy, lokace, providery, požadavky</td><td><code>GET /api/Administration/*</code></td><td>—</td><td><span class="badge todo">✗ Nemigrováno</span></td><td>Celá skupina čeká</td></tr>
+      <tr><td>Promote / Reset role</td><td><code>PUT /api/Administration/Promote*</code></td><td>—</td><td><span class="badge todo">✗ Nemigrováno</span></td><td></td></tr>
+      <tr><td>Invalidace cache</td><td><code>DELETE /api/Administration/Cache</code></td><td>—</td><td><span class="badge todo">✗ Nemigrováno</span></td><td></td></tr>
+
+      <tr><td colspan="5" style="background:#fef9c3;font-weight:600;color:#78350f;padding:6px 10px">Ostatní / integrační endpointy</td></tr>
+      <tr><td>Service sync &amp; projects info</td><td><code>GET /api/Service/*</code></td><td>—</td><td><span class="badge todo">✗ Nemigrováno</span></td><td></td></tr>
+      <tr><td>DataStaging</td><td><code>GET/POST /api/DataStaging/*</code></td><td>—</td><td><span class="badge todo">✗ Nemigrováno</span></td><td></td></tr>
+      <tr><td>HEAppE integrace</td><td><code>GET /api/Heappe/*</code></td><td>—</td><td><span class="badge todo">✗ Nemigrováno</span></td><td></td></tr>
+
+    </tbody>
+  </table>
+</section>
+
+<!-- Co zbývá -->
+<section>
+  <h2>Co zbývá a proč</h2>
+  <table>
+    <thead>
+      <tr><th>Skupina</th><th>Co konkrétně</th><th>Důvod odložení</th><th>Priorita</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Resource-assignment write path</td>
+        <td>Přiřazení/odebrání zdrojů k projektu + resource-assignment požadavky</td>
+        <td>Čeká na definici samostatné resource write path (ADR-0009). Záměrný scope cut.</td>
+        <td><span class="badge partial">Střední</span></td>
+      </tr>
+      <tr>
+        <td>Admin endpoints</td>
+        <td>Administration/* group (projekty, tagy, lokace, providery, role)</td>
+        <td>Admin funkce jsou low-traffic; migrace není blokující pro uživatelsky viditelné funkce</td>
+        <td><span class="badge partial">Střední</span></td>
+      </tr>
+      <tr>
+        <td>Service &amp; DataStaging</td>
+        <td>Synchronizace, DataStaging lokace</td>
+        <td>Interní/servisní endpointy, nízká priorita pro end-user refaktor</td>
+        <td><span class="badge" style="background:#f3f4f6;color:#374151">Nízká</span></td>
+      </tr>
+      <tr>
+        <td>HEAppE integrace</td>
+        <td>Listing changed files, validace zdrojů</td>
+        <td>Specifická HPC integrace, oddělená oblast</td>
+        <td><span class="badge" style="background:#f3f4f6;color:#374151">Nízká</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    ⚠️ Legacy <code>/api/</code> endpointy <strong>nejsou odstraněny</strong> — běží paralelně s <code>/v2/</code> přes YARP Gateway. Klienti se mohou migrovat postupně. Legacy kód bude odstraněn až po přechodu všech klientů na v2.
+  </div>
+</section>
+
+<!-- Architektonické změny -->
+<section>
+  <h2>Klíčové architektonické změny v novém Core</h2>
+  <table>
+    <thead>
+      <tr><th>Oblast</th><th>Legacy</th><th>Nový stav</th><th>Stav</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>DbContext</td><td>Jeden <code>DatabaseContext</code> pro vše</td><td>Oddělené <code>IReadDbContext</code> / <code>IWriteDbContext</code></td><td><span class="badge partial">~ V průběhu</span></td></tr>
+      <tr><td>Identifikátory v API</td><td>GUID ve všech cestách</td><td>Přirozené názvy (ShortName, Email, ProviderName, Slug)</td><td><span class="badge done">✓ Hotovo (v2)</span></td></tr>
+      <tr><td>Doménový model</td><td>Smíchané entity s DB závislostmi</td><td>Čisté DDD agregáty bez EF závislostí</td><td><span class="badge done">✓ Hotovo</span></td></tr>
+      <tr><td>Shadow properties (EF ID)</td><td>Veřejné <code>Id</code> na entitách</td><td>Shadow properties — ID neviditelné v doménové vrstvě</td><td><span class="badge deferred">⏸ Plánováno (Phase 3)</span></td></tr>
+      <tr><td>Autorizační invarianty</td><td>Částečně v Gateway, částečně v Core</td><td>Invarianty v agregátu (single-owner rule, role hierarchie)</td><td><span class="badge done">✓ Hotovo</span></td></tr>
+      <tr><td>API verzování</td><td>Neexistovalo</td><td>YARP Gateway routuje <code>/v1</code> na legacy, <code>/v2</code> na nový Core</td><td><span class="badge done">✓ Hotovo</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Resource model fix — ADR-0026 -->
+<section>
+  <h2>🔴 Nové zjištění: oprava resource modelu (ADR-0026)</h2>
+  <p style="font-size:0.9rem;color:#444;margin-bottom:14px">
+    Hloubková analýza + dotaz na živou DB odhalil <strong>datovou chybu</strong>: 3 resources jsou alokované
+    pod více providery (ADR-0024 to mylně považoval za legitimní M:N). Doménové rozhodnutí: resource patří
+    <strong>právě 1 provideru</strong>, stejný název smí existovat napříč providery, ne v rámci jednoho.
+    <strong>ADR-0026 superseduje resource část ADR-0024.</strong>
+  </p>
+  <table>
+    <thead><tr><th>Vadný resource</th><th>Provider A (alokace)</th><th>Provider B (alokace)</th><th>Projektů</th><th>Request refs</th></tr></thead>
+    <tbody>
+      <tr><td><code>OPEN-33-82</code></td><td>IT4Innovations (3)</td><td>LUMI (1)</td><td>1</td><td>1</td></tr>
+      <tr><td><code>VLQ-FI</code></td><td>IT4Innovations (1)</td><td>LRZ (1)</td><td>3</td><td>1</td></tr>
+      <tr><td><code>VLQ-PL-P0001</code></td><td>IT4Innovations (1)</td><td>LRZ (1)</td><td>1</td><td>0</td></tr>
+    </tbody>
+  </table>
+  <div class="note" style="border-left-color:#dc2626;background:#fef2f2;color:#7f1d1d;margin-top:16px">
+    Blast radius malý: 77 aktivních resources, jen 3 vadné, 0 duplicitních názvů, <code>UserProjectAccess</code> prázdná.
+    Split = 3 → 6 řádků. Alokace se dělí deterministicky (Location → přesně 1 provider); project-assignments se
+    duplikují na oba splity (projekty reálně sahají na oba providery); 2 requesty ručně.
+  </div>
+  <table style="margin-top:16px">
+    <thead><tr><th>Akce</th><th>Co</th><th>Stav / typ</th></tr></thead>
+    <tbody>
+      <tr><td>ADR-0026</td><td>Resource per-provider, ProviderId FK + unique (ProviderId, Name), obnova invariantu #5</td><td><span class="badge done">✓ Napsán</span></td></tr>
+      <tr><td>Schema</td><td>nullable <code>ProjectResource.ProviderId</code> + filtr. unique <code>(ProviderId, Name)</code></td><td><span class="badge done">✓ Additivní</span></td></tr>
+      <tr><td>Data-fix skript</td><td><code>sql/0026-projectresource-per-provider-split.sql</code> (split, repoint, verify)</td><td><span class="badge done">✓ Napsán</span></td></tr>
+      <tr><td>Doména F4/F5</td><td>ProjectResource jako agregát s ProviderId; CRUD + project assignment</td><td><span class="badge todo">✗ Zbývá</span></td></tr>
+      <tr><td>Legacy</td><td>globální name lookup → po splitu per-provider řádek (jediný use case, ověřit)</td><td><span class="badge partial">~ Ověřit</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Natural-key uniqueness gaps — ADR-0027 -->
+<section>
+  <h2>🟠 Systémový vzor: natural-key uniqueness gaps (ADR-0027)</h2>
+  <p style="font-size:0.9rem;color:#444;margin-bottom:14px">
+    Data audit odhalil <strong>opakující se vzor</strong>: v2 adresuje entity jménem, ale DB nemá odpovídající
+    uniqueness → latentní bugy s reálnými violujícími řádky. Kromě resource (ADR-0026) <strong>3 další</strong>.
+    Jednotná remediace: <strong>guard vynucený v agregátu/use-case + testy</strong> (primární), additivní
+    filtrovaný unique index jako concurrency backstop, + jednorázový pre-flight dedup. Manuální zápis do DB
+    jen pro tu jednorázovou remediaci, ne runtime.
+  </p>
+  <table>
+    <thead><tr><th>Oblast</th><th>Data bug (živá DB)</th><th>Remediace</th><th>Timing</th></tr></thead>
+    <tbody>
+      <tr><td>ProjectTag.Name</td><td><code>DraTag2</code> 2× na projektu EverestGeneral; <code>acsac</code> 2× orphan</td><td>dedup + globální unique <code>Name</code></td><td><span class="badge partial">F1</span></td></tr>
+      <tr><td>UserPermission role</td><td>1 uživatel 2 aktivní role na 1 projektu</td><td>dedup + filtr. unique <code>(UserId, ProjectId)</code></td><td><span class="badge partial">F3</span></td></tr>
+      <tr><td>Provider.Name</td><td><code>DLR</code> 2× (1 aktivní + 1 soft-deleted)</td><td>filtr. unique <code>WHERE IsDeleted=0</code> (bez dedup)</td><td><span class="badge done">additivní, brzy</span></td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    Cross-aggregate GUID FK (Project.CreatedBy, User→Provider, …): additivní natural-key sloupec + filtr. unique
+    + app-resolution (ne striktní EF alternate key — soft-delete to brání). User reference přes <code>IdpId</code>
+    (UserName není unique). Detail: ADR-0027.
+  </div>
+</section>
+
+<!-- Slug migrace + F0-F7 -->
+<section>
+  <h2>Dokončení v2: chybějící DB migrace + backlog F0–F7</h2>
+  <p style="font-size:0.9rem;color:#444;margin-bottom:14px">
+    ⚠️ Ověřeno proti živé DB: <code>Request.Slug</code> i <code>AssignedLocation.Slug</code> sloupce
+    v DB zatím <strong>nejsou aplikované</strong>. Nově existuje tracked EF migrace
+    <code>20260627145647_AddRequestAndAssignedLocationSlug</code> (vygenerovaná <code>dotnet ef</code>) —
+    stačí ji nasadit. Hand-SQL soubory 0024-M1/M2 byly nahrazeny touto migrací a smazány.
+  </p>
+  <table>
+    <thead><tr><th>Fáze</th><th>Co</th><th>Velikost</th><th>Stav</th></tr></thead>
+    <tbody>
+      <tr><td>Slug migrace</td><td>Request.Slug + AssignedLocation.Slug + filtr. unique indexy — tracked EF migrace <code>…AddRequestAndAssignedLocationSlug</code></td><td>S</td><td><span class="badge partial">~ Migrace hotová, pending nasazení</span></td></tr>
+      <tr><td><strong>F0.3/F0.4</strong></td><td>Read-scope tiers (Admin/Provider), ADR-0018 — per-endpoint branching + parity</td><td>L</td><td><span class="badge partial">~ Probíhá</span></td></tr>
+      <tr><td>F1</td><td>ProjectTag update/delete</td><td>S–M</td><td><span class="badge todo">✗ Backlog</span></td></tr>
+      <tr><td>F2</td><td>CyclopsUsage (202) + admin cache reset</td><td>S</td><td><span class="badge todo">✗ Backlog</span></td></tr>
+      <tr><td>F3</td><td>Admin role promote/demote (provider-admin)</td><td>M</td><td><span class="badge todo">✗ Backlog</span></td></tr>
+      <tr><td><strong>F4</strong></td><td>ProjectResource CRUD — nyní s vyjasněným per-provider modelem (ADR-0026)</td><td>L</td><td><span class="badge todo">✗ Foundational</span></td></tr>
+      <tr><td>F5</td><td>resource↔project assignment (po F4)</td><td>M–L</td><td><span class="badge todo">✗ Backlog</span></td></tr>
+      <tr><td>F6</td><td>DDI modul + HEAppE file download (ADR-0017)</td><td>M–L</td><td><span class="badge deferred">⏸ Odloženo</span></td></tr>
+      <tr><td><strong>F7</strong></td><td>v1↔v2 parity testy — <strong>gate před cutoffem, zatím neexistují</strong></td><td>M</td><td><span class="badge todo">✗ Riziko</span></td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    Pozn.: admin <em>reads</em> (Administration/*) jsou z velké části už pokryté audience-scoped v2 endpointy —
+    skutečně chybí jen role-mutace (F3) a cache reset (F2). „~18 zbývá" z horního KPI je v ballparku, ale
+    reálná práce je strukturovaná do F0–F7, ne náhodné endpointy.
+  </div>
+</section>
+
+<!-- Architektonická rozhodnutí z grillingu -->
+<section>
+  <h2>Architektonická rozhodnutí (grilling 2026-06-27)</h2>
+  <table>
+    <thead><tr><th>Oblast</th><th>Rozhodnutí</th><th>Artefakt</th></tr></thead>
+    <tbody>
+      <tr><td>Domain-event reliability</td><td>Transactional outbox (at-least-once + idempotentní konzumenti) místo at-most-once in-memory channel; prerekvizita HEAppE sync (F5/F6)</td><td><span class="badge done">ADR-0028</span></td></tr>
+      <tr><td>Verifikační strategie</td><td>Posunuta dopředu, <strong>průběžně</strong> — live-data + real-SQL integration testy + data-integrity sweep per feature (ne až F7 gate). Důvod: 4 bugy + ORDER-BY regrese unit testy nezachytily</td><td><span class="badge partial">next-phase-plan</span></td></tr>
+      <tr><td>Sekvencování</td><td>F0.3/F0.4 (dokončit rozdělané) → F4 (foundational) → F5 → F6</td><td><span class="badge partial">next-phase-plan</span></td></tr>
+      <tr><td>DDI/HEAppE scope</td><td>V cutoff scope, samostatné moduly (Ddi scaffold + Heappe relokace), <strong>nezávislé na F4/F5</strong> → paralelně</td><td><span class="badge done">ADR-0017</span></td></tr>
+      <tr><td>Enforcement guardů</td><td>Aggregate-first + testy; DB filtr. unique = jen concurrency backstop; manuální DB zápis jen 1× remediace</td><td><span class="badge done">ADR-0026/0027</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- TemplatesInfo deep analysis -->
+<section>
+  <h2>🔍 Deep analýza: TemplatesInfo — Legacy vs v2</h2>
+  <p style="font-size:0.9rem;color:#444;margin-bottom:14px">
+    Hloubková analýza chování <code>GET /api/Project/TemplatesInfo/{projectShortName}</code> (legacy)
+    a <code>GET /v2/projects/{shortName}/templates</code> (v2). Klíčový rozdíl: legacy seskupuje links projektu
+    podle <code>(HEAppEUrl, ResourceName)</code> — každý unique resource na každé instanci je samostatná paralelní
+    úloha. <strong>v2</strong> (ADR-0038) seskupuje pouze podle <strong>URL</strong> — všechny resources na stejné
+    instanci tvoří jednu úlohu, katalog se fetchuje jednou a veškeré resource/template filtrování je read-only
+    projekcí v use-case.
+  </p>
+  <table>
+    <thead>
+      <tr><th>Dimenze</th><th>Legacy (<code>/api/…/TemplatesInfo</code>)</th><th>v2 (<code>/v2/…/templates</code>)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Seskupení linků</td>
+        <td><code>(HEAppEUrl, ResourceName)</code><br>N resources na M instancích → N skupin</td>
+        <td><code>HEAppEUrl</code> pouze<br>N resources na M instancích → M skupin</td>
+      </tr>
+      <tr>
+        <td>Liveness probe</td>
+        <td>1× per (URL, resource) skupina — redundantní pro sdílené instance</td>
+        <td>1× per URL — strukturální deduplikace</td>
+      </tr>
+      <tr>
+        <td>Katalog HTTP call</td>
+        <td>Per-group Lazy + HybridCache per-cluster — dedup jen pokud cache warm</td>
+        <td>1× per URL — strukturálně (i s cold cache)</td>
+      </tr>
+      <tr>
+        <td>Katalog klon</td>
+        <td>JSON serialize+deserialize před každým prune (1× per resource skupina)</td>
+        <td>Žádný — filtrování je read-only projekce sdíleného katalogu</td>
+      </tr>
+      <tr>
+        <td>Allowed templates DB read</td>
+        <td>1× per build (ADR-0074 hoist před <code>Task.WhenAll</code>)</td>
+        <td>1× per request</td>
+      </tr>
+      <tr>
+        <td>Template pruning</td>
+        <td><code>PruneDisallowedCommandTemplates</code> — mutuje klonovaný katalog per resource</td>
+        <td>Inline <code>.Where(c =&gt; allowed.Contains(...))</code> — read-only na sdíleném katalogu</td>
+      </tr>
+      <tr>
+        <td>Merge strategie</td>
+        <td>GroupBy <code>(LocationId, ClusterName, <strong>IsAvailable</strong>)</code> — různé availability nevzniknou do 1 záznamu</td>
+        <td>GroupBy <code>(LocationId, ClusterName)</code> — available výslovně vyhrává nad unavailable</td>
+      </tr>
+      <tr>
+        <td>Celková degradace (všechny instance selhaly)</td>
+        <td><strong>503 ServiceUnavailable</strong> + <code>{ "failures": [{instance, cause}] }</code></td>
+        <td><strong>200 OK</strong> s <code>IsAvailable=false</code> na všech záznamech — <strong>žádný 503</strong></td>
+      </tr>
+      <tr>
+        <td>Částečná degradace (část instancí selhala)</td>
+        <td>200 + hlavička <code>X-Unavailable-HEAppE-Instances</code> (per-resource záznamy, URL skryto)</td>
+        <td>200 + <code>IsAvailable=false</code> pro postižené lokace — caller inferuje z dat</td>
+      </tr>
+      <tr>
+        <td>Caching — L1 (projekt)</td>
+        <td><code>HybridCache</code> keyed <code>TemplatesInfo_{shortName}</code>, TTL 5 min</td>
+        <td>ASP.NET OutputCache (<code>ProjectCache.PolicyName</code>) per response</td>
+      </tr>
+      <tr>
+        <td>Caching — L2 (instance/cluster)</td>
+        <td><code>HybridCache</code> keyed <code>Heappe_Cluster_{url}_{name}</code> per cluster, TTL 5 min</td>
+        <td><code>HybridCache</code> keyed <code>Heappe_Clusters_{url}</code> — celý katalog per URL, TTL 5 min</td>
+      </tr>
+      <tr>
+        <td>Degradace → cache</td>
+        <td>Throw <code>DegradedTemplatesInfoSignal</code> uvnitř factory → HybridCache neuloží</td>
+        <td><code>ResponseCacheControl.SuppressStorage(http)</code> → OutputCache neuloží</td>
+      </tr>
+      <tr>
+        <td>Cache bypass (caller)</td>
+        <td><code>?noCache=true</code> — obchází oba tiery (TemplatesInfo + per-cluster)</td>
+        <td><strong>Neexistuje</strong> — caller nemůže vynutit live fetch</td>
+      </tr>
+      <tr>
+        <td>noCache + sdílená instance</td>
+        <td>⚠️ N HTTP katalog-fetchů (1 per resource skupina, každá s vlastním <code>Lazy</code>, cache bypass vypíná single-flight)</td>
+        <td>N/A — žádný noCache parametr</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Multi-instance scenario -->
+<section>
+  <h2>📊 Scénář: projekt se sdílenou HEAppE instancí (více resources, část na stejné instanci)</h2>
+  <p style="font-size:0.9rem;color:#444;margin-bottom:10px">
+    Projekt má 4 resources:
+    <strong>R1/L1</strong>, <strong>R2/L2</strong>, <strong>R3/L2</strong> (různý resource name, stejná Location)
+    — všechny na instanci <code>URL_A</code>; &nbsp;<strong>R4/L4</strong> na instanci <code>URL_B</code>.
+    AccountingStrings R2 a R3 se mapují na stejný cluster v HEAppE.
+  </p>
+
+  <table>
+    <thead><tr><th>Metrika (happy path)</th><th>Legacy</th><th>v2</th></tr></thead>
+    <tbody>
+      <tr><td>Počet paralelních skupin</td><td>4 (R1, R2, R3 na URL_A + R4 na URL_B)</td><td><strong>2</strong> (URL_A, URL_B)</td></tr>
+      <tr><td>Liveness probes celkem</td><td>4 (3× na URL_A, 1× URL_B)</td><td><strong>2</strong> (1× URL_A, 1× URL_B)</td></tr>
+      <tr><td>Katalog HTTP (cold cache)</td><td>4 (každá skupina fetchuje přes vlastní Lazy)</td><td><strong>2</strong></td></tr>
+      <tr><td>Katalog HTTP (warm cache)</td><td>4 group-volání, HybridCache dedup per-cluster-key (net ~2 reálné HTTP)</td><td><strong>0 nových HTTP</strong></td></tr>
+      <tr><td>Katalog JSON klony</td><td>4</td><td><strong>0</strong></td></tr>
+      <tr><td>DB reads (allowed templates)</td><td>1</td><td>1</td></tr>
+      <tr><td>Merge R2+R3 (stejná LocationId + ClusterName)</td><td>GroupBy zahrnuje IsAvailable → vzniknou 2 záznamy pokud mají různou availability; jinak 1 merged</td><td>GroupBy bez IsAvailable → vždy 1 merged záznam (available wins), nodes deduplikovány</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:18px;font-size:0.95rem;font-weight:600;color:#374151">Chování při selhání URL_A (částečná degradace)</h3>
+  <table style="margin-top:8px">
+    <thead><tr><th>Aspekt</th><th>Legacy</th><th>v2</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>HTTP status</td>
+        <td>200 OK</td>
+        <td>200 OK</td>
+      </tr>
+      <tr>
+        <td>Data</td>
+        <td>R4 dostupný; R1, R2, R3 jako <code>IsAvailable=false</code></td>
+        <td>R4 dostupný; R1, R2, R3 jako <code>IsAvailable=false</code></td>
+      </tr>
+      <tr>
+        <td>Signalizace selhání</td>
+        <td>Hlavička <code>X-Unavailable-HEAppE-Instances: provider/R1 (L1); provider/R2 (L2); provider/R3 (L2)</code><br>
+          ⚠️ <strong>3 záznamy pro 1 mrtvou instanci</strong> — caller nemůže rozlišit „3 různé problémy" od „1 instance dole"</td>
+        <td>Pouze <code>IsAvailable=false</code> na dotčených lokacích — caller inferuje z dat, žádná strukturovaná info o příčině</td>
+      </tr>
+      <tr>
+        <td>Cache</td>
+        <td>TemplatesInfo HybridCache entry se neskladuje (DegradedTemplatesInfoSignal)</td>
+        <td>OutputCache se neskladuje (SuppressStorage)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:18px;font-size:0.95rem;font-weight:600;color:#374151">Chování při selhání VŠECH instancí (totální degradace)</h3>
+  <table style="margin-top:8px">
+    <thead><tr><th>Aspekt</th><th>Legacy</th><th>v2</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>HTTP status</td>
+        <td><strong>503 ServiceUnavailable</strong></td>
+        <td><strong style="color:#b91c1c">200 OK ← parity gap</strong></td>
+      </tr>
+      <tr>
+        <td>Response body</td>
+        <td><code>{ "title": "HEAppE service unavailable", "failures": [{"instance": "provider/R1 (L1)", "cause": "unreachable"}, …] }</code></td>
+        <td>Normální response, všechny záznamy <code>IsAvailable=false</code>, prázdné <code>Nodes</code></td>
+      </tr>
+      <tr>
+        <td>Rozlišitelnost pro callera</td>
+        <td>HTTP 503 je jednoznačný signál; monitoring/alerting na status kódu funguje</td>
+        <td>Caller musí iterovat záznamy a zkontrolovat <code>IsAvailable</code>; 200 OK může být zaměněno za „projekt nemá templates"</td>
+      </tr>
+      <tr>
+        <td>Cache</td>
+        <td>Neskladuje (DegradedTemplatesInfoSignal)</td>
+        <td>Neskladuje (SuppressStorage)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:18px;font-size:0.95rem;font-weight:600;color:#374151">Chování při <code>?noCache=true</code> s N resources na sdílené instanci (Legacy bug)</h3>
+  <p style="font-size:0.85rem;color:#444;margin-bottom:8px">
+    Legacy groupuje po <code>(URL, ResourceName)</code>. S noCache options (<code>DisableLocalCacheRead + Write + DistributedCacheRead + Write</code>)
+    každá skupina volá <code>GetCachedClustersForLocationsAsync</code> přes vlastní <code>Lazy&lt;Task&gt;</code>.
+    Lazy deduplikuje jen <em>uvnitř jednoho volání</em> (přes lokace téže skupiny), <strong>ne přes skupiny</strong>.
+    Výsledek: 3 resources na URL_A + <code>?noCache=true</code> → 3 samostatné HTTP fetche celého katalogu z URL_A.
+    v2 problém nemá — groupuje po URL, je tedy vždy jen 1 Lazy, 1 fetch.
+  </p>
+
+  <div class="note" style="border-left-color:#dc2626;background:#fef2f2;color:#7f1d1d">
+    <strong>Škálování problému (legacy noCache):</strong> Počet redundantních HTTP katalog-fetchů = Σ resources per instance.
+    Při 5 resources na jedné instanci → 5× fetch celého katalogu (může být stovky kB JSON) v jediném requestu.
+  </div>
+</section>
+
+<!-- Key gaps -->
+<section>
+  <h2>⚠️ Identifikované mezery v2 oproti legacy — implikace pro F7 parity gate</h2>
+  <table>
+    <thead><tr><th>#</th><th>Mezera</th><th>Dopad</th><th>Závažnost</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>G1</strong></td>
+        <td><strong>Žádný 503 při totální degradaci</strong><br>
+          v2 vrátí <code>200 OK</code> + all-unavailable místo <code>503 ServiceUnavailable</code></td>
+        <td>Monitoringové systémy a klienti reagující na HTTP status nerozeznají totální HEAppE výpadek od projektu bez templates. Breaking change pro HTTP-status-aware callery.</td>
+        <td><span class="badge todo">✗ Blocker (F7 gate)</span></td>
+      </tr>
+      <tr>
+        <td><strong>G2</strong></td>
+        <td><strong>Žádný strukturovaný failures[] při degradaci</strong><br>
+          Legacy 503/200 body obsahuje <code>{ failures: [{instance, cause}] }</code>; v2 nemá ekvivalent</td>
+        <td>Diagnostika výpadku bez přístupu k logům je nemožná. Nelze strojově rozlišit cause: <code>unreachable</code> vs <code>timeout</code> vs <code>misconfigured</code>.</td>
+        <td><span class="badge partial">~ Střední</span></td>
+      </tr>
+      <tr>
+        <td><strong>G3</strong></td>
+        <td><strong>Žádný <code>?noCache=true</code> bypass v v2</strong><br>
+          Caller nemůže vynutit live fetch přes OutputCache</td>
+        <td>Debug (zastaralá cache), post-provisioning verifikace nebo ops tooling závisející na bypass nefunguje na v2 endpointu.</td>
+        <td><span class="badge partial">~ Střední</span></td>
+      </tr>
+      <tr>
+        <td><strong>G4</strong></td>
+        <td><strong>Legacy noCache + N resources/instance → N HTTP calls (redundantní fetche)</strong><br>
+          Každá <code>(URL, resource)</code> skupina má vlastní <code>Lazy</code>; bypass options vypínají cross-group dedup</td>
+        <td>5 resources na 1 instanci + <code>?noCache=true</code> = 5 HTTP calls na celý katalog. Tlak na HEAppE instanci roste lineárně s počtem resources. v2 tento problém nemá (strukturálně).</td>
+        <td><span class="badge todo">✗ Legacy bug (eskaluje s více resources/instanci)</span></td>
+      </tr>
+      <tr>
+        <td><strong>G5</strong></td>
+        <td><strong>Legacy <code>X-Unavailable-HEAppE-Instances</code> je per-resource, ne per-instance</strong><br>
+          1 mrtvá instance s N resources → N záznamů v hlavičce</td>
+        <td>Caller vidí 3 failure záznamy ale čelí 1 mrtvé instanci. Interpretace matoucí; header nemá strojově čitelný vztah k topologii instancí.</td>
+        <td><span class="badge" style="background:#f3f4f6;color:#374151">Nízká (legacy-only, stopgap dle TODO)</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <strong>F7 doporučení:</strong> G1 je nutná podmínka parity gate — buď v2 přidá explicitní totální-degradaci detekci (vrátit 503 když všechny skupiny selžou), nebo je migrace klientů blokovaná dokud nemohou tolerovat 200+all-unavailable jako signál výpadku.
+    G3 (noCache) lze doplnit jako query parametr na v2 endpointu bez změny OpenAPI kontraktu (OutputCache policy respektuje <code>Cache-Control: no-store</code> nebo custom query param).
+    G4 je legacy bug — fix je přidat sdílený Lazy na úrovni <code>BuildProjectTemplateInfoAsync</code> per URL, nebo migrovat na v2.
+  </div>
+</section>
+
+<p style="font-size:0.8rem;color:#999;margin-top:16px;text-align:right">Vygenerováno z analýzy kódu větve feat/refactor-core · aktualizováno 2026-06-28 (ADR-0026/0027/0028/0038, TemplatesInfo deep analysis, grilling, živá data-verifikace)</p>
+</body>
+</html>

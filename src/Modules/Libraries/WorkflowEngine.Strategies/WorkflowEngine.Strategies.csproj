@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>WorkflowEngine.Strategies</AssemblyName>
+    <RootNamespace>WorkflowEngine.Strategies</RootNamespace>
+  </PropertyGroup>
+
+</Project>

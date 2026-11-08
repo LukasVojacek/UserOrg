@@ -1,0 +1,2703 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "UserOrg API v0.0.0.1",
+    "description": "UserOrg Management API",
+    "contact": {
+      "name": "IT4Innovations",
+      "url": "https://opencode.it4i.eu/lexis-platform/backend/userorg",
+      "email": "support@lexis.tech"
+    },
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "0.0.0.1"
+  },
+  "paths": {
+    "/api/DataStaging/WorkerData": {
+      "get": {
+        "tags": [
+          "DataStaging"
+        ],
+        "summary": "Get details for a worker.",
+        "description": "Get details for a worker.",
+        "operationId": "WorkerData",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataStagingDataModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/DataStaging/DataStagingLocations": {
+      "get": {
+        "tags": [
+          "DataStaging"
+        ],
+        "summary": "List DDI DataStaging locations",
+        "description": "Reads all DataStagingLocationKey entries for DDI from Vault",
+        "operationId": "GetDataStagingLocations",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataStagingLocationKey"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "DataStaging"
+        ],
+        "summary": "Bulk update DataStagingLocationKeys for DDI",
+        "description": "Bulk update DataStagingLocationKeys for DDI",
+        "operationId": "UpdateDataStagingLocationKeys",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUpdateResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/version": {
+      "get": {
+        "tags": [
+          "API"
+        ],
+        "summary": "Get \"LEXIS UserOrg\" version",
+        "description": " Get \"LEXIS UserOrg\" version",
+        "operationId": "GetVersion",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/CommandTemplatePermissions/{HeappeIdentifier}": {
+      "get": {
+        "tags": [
+          "CommandTemplateManagement"
+        ],
+        "summary": "Get the calling user's command-template permissions on one HEAppE instance",
+        "description": "Returns, for the caller, every project queue reachable through the given HEAppE instance together with the command templates of that queue and whether each one is enabled for them. It is built from the caller's currently valid project allocations whose HPC or Quantum locations carry this HEAppE identifier; a caller with no such allocation gets an empty permission list rather than an error. A template is reported as enabled only when its stored state is Active AND it is not killed by an enforced kill-switch on its location — a frozen template reads as not enabled, and no reason for the freeze is disclosed here. The answer is cached per user and HEAppE identifier for five minutes, and is dropped early when a command template of one of those projects changes or any kill-switch is enforced or lifted.",
+        "operationId": "GetCommandTemplatePermissions",
+        "parameters": [
+          {
+            "name": "HeappeIdentifier",
+            "in": "path",
+            "description": "The HEAppE instance identifier (the HEAPPE_IDENTIFIER value configured on a location), naming which HEAppE deployment the permissions are asked for.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCommandTemplatePermissionModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/CommandTemplate/{ProjectShortName}/{ProjectResourceName}": {
+      "get": {
+        "tags": [
+          "CommandTemplateManagement"
+        ],
+        "summary": "Get the HEAppE command templates of one project resource",
+        "description": "Lists every HEAppE command template held for the given project resource, with its id, name, type (system- or user-defined) and state. The state is the template's stored state folded over its partitions, and is reported as Expired when the project allocation or the resource allocation is outside its validity window. Frozen is reported separately and is true when at least one of the template's partitions sits on a location frozen by an enforced kill-switch; the reason for such a freeze is never disclosed here. A project resource that cannot be resolved yields 404.",
+        "operationId": "GetCommandTemplates",
+        "parameters": [
+          {
+            "name": "ProjectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ProjectResourceName",
+            "in": "path",
+            "description": "LEXIS Project Resource name, as assigned to that project.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommandTemplateResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/CommandTemplate/Activate": {
+      "put": {
+        "tags": [
+          "CommandTemplateManagement"
+        ],
+        "summary": "Activate a HEAppE command template for a project resource",
+        "description": "Moves one HEAppE command template of the given project resource from Inactive to Active, on all of its partitions at once. The template is addressed by its id together with the project short name and the resource name, and all three must match or the request is refused with 404. Two guards run before anything is written: the call is refused with 409 when any location the template has a partition on is frozen by an enforced kill-switch — being whitelisted does not exempt a write — and it is refused when the template's partitions are not all currently Inactive, with the states actually found named in the error. On success it answers 204 and drops the project's cached command-template permissions as well as the cached templates info and the cached HEAppE cluster entries of every HEAppE instance behind the resource.",
+        "operationId": "ActivateCommandTemplate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommandTemplateActivateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/CommandTemplate/Deactivate": {
+      "put": {
+        "tags": [
+          "CommandTemplateManagement"
+        ],
+        "summary": "Deactivate a HEAppE command template for a project resource",
+        "description": "Moves one HEAppE command template of the given project resource from Active to Inactive, on all of its partitions at once — the exact inverse of Activate, taking the same request body. The template is addressed by its id together with the project short name and the resource name, and all three must match or the request is refused with 404. Two guards run before anything is written: the call is refused with 409 when any location the template has a partition on is frozen by an enforced kill-switch — being whitelisted does not exempt a write — and it is refused when the template's partitions are not all currently Active, with the states actually found named in the error. Deactivating is a state change on the template and is not a kill-switch: it is visible to readers as Inactive rather than Frozen. On success it answers 204 and drops the project's cached command-template permissions as well as the cached templates info and the cached HEAppE cluster entries of every HEAppE instance behind the resource.",
+        "operationId": "DeactivateCommandTemplate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommandTemplateActivateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/CommandTemplate/Synchronization": {
+      "post": {
+        "tags": [
+          "CommandTemplateManagement"
+        ],
+        "summary": "Synchronize a project resource's command templates with HEAppE",
+        "description": "Re-reads the project resource named in the body from every HEAppE instance behind it and creates or updates the stored command templates and location partitions to match, location by location. Locations frozen by an enforced kill-switch are skipped rather than synchronized. The run is partial by design: the response reports the outcome per location, so some locations can succeed while others fail. It answers 200 only when at least one location succeeded; when every location failed, or the resource has no HEAppE location at all, or every location it has was frozen and skipped, it answers 400 carrying the same per-location result or the error that stopped it.",
+        "operationId": "SyncCommandTemplate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommandTemplateSyncRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommandTemplateSyncResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/Partitions/{projectShortName}/{resourceName}": {
+      "get": {
+        "tags": [
+          "Heappe"
+        ],
+        "summary": "Get available location partitions",
+        "description": "Retrieves all HEAppE location partitions accessible to the specified project resource, filtered by user permissions.",
+        "operationId": "GetPartitionsEndpoint",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "description": "LEXIS Project Resource name. Only the resource's HPC and Quantum locations are considered; partitions on any other location type are left out.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LocationPartitionResponse"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/CommandTemplates": {
+      "post": {
+        "tags": [
+          "Heappe"
+        ],
+        "summary": "Create HEAppE command template",
+        "description": "Creates a command template in both HEAppE and the project resource management system. Requires valid project resource access and partition availability.",
+        "operationId": "CreateTemplateEndpoint",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTemplateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "499": {
+            "description": "Client Closed Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/ListChangedFilesForJob/{projectShortName}/{resourceName}/{submittedJobInfoId}": {
+      "get": {
+        "tags": [
+          "Heappe"
+        ],
+        "summary": "Download files changed for a HEAppE job",
+        "description": "Find files changed for the specified HEAppE job and download their contents.",
+        "operationId": "DownloadChangedFilesEndpoint",
+        "parameters": [
+          {
+            "name": "projectShortName",
+            "in": "path",
+            "description": "LEXIS Project Short-Name. Used together with the resource name to find the HEAppE instance that holds the job.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resourceName",
+            "in": "path",
+            "description": "LEXIS Project Resource name. Its first location carrying a HEAppE instance URI is the one queried.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "submittedJobInfoId",
+            "in": "path",
+            "description": "Identifier of the submitted job in HEAppE, whose changed files are listed and downloaded.",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/DownloadedFileModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "499": {
+            "description": "Client Closed Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/ResourceAudit/run": {
+      "post": {
+        "tags": [
+          "Heappe"
+        ],
+        "summary": "Runs the HEAppE resource validity audit on demand. Platform admin only.",
+        "description": "Runs the resource validity audit immediately instead of waiting for its scheduled run. For every audited target it checks that the HEAppE project record exists and that its validity window matches the one userorg holds, and reports the expected and actual dates with a status; the audit is read-only and never writes back to HEAppE. How the outcome is delivered is chosen with the delivery query parameter. The route is platform-admin only (enforced by the Gateway RBAC mapping) and is published only while the HeappeResourceAudit feature flag is on.",
+        "operationId": "RunHeappeResourceAudit",
+        "parameters": [
+          {
+            "name": "delivery",
+            "in": "query",
+            "description": "How the result is delivered. Omitted or any other value streams the audit in the response, one result per processed target, flushed as it is produced. 'webhook' (case-insensitive) instead answers 202 immediately and runs the audit detached from the request, posting the findings card to the configured webhook when it completes; the response then carries no results at all.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TargetAuditResult"
+                  }
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/KillSwitch": {
+      "get": {
+        "tags": [
+          "KillSwitch"
+        ],
+        "summary": "List the locations you may manage and their kill-switch state",
+        "description": "Lists every location whose kill-switch the caller may manage — all locations for a platform admin, only the locations of the caller's own provider for a provider admin — each with its current kill-switch state: whether it is enforced, the reason and UTC timestamp of the last enforcement, and whether the current freeze ignores that location's whitelist. A location that has never been frozen is reported as not enforced with no reason. Answers 403 when the caller is neither a platform admin nor associated with a provider. This route and the per-location GET are the only places the freeze reason and timestamp are exposed.",
+        "operationId": "GetKillSwitches",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KillSwitchLocationState"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/KillSwitch/{ProviderName}/{LocationName}": {
+      "get": {
+        "tags": [
+          "KillSwitch"
+        ],
+        "summary": "Inspect one location's kill-switch and the effective state of its command templates",
+        "description": "Reports one location's kill-switch state together with every HEAppE command template that has a partition on that location. Each template carries its stored state, which a kill-switch never rewrites, the effective state readers see (Frozen while the kill-switch kills it here), and whether it is on the location's whitelist — a template can be whitelisted and still read Frozen while the freeze is under lockdown. Answers 403 when the location belongs to another provider, and 409 when the provider or location name is unknown or matches more than one.",
+        "operationId": "GetKillSwitch",
+        "parameters": [
+          {
+            "name": "ProviderName",
+            "in": "path",
+            "description": "Name of the LEXIS Provider that owns the location. Must match exactly one provider.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "LocationName",
+            "in": "path",
+            "description": "Name of the provider's location, as listed by GET /KillSwitch. Must match exactly one location of that provider.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationKillSwitchDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "put": {
+        "tags": [
+          "KillSwitch"
+        ],
+        "summary": "Freeze or unfreeze all HEAppE command templates on one location",
+        "description": "Enforces or lifts the kill-switch on a single location. Enforcing (`isEnforced: true`) requires a reason of at least 10 characters, which is stored with the acting user and the UTC time, and makes every HEAppE command template with a partition on the location read as Frozen on every read path while Activate/Deactivate against it is refused with 409; templates on the location's standing whitelist are exempt unless `ignoreWhitelist` is set, which suppresses the whitelist for the duration of the freeze without deleting a single row. Lifting clears the freeze, always resets `ignoreWhitelist`, leaves the whitelist standing for the next incident, and queues a command template resync for every (project, resource) on the location — those the bounded resync queue could not accept are returned in `unqueuedResyncItems` so the administrator can re-run them. The whitelist itself is never written here; use the Whitelist route. Answers 400 on a missing or too short reason and on `ignoreWhitelist` without a freeze, 403 for another provider's location, and 409 when a name is unknown or matches more than one.",
+        "operationId": "SetKillSwitch",
+        "parameters": [
+          {
+            "name": "ProviderName",
+            "in": "path",
+            "description": "Name of the LEXIS Provider that owns the location. Must match exactly one provider.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "LocationName",
+            "in": "path",
+            "description": "Name of the provider's location, as listed by GET /KillSwitch. Must match exactly one location of that provider.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetLocationKillSwitchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KillSwitchLocationUpdateResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/KillSwitch/{ProviderName}/{LocationName}/Whitelist": {
+      "put": {
+        "tags": [
+          "KillSwitch"
+        ],
+        "summary": "Replace the standing list of command templates that keep running while one location is frozen",
+        "description": "REPLACES the location's standing whitelist — the command templates that keep running while the location is frozen — with the posted list, stamping who added each exception and when. Replace, not add or remove: posting an empty list clears the whitelist. Every item is addressed by its (project short name, resource name, template name) triple and must resolve to a template on THIS location, or the whole request is refused with 400 before a single row is written, so a typo can never leave a template silently frozen or silently exempt. Writing the whitelist is independent of the kill-switch state — it is configuration prepared ahead of an incident, so it works whether or not the location is currently frozen, and it neither enforces nor lifts anything. Returns the location's full kill-switch detail as it stands afterwards. Answers 403 for another provider's location and 409 when a name is unknown or matches more than one.",
+        "operationId": "SetKillSwitchWhitelist",
+        "parameters": [
+          {
+            "name": "ProviderName",
+            "in": "path",
+            "description": "Name of the LEXIS Provider that owns the location. Must match exactly one provider.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "LocationName",
+            "in": "path",
+            "description": "Name of the provider's location, as listed by GET /KillSwitch. Must match exactly one location of that provider.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetLocationWhitelistRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationKillSwitchDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/Heappe/KillSwitch/{ProviderName}": {
+      "put": {
+        "tags": [
+          "KillSwitch"
+        ],
+        "summary": "Freeze or unfreeze every current location of a provider in one action",
+        "description": "Enforces or lifts the kill-switch across ALL of the provider's locations in one action — the fastest incident response, with the same per-location semantics fanned out. The covered set is a snapshot taken now: a location added to the provider afterwards is not covered, and the action has to be re-run to include it. Enforcing requires a reason of at least 10 characters and never deletes a whitelist; `ignoreWhitelist` is how you freeze everything including the exceptions, and it is fanned out to every location. Lifting clears the freeze and the lockdown flag everywhere, leaves every whitelist standing, and queues a command template resync for the affected (project, resource) pairs — those the bounded queue could not accept come back in `unqueuedResyncItems`. The response reports how many locations were covered and how many whitelist exceptions remain in force across them as a COUNT, not a list, so this path never pays for name resolution. This route carries no whitelist of its own. Answers 400 on a missing or too short reason and on `ignoreWhitelist` without a freeze, 403 for another provider, and 409 when the provider name is unknown or matches more than one.",
+        "operationId": "SetProviderKillSwitch",
+        "parameters": [
+          {
+            "name": "ProviderName",
+            "in": "path",
+            "description": "Name of the LEXIS Provider that owns the location. Must match exactly one provider.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetProviderKillSwitchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KillSwitchProviderUpdateResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/remi/users": {
+      "get": {
+        "tags": [
+          "RemI"
+        ],
+        "summary": "Get users",
+        "description": "Returns a list of users",
+        "operationId": "GetUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/remi/projects": {
+      "get": {
+        "tags": [
+          "RemI"
+        ],
+        "summary": "Get projects",
+        "description": "Returns a list of projects",
+        "operationId": "GetProjects",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/remi/users/{idpUserId}/SystemRoles": {
+      "get": {
+        "tags": [
+          "RemI"
+        ],
+        "summary": "Get user system roles",
+        "description": "Returns a list of user system roles",
+        "operationId": "GetUserSystemRoles",
+        "parameters": [
+          {
+            "name": "idpUserId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserSystemRolesResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuditStatus": {
+        "enum": [
+          "Ok",
+          "Missing",
+          "ValidityMismatch",
+          "CheckFailed"
+        ]
+      },
+      "BulkUpdateResult": {
+        "required": [
+          "Created",
+          "Updated",
+          "Deleted"
+        ],
+        "type": "object",
+        "properties": {
+          "Created": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Updated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Deleted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CommandTemplateActivateRequest": {
+        "required": [
+          "Id",
+          "projectShortName",
+          "resourceName"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          }
+        }
+      },
+      "CommandTemplateModel": {
+        "required": [
+          "Name",
+          "Enabled"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Enabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CommandTemplateResponse": {
+        "required": [
+          "Id",
+          "Name",
+          "Type",
+          "State"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Type": {
+            "$ref": "#/components/schemas/ECommandTemplateTypeResponse"
+          },
+          "State": {
+            "$ref": "#/components/schemas/ECommandTemplateStateResponse"
+          },
+          "Frozen": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "CommandTemplateSyncRequest": {
+        "required": [
+          "projectShortName",
+          "resourceName"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          }
+        }
+      },
+      "CommandTemplateSyncResult": {
+        "required": [
+          "Locations"
+        ],
+        "type": "object",
+        "properties": {
+          "Locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocationSyncResultEntry"
+            }
+          },
+          "AllSucceeded": {
+            "type": "boolean"
+          },
+          "AnySucceeded": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateCommandTemplateParameterDto": {
+        "required": [
+          "Name",
+          "Description"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTemplateRequest": {
+        "required": [
+          "ProjectIdentifier",
+          "PartitionName",
+          "LocationName",
+          "AggregationName",
+          "Name",
+          "Description",
+          "PreparationScriptPath",
+          "ExecutionScriptPath",
+          "CommandTemplateParameters"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectIdentifier": {
+            "$ref": "#/components/schemas/ProjectResourceTarget"
+          },
+          "PartitionName": {
+            "type": "string"
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "PreparationScriptPath": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ExecutionScriptPath": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "CommandTemplateParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCommandTemplateParameterDto"
+            }
+          }
+        }
+      },
+      "DataStagingDataModel": {
+        "required": [
+          "Name",
+          "PublicData",
+          "PrivateData"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "PublicData": {
+            "$ref": "#/components/schemas/DataStagingPart"
+          },
+          "PrivateData": {
+            "$ref": "#/components/schemas/DataStagingPart"
+          }
+        }
+      },
+      "DataStagingLocationKey": {
+        "type": "object",
+        "properties": {
+          "BackupKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Key": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "JsonData": {
+            "type": "string"
+          }
+        }
+      },
+      "DataStagingPart": {
+        "required": [
+          "Name",
+          "JsonData"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "JsonData": {
+            "type": "string"
+          }
+        }
+      },
+      "DownloadedFileModel": {
+        "required": [
+          "FileName",
+          "TextContent"
+        ],
+        "type": "object",
+        "properties": {
+          "FileName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "TextContent": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ECommandTemplateStateResponse": {
+        "type": "string"
+      },
+      "ECommandTemplateTypeResponse": {
+        "enum": [
+          "Unknown",
+          "SystemDefined",
+          "UserDefined"
+        ]
+      },
+      "Error": {
+        "required": [
+          "Severity",
+          "Code",
+          "Description"
+        ],
+        "type": "object",
+        "properties": {
+          "Severity": {
+            "$ref": "#/components/schemas/ErrorSeverity"
+          },
+          "Code": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorSeverity": {
+        "enum": [
+          "Error",
+          "Warning",
+          "Info"
+        ]
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "KillSwitchLocationState": {
+        "required": [
+          "ProviderName",
+          "LocationName",
+          "IsEnforced",
+          "Reason",
+          "EnforcedAtUtc",
+          "IgnoreWhitelist"
+        ],
+        "type": "object",
+        "properties": {
+          "ProviderName": {
+            "type": "string"
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "IsEnforced": {
+            "type": "boolean"
+          },
+          "Reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "EnforcedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "IgnoreWhitelist": {
+            "type": "boolean"
+          }
+        }
+      },
+      "KillSwitchLocationUpdateResult": {
+        "required": [
+          "ProviderName",
+          "LocationName",
+          "IsEnforced",
+          "StillAllowed",
+          "UnqueuedResyncItems"
+        ],
+        "type": "object",
+        "properties": {
+          "ProviderName": {
+            "type": "string"
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "IsEnforced": {
+            "type": "boolean"
+          },
+          "StillAllowed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KillSwitchWhitelistItem"
+            }
+          },
+          "UnqueuedResyncItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KillSwitchResyncItem"
+            }
+          }
+        }
+      },
+      "KillSwitchProviderUpdateResult": {
+        "required": [
+          "ProviderName",
+          "IsEnforced",
+          "AffectedLocationCount",
+          "StillAllowedCount",
+          "UnqueuedResyncItems"
+        ],
+        "type": "object",
+        "properties": {
+          "ProviderName": {
+            "type": "string"
+          },
+          "IsEnforced": {
+            "type": "boolean"
+          },
+          "AffectedLocationCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "StillAllowedCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "UnqueuedResyncItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KillSwitchResyncItem"
+            }
+          }
+        }
+      },
+      "KillSwitchResyncItem": {
+        "required": [
+          "ProjectShortName",
+          "ResourceName"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          }
+        }
+      },
+      "KillSwitchTemplateState": {
+        "required": [
+          "ProjectShortName",
+          "ResourceName",
+          "TemplateName",
+          "StoredState",
+          "EffectiveState",
+          "Whitelisted"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          },
+          "TemplateName": {
+            "type": "string"
+          },
+          "StoredState": {
+            "type": "string"
+          },
+          "EffectiveState": {
+            "type": "string"
+          },
+          "Whitelisted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "KillSwitchWhitelistItem": {
+        "required": [
+          "ProjectShortName",
+          "ResourceName",
+          "TemplateName"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          },
+          "TemplateName": {
+            "type": "string"
+          }
+        }
+      },
+      "LocationKillSwitchDetail": {
+        "required": [
+          "ProviderName",
+          "LocationName",
+          "IsEnforced",
+          "Reason",
+          "EnforcedAtUtc",
+          "IgnoreWhitelist",
+          "Templates"
+        ],
+        "type": "object",
+        "properties": {
+          "ProviderName": {
+            "type": "string"
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "IsEnforced": {
+            "type": "boolean"
+          },
+          "Reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "EnforcedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "IgnoreWhitelist": {
+            "type": "boolean"
+          },
+          "Templates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KillSwitchTemplateState"
+            }
+          }
+        }
+      },
+      "LocationPartitionResponse": {
+        "required": [
+          "PartitionName",
+          "AggregationName",
+          "LocationName",
+          "ProviderName"
+        ],
+        "type": "object",
+        "properties": {
+          "PartitionName": {
+            "type": "string"
+          },
+          "AggregationName": {
+            "type": "string"
+          },
+          "LocationName": {
+            "type": "string"
+          },
+          "ProviderName": {
+            "type": "string"
+          }
+        }
+      },
+      "LocationSyncResultEntry": {
+        "required": [
+          "LocationName",
+          "AggregationName",
+          "HeappeInstanceUri",
+          "IsSuccess",
+          "Errors"
+        ],
+        "type": "object",
+        "properties": {
+          "LocationName": {
+            "type": "string"
+          },
+          "AggregationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "HeappeInstanceUri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "IsSuccess": {
+            "type": "boolean"
+          },
+          "Errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PermissionModel": {
+        "required": [
+          "QueueName",
+          "ProjectResource",
+          "ClusterName",
+          "ProjectShortName",
+          "CommandTemplates"
+        ],
+        "type": "object",
+        "properties": {
+          "QueueName": {
+            "type": "string"
+          },
+          "ProjectResource": {
+            "type": "string"
+          },
+          "ClusterName": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "CommandTemplates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommandTemplateModel"
+            }
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "Detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProjectResourceTarget": {
+        "required": [
+          "ProjectShortName",
+          "ResourceName"
+        ],
+        "type": "object",
+        "properties": {
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "ResourceName": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectResponse": {
+        "required": [
+          "ShortName",
+          "Name",
+          "Email",
+          "ExternalId",
+          "Mode",
+          "ServiceName",
+          "StartDate",
+          "EndDate"
+        ],
+        "type": "object",
+        "properties": {
+          "ShortName": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ExternalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "Mode": {
+            "type": "string"
+          },
+          "ServiceName": {
+            "type": "string"
+          },
+          "StartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "EndDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ProjectSystemRoleRecord": {
+        "required": [
+          "RoleName",
+          "ProjectShortName",
+          "SystemPermissionTypes"
+        ],
+        "type": "object",
+        "properties": {
+          "RoleName": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "SystemPermissionTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SetLocationKillSwitchRequest": {
+        "required": [
+          "IsEnforced",
+          "Reason"
+        ],
+        "type": "object",
+        "properties": {
+          "IsEnforced": {
+            "type": "boolean"
+          },
+          "Reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IgnoreWhitelist": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "SetLocationWhitelistRequest": {
+        "required": [
+          "Items"
+        ],
+        "type": "object",
+        "properties": {
+          "Items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KillSwitchWhitelistItem"
+            }
+          }
+        }
+      },
+      "SetProviderKillSwitchRequest": {
+        "required": [
+          "IsEnforced",
+          "Reason"
+        ],
+        "type": "object",
+        "properties": {
+          "IsEnforced": {
+            "type": "boolean"
+          },
+          "Reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IgnoreWhitelist": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "TargetAuditResult": {
+        "required": [
+          "ResourceName",
+          "ProjectShortName",
+          "HeappeUri",
+          "Status",
+          "ExpectedStart",
+          "ExpectedEnd",
+          "ActualStart",
+          "ActualEnd",
+          "Reason"
+        ],
+        "type": "object",
+        "properties": {
+          "ResourceName": {
+            "type": "string"
+          },
+          "ProjectShortName": {
+            "type": "string"
+          },
+          "HeappeUri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "Status": {
+            "$ref": "#/components/schemas/AuditStatus"
+          },
+          "ExpectedStart": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "ExpectedEnd": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "ActualStart": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "ActualEnd": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "Reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IsFinding": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserCommandTemplatePermissionModel": {
+        "required": [
+          "HeappeIdentifikator",
+          "Permissions"
+        ],
+        "type": "object",
+        "properties": {
+          "HeappeIdentifikator": {
+            "type": "string"
+          },
+          "Permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionModel"
+            }
+          }
+        }
+      },
+      "UserResponse": {
+        "required": [
+          "Id",
+          "Email",
+          "Projects",
+          "AssignedProviderName",
+          "IdpUserId",
+          "UserName"
+        ],
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string"
+          },
+          "Projects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "AssignedProviderName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "IdpUserId": {
+            "type": "string"
+          },
+          "UserName": {
+            "type": "string"
+          }
+        }
+      },
+      "UserSystemRolesResponse": {
+        "required": [
+          "SystemRoles",
+          "IdpUserId",
+          "UserName"
+        ],
+        "type": "object",
+        "properties": {
+          "SystemRoles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectSystemRoleRecord"
+            }
+          },
+          "IdpUserId": {
+            "type": "string"
+          },
+          "UserName": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Paste only the JWT access token. The Bearer prefix is applied automatically.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "Service": {
+        "type": "apiKey",
+        "description": "Paste only the service token in format: Service TOKEN/KEY",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "DataStaging"
+    },
+    {
+      "name": "API"
+    },
+    {
+      "name": "CommandTemplateManagement",
+      "description": "Served unversioned at /api/Heappe by the HEAppE module. These routes are not part of the v1 surface: they have no /api/v2 counterpart and keep this path after v1 is retired."
+    },
+    {
+      "name": "Heappe",
+      "description": "Served unversioned at /api/Heappe by the HEAppE module. These routes are not part of the v1 surface: they have no /api/v2 counterpart and keep this path after v1 is retired."
+    },
+    {
+      "name": "KillSwitch",
+      "description": "Served unversioned at /api/Heappe by the HEAppE module. These routes are not part of the v1 surface: they have no /api/v2 counterpart and keep this path after v1 is retired."
+    },
+    {
+      "name": "RemI"
+    }
+  ]
+}

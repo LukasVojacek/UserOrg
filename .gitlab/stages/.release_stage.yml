@@ -1,0 +1,62 @@
+# ── RC TRACK (auto, every main merge + manual feature preview) ──────────────────
+# Projects the next PRIMARY version via a semantic-release dry-run — NO git tag, NO changelog,
+# NO GitLab Release. Exports PRIMARY_NEXT + RC_COUNT for the rc / preview image jobs, which append
+# their own suffix (main rc -> -rc.<RC_COUNT>, feature preview -> -preview.<pipeline-iid>).
+#
+# CRITICAL INVARIANT: this is a DRY RUN and never tags. Only the manual primary release
+# (release_version) creates git tags, so "since the last tag" == "since the last manual release",
+# which is what makes the eventual GitLab Release cover the whole accumulated range.
+version-preview:
+  image: ${NODE_JS_IMAGE}
+  stage: release
+  needs: []
+  variables:
+    GIT_DEPTH: 0
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^(feat|fix|hotfix)\/.+/'
+      when: on_success
+      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+      allow_failure: true
+    - if: '$CI_COMMIT_BRANCH =~ /^support\/v[0-9]+\.[0-9]+\.([0-9]+|x)$/ && $CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+      allow_failure: true
+    - when: never
+  script:
+    - bash .gitlab/scripts/version-preview.sh
+  artifacts:
+    when: always
+    paths:
+      - preview.env
+    reports:
+      dotenv: preview.env
+
+# ── PRIMARY RELEASE (manual: web run on main with RELEASE=true) ──────────────────
+# semantic-release computes the version from ALL commits since the last primary tag, creates the
+# git tag + GitLab Release (release notes are the only changelog — no CHANGELOG.md commit-back),
+# and exports release.env (VERSION=X.Y.Z) consumed by publish_primary_images. GIT_DEPTH:0 so the
+# full range since the last release is analysed.
+release_version:
+  image: ${NODE_JS_IMAGE}
+  stage: release
+  extends: .rules-main-release
+  variables:
+    GIT_DEPTH: 0
+  needs:
+    - job: unit_tests
+      artifacts: false
+    - job: migration_sql
+      optional: true
+      artifacts: true
+  script:
+    - bash .gitlab/scripts/release-version.sh
+  artifacts:
+    paths:
+      - release.env
+      - migrations/sql/migration.sql
+    reports:
+      dotenv: release.env
+    when: always

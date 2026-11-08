@@ -1,0 +1,37 @@
+# Minimal production base image for ASP.NET Core with Seeds included
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+ARG VERSION=0.0.0-prod
+
+LABEL org.opencontainers.image.title="userorg/dotnet-prod-base" \
+      org.opencontainers.image.description="Minimal ASP.NET Core runtime base with /opt/seeds included for production"
+
+# No ASPNETCORE_URLS override: the aspnet base listens on 8080 (ASPNETCORE_HTTP_PORTS) — a
+# non-root user cannot bind ports <1024 under Kubernetes, so forcing :80 would CrashLoop there.
+ENV DOTNET_RUNNING_IN_CONTAINER=true \
+    VERSION=${VERSION}
+
+USER root
+
+# Install only minimal packages required at runtime
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        chromium \
+        fonts-liberation \
+        libnss3; \
+    rm -rf /var/lib/apt/lists/*;
+
+# Add repository Seeds to /opt/seeds so runtime images include seed assets
+COPY Seeds /opt/seeds
+RUN chown -R root:root /opt/seeds || true
+
+WORKDIR /app
+
+# Run as root: the target runtime does not enforce `runAsNonRoot`, and the app requires root
+# in the produced image. Child images inherit this USER (the aspnet base's non-root `app`/$APP_UID
+# default is overridden here). Still listens on 8080 (ASPNETCORE_HTTP_PORTS) — deployments already
+# target 8080, so the port is left unchanged; root could bind <1024 but nothing needs it.
+# Do not set entrypoint so child images (and `dotnet publish /t:PublishContainer`) control it.
+USER root

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsTestProject>true</IsTestProject>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Aspire-free on purpose, so the mode choice and the import document are tested as code, not as syntax. -->
+    <Compile Include="..\..\..\src\UserOrg.AppHost\NexusApiMode.cs" Link="NexusApiMode.cs" />
+    <Compile Include="..\..\..\src\UserOrg.AppHost\RemoteDatabaseUrl.cs" Link="RemoteDatabaseUrl.cs" />
+  </ItemGroup>
+
+  <!--
+    No ProjectReference to src/UserOrg.AppHost on purpose. The AppHost is an Exe whose whole
+    composition lives in top-level statements that end in `builder.Build().RunAsync()`, so the
+    resource model cannot be obtained without running the entry point — and ADR-0069 retired the
+    `DistributedApplicationTestingBuilder` boot path from this repository's test suite. These tests
+    therefore assert the AppHost's composition on its *syntax*, by parsing the source files with
+    Roslyn (the same tool Tests/UserOrg.Shared.Hashing.Tests already uses).
+  -->
+
+</Project>

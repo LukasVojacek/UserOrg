@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Raw Waldur API DTOs carry URLs as strings on purpose: they mirror the JSON wire shape and
+         feed the mapper (later block) unchanged. CA2227: options classes need settable collections
+         for configuration binding. CA1822: the mapper exposes a uniform stateful instance API.
+         CA1031: the sequential worker deliberately catches broad Exception around each item / phase —
+         per-item failure isolation is the core of ADR-0056 (log, no SHA write, retry next iteration). -->
+    <NoWarn>$(NoWarn);CA1054;CA1056;CA2227;CA1822;CA1031</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Waldur.Sync.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lukdrasil.Error" />
+    <PackageReference Include="Lukdrasil.Result" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="Polly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\UserOrg.Shared\UserOrg.Shared.csproj" />
+    <ProjectReference Include="..\Waldur.Contracts\Waldur.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

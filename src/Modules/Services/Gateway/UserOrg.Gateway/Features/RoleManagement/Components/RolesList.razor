@@ -1,0 +1,75 @@
+@using UserOrg.Gateway.Features.RoleManagement.Services
+@inject RoleManagementState State
+@implements IDisposable
+
+<div class="rm-card">
+    <h2>Roles</h2>
+
+    <div class="rm-search">
+        <input type="search"
+               class="rm-input"
+               placeholder="Search roles..."
+               @bind="searchTerm"
+               @bind:event="oninput"
+               aria-label="Search roles" />
+    </div>
+
+    @if (FilteredRoles.Any())
+    {
+        <table class="rm-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in FilteredRoles)
+                {
+                    <tr>
+                        <td>@role.Name</td>
+                        <td>@role.Description</td>
+                        <td>
+                            <button class="rm-button" @onclick="() => OnViewRole(role.Name)">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else if (!State.IsLoading)
+    {
+        <p class="rm-empty">No roles found.</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnRoleSelected { get; set; }
+
+    private string searchTerm = string.Empty;
+
+    private IEnumerable<RoleSummary> FilteredRoles =>
+        State.Roles.Where(r =>
+            string.IsNullOrWhiteSpace(searchTerm) ||
+            r.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+            (r.Description?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false));
+
+    protected override void OnInitialized()
+    {
+        State.OnChange += StateHasChanged;
+    }
+
+    private async Task OnViewRole(string roleName)
+    {
+        await OnRoleSelected.InvokeAsync(roleName);
+    }
+
+    public void Dispose()
+    {
+        State.OnChange -= StateHasChanged;
+    }
+}

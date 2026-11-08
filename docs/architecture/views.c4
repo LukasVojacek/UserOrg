@@ -1,0 +1,113 @@
+views {
+
+  // L1 — System context: system as one box, actors, externals
+  view index {
+    title 'System Context — LEXIS UserOrg'
+    include *
+  }
+
+  // L2 — Containers: expand the system
+  view containers of userorg {
+    title 'Containers — LEXIS UserOrg'
+    include *
+  }
+
+  // L3 — Components: one view per container (enables click-to-drill-down)
+  view gatewayComponents of userorg.gateway {
+    title 'Components — UserOrg Gateway'
+    include *
+  }
+
+  view apiComponents of userorg.api {
+    title 'Components — UserOrg API'
+    include *
+  }
+
+  // L4 — Gateway components (one view per component with sub-structure)
+  view authTokenDetail of userorg.gateway.authTokenTransform {
+    title 'Inside — Auth & Token Transformation'
+    include *
+  }
+
+  view authRbacDetail of userorg.gateway.authorizationRbac {
+    title 'Inside — Authorization & RBAC'
+    include *
+  }
+
+  view internalTokenDetail of userorg.gateway.internalTokenIssuance {
+    title 'Inside — Internal Token Issuance'
+    include *
+  }
+
+  view roleManagementDetail of userorg.gateway.roleManagementUi {
+    title 'Inside — Role Management UI'
+    include *
+  }
+
+  view cyclopsForwardingDetail of userorg.gateway.cyclopsForwarding {
+    title 'Inside — Cyclops Usage Forwarding'
+    include *
+  }
+
+  // L4 — API components
+  view projectCoreDetail of userorg.api.projectCore {
+    title 'Inside — Project & Entity Management'
+    include *
+  }
+
+  view resourceMgmtDetail of userorg.api.resourceMgmt {
+    title 'Inside — Resource & Allocation Management'
+    include *
+  }
+
+  view requestsDetail of userorg.api.requestsOnboarding {
+    title 'Inside — Request & Onboarding'
+    include *
+  }
+
+  view adminToolsDetail of userorg.api.adminTools {
+    title 'Inside — Administration & Reference Data'
+    include *
+  }
+
+  view heappeDetail of userorg.api.heappeIntegration {
+    title 'Inside — HEAppE Integration'
+    include *
+  }
+
+  view waldurDetail of userorg.api.waldurSync {
+    title 'Inside — Waldur Platform Sync'
+    include *
+  }
+
+  view dataStagingDetail of userorg.api.dataStagingAccess {
+    title 'Inside — Data Staging & Vault Access'
+    include *
+  }
+
+  // Feature views (cross-cutting product perspective)
+  view featureProjectMgmt {
+    title 'Feature — Project & User Management'
+    include element.tag == #feature-project-mgmt
+  }
+
+  view featureResourceMgmt {
+    title 'Feature — Resource & Allocation Management'
+    include element.tag == #feature-resource-mgmt
+  }
+
+  view featureHpc {
+    title 'Feature — HPC Integration (HEAppE)'
+    include element.tag == #feature-hpc
+  }
+
+  view featureCloudSync {
+    title 'Feature — Multi-cloud Sync (Waldur)'
+    include element.tag == #feature-cloud-sync
+  }
+
+  view featureSecurity {
+    title 'Feature — Security & RBAC'
+    include element.tag == #feature-security
+  }
+}

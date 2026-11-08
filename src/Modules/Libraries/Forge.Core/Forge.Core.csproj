@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <Compile Remove="Migrations\**" />
+      <EmbeddedResource Remove="Migrations\**" />
+      <None Remove="Migrations\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Forge.Core.Tests" />
+        <InternalsVisibleTo Include="DatabaseMigrations" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions">
+            <TreatAsUsed>true</TreatAsUsed>
+        </PackageReference>
+        <PackageReference Include="Lukdrasil.Error" />
+        <PackageReference Include="Lukdrasil.Result" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+        <PackageReference Include="OpenTelemetry.Api" />
+    </ItemGroup>
+
+  <ItemGroup>
+      <ProjectReference Include="..\..\..\UserOrg.Shared\UserOrg.Shared.csproj" />
+    </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Persistence\Migrations\" />
+  </ItemGroup>
+</Project>

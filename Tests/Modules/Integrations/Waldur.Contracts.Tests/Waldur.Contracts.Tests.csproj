@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsTestProject>true</IsTestProject>
+    <TargetFramework>net10.0</TargetFramework>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Modules\Integrations\Waldur.Contracts\Waldur.Contracts.csproj" />
+    <!-- This test project declares its own [GenerateIdentityHash] records (IdentityHashNormalizationTests) —
+         analyzer wiring does not propagate transitively, so it needs its own reference. -->
+    <ProjectReference Include="..\..\..\..\src\UserOrg.Shared.Hashing\UserOrg.Shared.Hashing.csproj" OutputItemType="Analyzer" />
+    <!-- Test-only references: ShortNameParityTests pins Waldur.Contracts.ShortNameRules against both
+         ProjectShortName value objects and DbConstants.ProjectShortNameMaxLength. None of these three
+         production projects reference each other or Waldur.Contracts — only this test does. -->
+    <ProjectReference Include="..\..\..\..\src\Core\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Modules\Core.Domain\Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\src\UserOrg.Shared\UserOrg.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

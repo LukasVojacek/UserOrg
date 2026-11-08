@@ -1,0 +1,6 @@
+# Revisions to ignore in `git blame` (bulk, non-semantic changes).
+# Enable locally once: git config blame.ignoreRevsFile .git-blame-ignore-revs
+# (GitHub/GitLab honour this file automatically.)
+
+# chore: standardize line endings to LF (.editorconfig + .gitattributes + renormalize)
+81db1a04e80f89a5cfad053d9b138d12f2c61fd8
